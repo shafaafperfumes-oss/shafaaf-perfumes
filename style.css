@@ -36,4 +36,37 @@ nav a {
 
 nav a:hover {
   color: #f2c14e;
+}```
+.hero {
+text-align: center;
+padding: 80px 20px;
+background-color: #f2e9dc;
 }
+
+.hero h1 {
+font-size: 48px;
+color: #6b4226;
+margin-bottom: 10px;
+}
+
+.hero p {
+font-size: 18px;
+color: #444444;
+margin-bottom: 30px;
+}
+
+.hero button {
+background-color: #6b4226;
+color: #ffffff;
+border: none;
+padding: 15px 35px;
+font-size: 16px;
+border-radius: 30px;
+cursor: pointer;
+}
+
+.hero button:hover {
+background-color: #f2c14e;
+color: #2b2b2b;
+}
+```
