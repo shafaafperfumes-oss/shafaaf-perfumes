@@ -184,3 +184,18 @@ footer p {
     margin: 15px auto;
   }
 }
+.add-to-cart {
+  background-color: #6b4226;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.add-to-cart:hover {
+  background-color: #f2c14e;
+  color: #2b2b2b;
+}
