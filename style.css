@@ -111,3 +111,61 @@ color: #2b2b2b;
   color: #6b4226;
   font-weight: bold;
 }
+@media (max-width: 600px) {
+  nav a {
+    display: block;
+    margin: 10px 0;
+  }
+
+  .hero h1 {
+    font-size: 32px;
+  }
+
+  .hero p {
+    font-size: 16px;
+  }
+
+  .product-card {
+    display: block;
+    width: 90%;
+    margin: 15px auto;
+  }
+  @media (max-width: 600px) {
+  nav a {
+    display: block;
+    margin: 10px 0;
+  }
+
+  .hero h1 {
+    font-size: 32px;
+  }
+
+  .hero p {
+    font-size: 16px;
+  }
+
+  .product-card {
+    display: block;
+    width: 90%;
+    margin: 15px auto;
+  }
+  @media (max-width: 600px) {
+  nav a {
+    display: block;
+    margin: 10px 0;
+  }
+
+  .hero h1 {
+    font-size: 32px;
+  }
+
+  .hero p {
+    font-size: 16px;
+  }
+
+  .product-card {
+    display: block;
+    width: 90%;
+    margin: 15px auto;
+  }
+}
