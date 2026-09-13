@@ -135,6 +135,23 @@ nav a:hover {
   line-height: 1.6;
 }
 
+.contact {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.contact h2 {
+  font-size: 32px;
+  color: #6b4226;
+  margin-bottom: 20px;
+}
+
+.contact p {
+  font-size: 16px;
+  color: #444444;
+  margin: 8px 0;
+}
+
 footer {
   background-color: #2b2b2b;
   color: #ffffff;
@@ -144,4 +161,26 @@ footer {
 }
 
 footer p {
-  margin:
+  margin: 5px 0;
+}
+
+@media (max-width: 600px) {
+  nav a {
+    display: block;
+    margin: 10px 0;
+  }
+
+  .hero h1 {
+    font-size: 32px;
+  }
+
+  .hero p {
+    font-size: 16px;
+  }
+
+  .product-card {
+    display: block;
+    width: 90%;
+    margin: 15px auto;
+  }
+}
