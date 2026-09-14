@@ -1,0 +1,50 @@
+/* =========================================================
+   SHOP PAGE
+   ========================================================= */
+
+.shop-hero {
+  padding-top: calc(var(--header-h) + var(--sp-10));
+  padding-bottom: var(--sp-10);
+  background: var(--c-ivory-2);
+}
+.shop-hero__title { font-size: var(--fs-display-md); margin-top: var(--sp-3); }
+.shop-hero__desc { color: var(--c-text-muted); max-width: 60ch; margin-top: var(--sp-3); font-weight: var(--fw-light); }
+
+.shop-layout { display: grid; grid-template-columns: 260px 1fr; gap: var(--sp-10); align-items: flex-start; }
+@media (max-width: 960px) { .shop-layout { grid-template-columns: 1fr; } }
+
+.shop-filters { position: sticky; top: calc(var(--header-h) + var(--sp-6)); display: flex; flex-direction: column; gap: var(--sp-8); }
+@media (max-width: 960px) { .shop-filters--desktop { display: none; } }
+
+.filter-group__title {
+  font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: var(--ls-wide); text-transform: uppercase;
+  margin-bottom: var(--sp-3); display: flex; align-items: center; justify-content: space-between;
+}
+.filter-group__list { display: flex; flex-direction: column; }
+
+.price-range { display: flex; flex-direction: column; gap: var(--sp-3); }
+.price-range input[type="range"] { width: 100%; accent-color: var(--c-espresso); }
+.price-range__values { display: flex; justify-content: space-between; font-size: var(--fs-xs); color: var(--c-text-muted); }
+
+.shop-toolbar {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4);
+  padding-bottom: var(--sp-6); margin-bottom: var(--sp-6);
+  border-bottom: 1px solid var(--c-line);
+  flex-wrap: wrap;
+}
+.shop-toolbar__count { color: var(--c-text-muted); font-size: var(--fs-sm); }
+.shop-toolbar__right { display: flex; align-items: center; gap: var(--sp-3); margin-left: auto; }
+.shop-toolbar__sort { width: auto; min-width: 190px; }
+.mobile-filter-btn { display: none; }
+@media (max-width: 960px) { .mobile-filter-btn { display: inline-flex; } }
+
+.active-filter-chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-bottom: var(--sp-6); }
+.active-filter-chip {
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  background: var(--c-champagne); color: var(--c-espresso);
+  padding: 6px 10px 6px 14px; border-radius: var(--r-full); font-size: var(--fs-xs);
+}
+.active-filter-chip button { display: flex; }
+.active-filter-chip svg { width: 12px; height: 12px; }
+
+.shop-empty-cta { margin-top: var(--sp-4); }

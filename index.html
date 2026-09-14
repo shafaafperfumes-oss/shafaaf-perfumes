@@ -3,636 +3,336 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shafaaf Perfumes - Premium International Fragrances</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <title>Shafaaf Perfumes — Premium International Fragrances</title>
+  <meta name="description" content="Shafaaf Perfumes: premium, internationally inspired perfumes and attars. Discover Oud, Floral, Musk and Gourmand fragrances crafted for long-lasting elegance.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/png" href="images/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/pages/home.css">
 </head>
- <body>
- <nav>
-    <a href="#home">Home</a>
-    <a href="#products">Products</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-    <a href="#" id="cart-link">Cart (<span id="cart-count">0</span>)</a>
-  </nav>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
 
-  <div id="cart-panel">
-    <div id="cart-panel-header">
-      <h3>Your Cart</h3>
-      <span id="cart-close">&times;</span>
+  <!-- ========== HEADER ========== -->
+  <header class="site-header is-transparent" data-transparent="true" id="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">SHAFAAF <span>PERFUMES</span></a>
+      <nav class="nav-primary" aria-label="Primary">
+        <a href="index.html" class="nav-link is-active">Home</a>
+        <a href="shop.html" class="nav-link">Shop</a>
+        <a href="index.html#collections" class="nav-link">Collections</a>
+        <a href="shop.html?filter=bestseller" class="nav-link">Best Sellers</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </nav>
+      <div class="nav-utility">
+        <button type="button" class="icon-btn" data-search-toggle aria-label="Search"><span data-icon="search"></span></button>
+        <button type="button" class="icon-btn" data-account-toggle aria-label="Account"><span data-icon="user"></span></button>
+        <a href="wishlist.html" class="icon-btn" aria-label="Wishlist"><span data-icon="heart"></span><span class="icon-btn__badge" data-wishlist-count data-empty="true">0</span></a>
+        <button type="button" class="icon-btn" data-cart-toggle aria-label="Cart"><span data-icon="bag"></span><span class="icon-btn__badge" data-cart-count data-empty="true">0</span></button>
+        <button type="button" class="icon-btn nav-toggle" data-mobile-menu-toggle aria-label="Open menu" aria-expanded="false"><span class="nav-toggle__bars"><span></span><span></span><span></span></span></button>
+      </div>
     </div>
-    <div id="cart-items"></div>
-    <div id="cart-total"></div>
-        <button id="checkout-btn">Checkout on WhatsApp</button>
-  </div>
-  
- <section class="hero" id="home">
-    <h1>Shafaaf Perfumes</h1>
-    <p>Discover premium, international fragrances crafted for you.</p>
-       <a href="#products"><button>Shop Now</button></a>
-  </section>
-  <section class="products" id="products">
-    <h2>Our Bestsellers</h2>
+  </header>
 
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Shanaya Gold</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p class="price">599 / 899 Rupees</p>
-      <p class="accords">Vanilla, Sweet, Tuberose, Cinnamon, Warm Spicy, Citrus, Powdery</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
+  <main id="main">
+    <!-- ========== HERO ========== -->
+    <section class="hero">
+      <div class="hero__glow" aria-hidden="true"></div>
+      <div class="hero__bottle" aria-hidden="true" id="hero-bottle"></div>
+      <div class="container">
+        <div class="hero__inner">
+          <p class="hero__eyebrow">The 2026 Fragrance Edit</p>
+          <h1 class="hero__title">Wear a scent<br>that feels <em>unmistakably</em> yours.</h1>
+          <p class="hero__sub">Fourteen fragrances, each crafted in Perfume and Attar form — long-lasting, internationally inspired, and priced with honesty.</p>
+          <div class="hero__ctas">
+            <a href="shop.html" class="btn btn--gold">Discover the Collection</a>
+            <a href="shop.html?filter=bestseller" class="btn btn--outline-light">Explore Best Sellers</a>
+          </div>
+        </div>
+      </div>
+      <div class="hero__scroll"><span></span>Scroll</div>
+    </section>
 
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Shanaya Gold</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p class="price">349 / 699 Rupees</p>
-      <p class="accords">Vanilla, Sweet, Tuberose, Cinnamon, Warm Spicy, Citrus, Powdery</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
+    <!-- ========== FEATURED COLLECTIONS ========== -->
+    <section class="section" id="collections">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Shop by Family</span>
+            <h2 class="section-title">Featured Collections</h2>
+          </div>
+          <a href="shop.html" class="link-underline">View All Fragrances</a>
+        </div>
+        <div class="collection-grid" id="collection-grid"></div>
+      </div>
+    </section>
 
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Khamrah Spl</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p class="price">599 / 899 Rupees</p>
-      <p class="accords">Sweet, Warm Spicy, Vanilla, Amber, Cinnamon, Woody, Fresh Spicy, Fruity</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
+    <!-- ========== BEST SELLERS ========== -->
+    <section class="section" style="background:var(--c-ivory-2)">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Loved By Our Customers</span>
+            <h2 class="section-title">Best Sellers</h2>
+          </div>
+          <a href="shop.html?filter=bestseller" class="link-underline">View All</a>
+        </div>
+        <div class="grid-products" id="bestsellers-grid"></div>
+      </div>
+    </section>
 
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Khamrah Spl</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p class="price">349 / 699 Rupees</p>
-      <p class="accords">Sweet, Warm Spicy, Vanilla, Amber, Cinnamon, Woody, Fresh Spicy, Fruity</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
+    <!-- ========== BRAND STORY ========== -->
+    <section class="section">
+      <div class="container">
+        <div class="story-split">
+          <div class="story-split__media" id="story-media"></div>
+          <div class="story-split__text">
+            <span class="eyebrow">Our Story</span>
+            <h2 class="section-title">Crafted for the modern fragrance lover</h2>
+            <p>Shafaaf Perfumes was founded on a simple idea: premium, long-lasting, internationally inspired fragrance shouldn't require an international price tag. Every fragrance is offered in both Perfume and concentrated Attar form, so you can choose the strength and ritual that suits you.</p>
+            <p>Every bottle is crafted with care, tested for longevity, and shipped with the kind of attention you'd expect from a fragrance house many times our size.</p>
+            <div class="story-stats">
+              <div>
+                <div class="story-stat__num">14</div>
+                <div class="story-stat__label">Fragrances</div>
+              </div>
+              <div>
+                <div class="story-stat__num">2</div>
+                <div class="story-stat__label">Formats Each</div>
+              </div>
+              <div>
+                <div class="story-stat__num">7</div>
+                <div class="story-stat__label">Fragrance Families</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Khamra Qahwa</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p class="price">599 / 899 Rupees</p>
-      <p class="accords">Warm Spicy, Sweet, Vanilla, Coffee, Amber, Powdery</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
+    <!-- ========== FRAGRANCE DISCOVERY ========== -->
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="discovery-band">
+          <div>
+            <span class="eyebrow" style="color:var(--c-gold-soft)">Not Sure Where to Start?</span>
+            <h2 class="discovery-band__title">Find Your Fragrance</h2>
+            <p class="discovery-band__text">Answer five quick questions about mood, occasion, and the notes you're drawn to — we'll match you with fragrances from our collection.</p>
+            <div class="discovery-band__steps">
+              <span class="discovery-band__step"><span class="discovery-band__step-num">1</span> Mood</span>
+              <span class="discovery-band__step"><span class="discovery-band__step-num">2</span> Occasion</span>
+              <span class="discovery-band__step"><span class="discovery-band__step-num">3</span> Notes</span>
+              <span class="discovery-band__step"><span class="discovery-band__step-num">4</span> Intensity</span>
+            </div>
+          </div>
+          <a href="fragrance-finder.html" class="btn btn--gold btn--lg">Start the Quiz</a>
+        </div>
+      </div>
+    </section>
 
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Khamra Qahwa</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p class="price">349 / 699 Rupees</p>
-      <p class="accords">Warm Spicy, Sweet, Vanilla, Coffee, Amber, Powdery</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
+    <!-- ========== FEATURED PERFUME SPOTLIGHT ========== -->
+    <section class="section">
+      <div class="container">
+        <div class="spotlight" id="spotlight"></div>
+      </div>
+    </section>
 
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Yemberzal</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p class="price">599 / 899 Rupees</p>
-      <p class="accords">Rose, Woody, Fruity, Powdery, Floral, Musky, Warm Spicy, Amber, Metallic, Fresh Spicy, Citrus, Animalic, Fresh</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
+    <!-- ========== WHY SHAFAAF ========== -->
+    <section class="section" style="background:var(--c-ivory-2)">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">The Shafaaf Standard</span>
+            <h2 class="section-title">Why Shafaaf Perfumes</h2>
+          </div>
+        </div>
+        <div class="why-grid">
+          <div class="why-card">
+            <div class="why-card__icon"><span data-icon="sparkle"></span></div>
+            <h3 class="why-card__title">Long-Lasting Quality</h3>
+            <p class="why-card__text">Formulated for genuine longevity and projection — not just an appealing first spray.</p>
+          </div>
+          <div class="why-card">
+            <div class="why-card__icon"><span data-icon="leaf"></span></div>
+            <h3 class="why-card__title">Internationally Inspired</h3>
+            <p class="why-card__text">Notes and accords drawn from global fragrance traditions, reimagined for modern tastes.</p>
+          </div>
+          <div class="why-card">
+            <div class="why-card__icon"><span data-icon="shield"></span></div>
+            <h3 class="why-card__title">Honest Pricing</h3>
+            <p class="why-card__text">Premium quality without the premium markup. Every price is transparent, always.</p>
+          </div>
+          <div class="why-card">
+            <div class="why-card__icon"><span data-icon="truck"></span></div>
+            <h3 class="why-card__title">Direct &amp; Personal</h3>
+            <p class="why-card__text">Order and confirm directly on WhatsApp — real conversations, not a call center.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Yemberzal</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p class="price">349 / 699 Rupees</p>
-      <p class="accords">Rose, Woody, Fruity, Powdery, Floral, Musky, Warm Spicy, Amber, Metallic, Fresh Spicy, Citrus, Animalic, Fresh</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
+    <!-- ========== REVIEWS ========== -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Customer Love</span>
+            <h2 class="section-title">What People Are Saying</h2>
+          </div>
+        </div>
+        <div class="reviews-grid" id="reviews-grid"></div>
+      </div>
+    </section>
 
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Musk Rijali Super</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p class="price">599 / 899 Rupees</p>
-      <p class="accords">Musky, Sweet, Powdery</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
+    <!-- ========== EDITORIAL ========== -->
+    <section class="editorial-band">
+      <blockquote>“Fragrance is the most intimate thing you wear — it should feel considered, not generic.”</blockquote>
+      <cite>The Shafaaf Philosophy</cite>
+    </section>
 
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Musk Rijali Super</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p class="price">349 / 699 Rupees</p>
-      <p class="accords">Musky, Sweet, Powdery</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
+    <!-- ========== NEWSLETTER ========== -->
+    <section class="newsletter-band">
+      <div class="container container--narrow">
+        <span class="eyebrow" style="color:var(--c-gold-soft)">Stay In The Know</span>
+        <h2>Join the Shafaaf Circle</h2>
+        <p>New fragrance launches, early access, and fragrance tips — straight to your inbox.</p>
+        <form data-newsletter-form>
+          <input type="email" placeholder="Enter your email" required aria-label="Email address">
+          <button type="submit" class="btn btn--gold">Subscribe</button>
+        </form>
+      </div>
+    </section>
+  </main>
 
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Purple Oud</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p class="price">449 / 649 Rupees</p>
-      <p class="accords">Fruity, Sweet, Rose, Floral</p>
-      <button class="add-to-cart">Add to Cart</button>
+  <!-- ========== FOOTER ========== -->
+  <footer class="site-footer">
+    <div class="container footer-top">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">SHAFAAF <span>PERFUMES</span></a>
+          <p>Premium, internationally inspired fragrances crafted with quality ingredients and honest pricing.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram"><span data-icon="instagram"></span></a>
+            <a href="#" aria-label="Facebook"><span data-icon="facebook"></span></a>
+            <a href="https://wa.me/919796906804" target="_blank" rel="noopener" aria-label="WhatsApp"><span data-icon="whatsapp"></span></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <ul>
+            <li><a href="shop.html">All Fragrances</a></li>
+            <li><a href="shop.html?filter=bestseller">Best Sellers</a></li>
+            <li><a href="shop.html?filter=new">New Arrivals</a></li>
+            <li><a href="fragrance-finder.html">Fragrance Finder</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="wishlist.html">Wishlist</a></li>
+            <li><a href="cart.html">Cart</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Stay Connected</h4>
+          <p class="muted" style="font-size:var(--fs-sm)">Get early access to new fragrance launches.</p>
+          <form class="footer-newsletter" data-newsletter-form>
+            <input type="email" placeholder="Your email" required aria-label="Email address">
+            <button type="submit" aria-label="Subscribe"><span data-icon="arrowRight"></span></button>
+          </form>
+        </div>
+      </div>
     </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Purple Oud</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p class="price">249 / 499 Rupees</p>
-      <p class="accords">Fruity, Sweet, Rose, Floral</p>
-      <button class="add-to-cart">Add to Cart</button>
+    <div class="container footer-bottom">
+      <span>&copy; 2026 Shafaaf Perfumes. All rights reserved.</span>
+      <span>shafaafperfumes@gmail.com</span>
     </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Dubai Oud</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p class="price">599 / 899 Rupees</p>
-      <p class="accords">Woody, Warm Spicy, Amber, Powdery, Patchouli</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Dubai Oud</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p class="price">349 / 699 Rupees</p>
-      <p class="accords">Woody, Warm Spicy, Amber, Powdery, Patchouli</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Oud Magestic</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p class="price">599 / 899 Rupees</p>
-      <p class="accords">Warm Spicy, Woody, Leather, Sweet, Musky, Coffee, Amber, Rose, Patchouli, Oud</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Oud Magestic</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p class="price">349 / 699 Rupees</p>
-      <p class="accords">Warm Spicy, Woody, Leather, Sweet, Musky, Coffee, Amber, Rose, Patchouli, Oud</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Summer Oud</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p class="price">599 / 899 Rupees</p>
-      <p class="accords">Floral, Citrus, Fresh, Rose, Fruity, Woody</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Summer Oud</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p class="price">349 / 699 Rupees</p>
-      <p class="accords">Floral, Citrus, Fresh, Rose, Fruity, Woody</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Silver Scent</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p class="price">499 / 699 Rupees</p>
-      <p class="accords">Fruity, Sweet, Musky, Powdery, Fresh, Tropical</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Silver Scent</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p class="price">299 / 599 Rupees</p>
-      <p class="accords">Fruity, Sweet, Musky, Powdery, Fresh, Tropical</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Velvet Petal</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p class="price">599 / 899 Rupees</p>
-      <p class="accords">Vanilla, Woody, Fresh, Powdery, Sweet</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Velvet Petal</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p class="price">349 / 699 Rupees</p>
-      <p class="accords">Vanilla, Woody, Fresh, Powdery, Sweet</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Ameer Al Oud Gold</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p class="price">599 / 899 Rupees</p>
-      <p class="accords">Woody, Vanilla, Sweet, Oud, Powdery</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Ameer Al Oud Gold</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p class="price">349 / 699 Rupees</p>
-      <p class="accords">Woody, Vanilla, Sweet, Oud, Powdery</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>White Oud Spl</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p class="price">499 / 699 Rupees</p>
-      <p class="accords">Oud, Woody, Powdery, Musky, Warm Spicy</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>White Oud Spl</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p class="price">299 / 599 Rupees</p>
-      <p class="accords">Oud, Woody, Powdery, Musky, Warm Spicy</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Oud Kaaba</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p class="price">599 / 899 Rupees</p>
-      <p class="accords">Oud, Warm Spicy, Fresh Spicy, Patchouli, Woody, Musky, Lavender, Leathy, Earthy</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Oud Kaaba</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p class="price">349 / 699 Rupees</p>
-      <p class="accords">Oud, Warm Spicy, Fresh Spicy, Patchouli, Woody, Musky, Lavender, Leathy, Earthy</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-  </section>
-    <h2>Our Bestsellers</h2>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-          <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Oud Kaaba</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p>599 / 899 Rupees</p>
-      <p class="accords">Oud, Warm Spicy, Fresh Spicy, Patchouli, Woody, Musky, Lavender, Leathy, Earthy</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Oud Kaaba</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p>349 / 699 Rupees</p>
-      <p class="accords">Oud, Warm Spicy, Fresh Spicy, Patchouli, Woody, Musky, Lavender, Leathy, Earthy</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-      <h3>Shanaya Gold</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p>599 / 899 Rupees</p>
-      <p class="accords">Vanilla, Sweet, Tuberose, Cinnamon, Warm Spicy, Citrus, Powdery</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Shanaya Gold</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p>349 / 699 Rupees</p>
-      <p class="accords">Vanilla, Sweet, Tuberose, Cinnamon, Warm Spicy, Citrus, Powdery</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Khamrah Spl</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p>599 / 899 Rupees</p>
-      <p class="accords">Sweet, Warm Spicy, Vanilla, Amber, Cinnamon, Woody, Fresh Spicy, Fruity</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Khamrah Spl</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p>349 / 699 Rupees</p>
-      <p class="accords">Sweet, Warm Spicy, Vanilla, Amber, Cinnamon, Woody, Fresh Spicy, Fruity</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Khamra Qahwa</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p>599 / 899 Rupees</p>
-      <p class="accords">Warm Spicy, Sweet, Vanilla, Coffee, Amber, Powdery</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-          <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Yemberzal</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p>599 / 899 Rupees</p>
-      <p class="accords">Rose, Woody, Fruity, Powdery, Floral, Musky, Warm Spicy, Amber, Metallic, Fresh Spicy, Citrus, Animalic, Fresh</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Yemberzal</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p>349 / 699 Rupees</p>
-      <p class="accords">Rose, Woody, Fruity, Powdery, Floral, Musky, Warm Spicy, Amber, Metallic, Fresh Spicy, Citrus, Animalic, Fresh</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Musk Rijali Super</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p>599 / 899 Rupees</p>
-      <p class="accords">Musky, Sweet, Powdery</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Musk Rijali Super</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p>349 / 699 Rupees</p>
-      <p class="accords">Musky, Sweet, Powdery</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Purple Oud</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p>449 / 649 Rupees</p>
-      <p class="accords">Fruity, Sweet, Rose, Floral</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Purple Oud</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p>249 / 499 Rupees</p>
-      <p class="accords">Fruity, Sweet, Rose, Floral</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Dubai Oud</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p>599 / 899 Rupees</p>
-      <p class="accords">Woody, Warm Spicy, Amber, Powdery, Patchouli</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Dubai Oud</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p>349 / 699 Rupees</p>
-      <p class="accords">Woody, Warm Spicy, Amber, Powdery, Patchouli</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-          <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Summer Oud</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p>599 / 899 Rupees</p>
-      <p class="accords">Floral, Citrus, Fresh, Rose, Fruity, Woody</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Summer Oud</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p>349 / 699 Rupees</p>
-      <p class="accords">Floral, Citrus, Fresh, Rose, Fruity, Woody</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Silver Scent</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p>499 / 699 Rupees</p>
-      <p class="accords">Fruity, Sweet, Musky, Powdery, Fresh, Tropical</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Silver Scent</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p>299 / 599 Rupees</p>
-      <p class="accords">Fruity, Sweet, Musky, Powdery, Fresh, Tropical</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Velvet Petal</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p>599 / 899 Rupees</p>
-      <p class="accords">Vanilla, Woody, Fresh, Powdery, Sweet</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Velvet Petal</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p>349 / 699 Rupees</p>
-      <p class="accords">Vanilla, Woody, Fresh, Powdery, Sweet</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Ameer Al Oud Gold</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p>599 / 899 Rupees</p>
-      <p class="accords">Woody, Vanilla, Sweet, Oud, Powdery</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Ameer Al Oud Gold</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p>349 / 699 Rupees</p>
-      <p class="accords">Woody, Vanilla, Sweet, Oud, Powdery</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>White Oud Spl</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p>499 / 699 Rupees</p>
-      <p class="accords">Oud, Woody, Powdery, Musky, Warm Spicy</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>White Oud Spl</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p>299 / 599 Rupees</p>
-      <p class="accords">Oud, Woody, Powdery, Musky, Warm Spicy</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-      <h3>Oud Magestic</h3>
-      <p class="version-tag">Perfume</p>
-      <p>30ml / 50ml</p>
-      <p>599 / 899 Rupees</p>
-      <p class="accords">Warm Spicy, Woody, Leather, Sweet, Musky, Coffee, Amber, Rose, Patchouli, Oud</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Oud Magestic</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p>349 / 699 Rupees</p>
-      <p class="accords">Warm Spicy, Woody, Leather, Sweet, Musky, Coffee, Amber, Rose, Patchouli, Oud</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-      <h3>Khamra Qahwa</h3>
-      <p class="version-tag">Attar</p>
-      <p>6ml / 12ml</p>
-      <p>349 / 699 Rupees</p>
-      <p class="accords">Warm Spicy, Sweet, Vanilla, Coffee, Amber, Powdery</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-
-  </section>
-    <h2>Our Bestsellers</h2>
-        <div class="product-card">
-      <img src="images/amber-oud.jpg" class="product-image" alt="Amber Oud Perfume">
-      <h3>Amber Oud</h3>
-      <p>2999 Rupees</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Rose Mist</h3>
-      <p>2499 Rupees</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-    <div class="product-card">
-      <div class="product-image"></div>
-      <h3>Musk Noir</h3>
-      <p>3299 Rupees</p>
-      <button class="add-to-cart">Add to Cart</button>
-    </div>
-  </section>
-<section class="about" id="about">
-    <h2>About Shafaaf Perfumes</h2>
-    <p>Shafaaf Perfumes is a premium perfume brand offering high quality, long-lasting, and internationally inspired fragrances. Every bottle is crafted with care to bring you a luxury experience at an honest price.</p>
-  </section>
-
- <section class="contact" id="contact">
-    <h2>Contact Us</h2>
-    <p>Have a question about our fragrances? Reach out to us anytime.</p>
-    <p>Email: shafaafperfumes@gmail.com</p>
-    <p>Phone: +92 300 0000000</p>
-  </section>
-    <footer>
-    <p>&copy; 2026 Shafaaf Perfumes. All rights reserved.</p>
-    <p>Email: shafaafperfumes@gmail.com</p>
   </footer>
-    <script src="script.js"></script>
+
+  <!-- ========== OVERLAYS ========== -->
+  <div class="scrim" data-scrim></div>
+
+  <aside class="drawer" id="cart-drawer" aria-hidden="true" aria-label="Shopping cart">
+    <div class="drawer__header">
+      <h3 class="drawer__title">Your Bag</h3>
+      <button type="button" class="close-btn" data-close aria-label="Close cart"><span data-icon="close"></span></button>
+    </div>
+    <div class="drawer__body" id="cart-drawer-body"></div>
+    <div class="drawer__footer" id="cart-drawer-footer"></div>
+  </aside>
+
+  <aside class="drawer drawer--left" id="mobile-menu" aria-hidden="true" aria-label="Menu">
+    <div class="drawer__header">
+      <span class="logo" style="font-size:1.1rem">SHAFAAF</span>
+      <button type="button" class="close-btn" data-close aria-label="Close menu"><span data-icon="close"></span></button>
+    </div>
+    <div class="drawer__body">
+      <button type="button" class="mobile-menu__search" data-search-toggle style="width:100%"><span data-icon="search"></span> Search fragrances…</button>
+      <nav class="mobile-menu__nav">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop</a>
+        <a href="index.html#collections">Collections</a>
+        <a href="shop.html?filter=bestseller">Best Sellers</a>
+        <a href="fragrance-finder.html">Fragrance Finder</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <div class="mobile-menu__utility">
+        <a href="wishlist.html"><span data-icon="heart"></span> Wishlist</a>
+        <a href="cart.html"><span data-icon="bag"></span> Cart</a>
+      </div>
+    </div>
+  </aside>
+
+  <div class="search-overlay" id="search-overlay" aria-hidden="true">
+    <div class="search-overlay__top">
+      <div class="container search-overlay__bar">
+        <span data-icon="search"></span>
+        <input type="text" id="search-overlay-input" class="search-overlay__input" placeholder="Search fragrances, notes, families…" autocomplete="off">
+        <button type="button" class="close-btn" data-close aria-label="Close search"><span data-icon="close"></span></button>
+      </div>
+    </div>
+    <div class="container" style="padding-block:32px 80px">
+      <div id="search-overlay-chips"></div>
+      <div id="search-overlay-results"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="quick-view-modal" aria-hidden="true">
+    <div class="modal__panel">
+      <button type="button" class="close-btn" data-close aria-label="Close" style="position:absolute;top:14px;right:14px;z-index:2;background:rgba(255,253,251,0.85)"><span data-icon="close"></span></button>
+      <div id="quick-view-body"></div>
+    </div>
+  </div>
+
+  <div class="toast-region" id="toast-region" aria-live="polite"></div>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script src="js/data/products.js"></script>
+  <script src="js/data/reviews.js"></script>
+  <script src="js/lib/format.js"></script>
+  <script src="js/lib/storage.js"></script>
+  <script src="js/lib/icons.js"></script>
+  <script src="js/lib/overlay-manager.js"></script>
+  <script src="js/lib/cart.js"></script>
+  <script src="js/lib/wishlist.js"></script>
+  <script src="js/lib/whatsapp-checkout.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/components/placeholder-art.js"></script>
+  <script src="js/components/product-card.js"></script>
+  <script src="js/components/header.js"></script>
+  <script src="js/components/cart-drawer.js"></script>
+  <script src="js/components/search-overlay.js"></script>
+  <script src="js/components/quick-view.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/pages/home.js"></script>
 </body>
 </html>

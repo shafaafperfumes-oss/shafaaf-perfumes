@@ -1,0 +1,170 @@
+/* =========================================================
+   BASE — reset, element defaults, accessibility helpers
+   ========================================================= */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-normal);
+  color: var(--c-text);
+  background: var(--c-ivory);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, picture, video, canvas, svg { display: block; max-width: 100%; }
+img { height: auto; }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-tight);
+  color: var(--c-ink);
+}
+
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+button:disabled { cursor: not-allowed; opacity: 0.5; }
+
+input, select, textarea { background: none; }
+
+table { border-collapse: collapse; }
+
+/* Focus visibility — accessible, never removed, only restyled */
+:focus-visible {
+  outline: 2px solid var(--c-gold);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+:focus:not(:focus-visible) { outline: none; }
+
+::selection {
+  background: var(--c-espresso);
+  color: var(--c-text-on-dark);
+}
+
+/* Scrollbar (webkit) — subtle, on-brand */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--c-ivory-2); }
+::-webkit-scrollbar-thumb {
+  background: var(--c-line-strong);
+  border-radius: var(--r-full);
+  border: 2px solid var(--c-ivory-2);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--c-gold-soft); }
+
+/* Screen-reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  top: -60px;
+  left: var(--sp-4);
+  z-index: var(--z-tooltip);
+  background: var(--c-espresso);
+  color: var(--c-text-on-dark);
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--r-md);
+  transition: top var(--dur-fast) var(--ease-out);
+  font-size: var(--fs-sm);
+  letter-spacing: var(--ls-wide);
+}
+.skip-link:focus { top: var(--sp-4); }
+
+/* Layout primitives */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.container--narrow { max-width: var(--container-narrow); }
+
+.section { padding-block: var(--sp-24); }
+@media (max-width: 767px) { .section { padding-block: var(--sp-16); } }
+
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-6);
+  margin-bottom: var(--sp-12);
+}
+@media (max-width: 640px) {
+  .section-head { flex-direction: column; align-items: flex-start; gap: var(--sp-3); }
+}
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-widest);
+  text-transform: uppercase;
+  color: var(--c-gold);
+  margin-bottom: var(--sp-3);
+}
+
+.section-title {
+  font-size: var(--fs-display-md);
+  letter-spacing: var(--ls-tight);
+}
+
+.section-sub {
+  color: var(--c-text-muted);
+  font-size: var(--fs-md);
+  max-width: 46ch;
+  margin-top: var(--sp-3);
+  font-weight: var(--fw-light);
+}
+
+.visually-hidden-mobile { display: inline; }
+@media (max-width: 600px) { .visually-hidden-mobile { display: none; } }

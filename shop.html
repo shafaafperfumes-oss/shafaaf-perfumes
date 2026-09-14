@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop All Fragrances — Shafaaf Perfumes</title>
+  <meta name="description" content="Browse all Shafaaf Perfumes fragrances — filter by fragrance family, price, size and more. Perfume and Attar available for every scent.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/pages/shop.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header is-solid" data-transparent="false" id="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">SHAFAAF <span>PERFUMES</span></a>
+      <nav class="nav-primary" aria-label="Primary">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="shop.html" class="nav-link is-active">Shop</a>
+        <a href="index.html#collections" class="nav-link">Collections</a>
+        <a href="shop.html?filter=bestseller" class="nav-link">Best Sellers</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </nav>
+      <div class="nav-utility">
+        <button type="button" class="icon-btn" data-search-toggle aria-label="Search"><span data-icon="search"></span></button>
+        <button type="button" class="icon-btn" data-account-toggle aria-label="Account"><span data-icon="user"></span></button>
+        <a href="wishlist.html" class="icon-btn" aria-label="Wishlist"><span data-icon="heart"></span><span class="icon-btn__badge" data-wishlist-count data-empty="true">0</span></a>
+        <button type="button" class="icon-btn" data-cart-toggle aria-label="Cart"><span data-icon="bag"></span><span class="icon-btn__badge" data-cart-count data-empty="true">0</span></button>
+        <button type="button" class="icon-btn nav-toggle" data-mobile-menu-toggle aria-label="Open menu" aria-expanded="false"><span class="nav-toggle__bars"><span></span><span></span><span></span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="shop-hero">
+      <div class="container">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <a href="index.html">Home</a><span class="breadcrumbs__sep">/</span><span aria-current="page">Shop</span>
+        </nav>
+        <h1 class="shop-hero__title" id="shop-title">All Fragrances</h1>
+        <p class="shop-hero__desc" id="shop-desc">Fourteen fragrances in Perfume and Attar form. Filter by family, price and size to find your signature scent.</p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:var(--sp-12)">
+      <div class="container">
+        <div class="shop-layout">
+          <aside class="shop-filters shop-filters--desktop" id="filters-desktop" aria-label="Filters"></aside>
+
+          <div class="shop-main">
+            <div id="active-filter-chips" class="active-filter-chips"></div>
+            <div class="shop-toolbar">
+              <button type="button" class="btn btn--outline btn--sm mobile-filter-btn" data-filters-toggle>Filters</button>
+              <span class="shop-toolbar__count" id="shop-result-count"></span>
+              <div class="shop-toolbar__right">
+                <select class="select shop-toolbar__sort" id="shop-sort" aria-label="Sort by">
+                  <option value="featured">Sort: Featured</option>
+                  <option value="price-asc">Price: Low to High</option>
+                  <option value="price-desc">Price: High to Low</option>
+                  <option value="name-asc">Name: A–Z</option>
+                  <option value="newest">Newest</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid-products" id="shop-grid"></div>
+            <div class="pagination" id="shop-pagination" style="margin-top:var(--sp-12)"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-top">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">SHAFAAF <span>PERFUMES</span></a>
+          <p>Premium, internationally inspired fragrances crafted with quality ingredients and honest pricing.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram"><span data-icon="instagram"></span></a>
+            <a href="#" aria-label="Facebook"><span data-icon="facebook"></span></a>
+            <a href="https://wa.me/919796906804" target="_blank" rel="noopener" aria-label="WhatsApp"><span data-icon="whatsapp"></span></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <ul>
+            <li><a href="shop.html">All Fragrances</a></li>
+            <li><a href="shop.html?filter=bestseller">Best Sellers</a></li>
+            <li><a href="shop.html?filter=new">New Arrivals</a></li>
+            <li><a href="fragrance-finder.html">Fragrance Finder</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="wishlist.html">Wishlist</a></li>
+            <li><a href="cart.html">Cart</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Stay Connected</h4>
+          <p class="muted" style="font-size:var(--fs-sm)">Get early access to new fragrance launches.</p>
+          <form class="footer-newsletter" data-newsletter-form>
+            <input type="email" placeholder="Your email" required aria-label="Email address">
+            <button type="submit" aria-label="Subscribe"><span data-icon="arrowRight"></span></button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <span>&copy; 2026 Shafaaf Perfumes. All rights reserved.</span>
+      <span>shafaafperfumes@gmail.com</span>
+    </div>
+  </footer>
+
+  <div class="scrim" data-scrim></div>
+
+  <aside class="drawer" id="cart-drawer" aria-hidden="true" aria-label="Shopping cart">
+    <div class="drawer__header">
+      <h3 class="drawer__title">Your Bag</h3>
+      <button type="button" class="close-btn" data-close aria-label="Close cart"><span data-icon="close"></span></button>
+    </div>
+    <div class="drawer__body" id="cart-drawer-body"></div>
+    <div class="drawer__footer" id="cart-drawer-footer"></div>
+  </aside>
+
+  <aside class="drawer drawer--left" id="mobile-menu" aria-hidden="true" aria-label="Menu">
+    <div class="drawer__header">
+      <span class="logo" style="font-size:1.1rem">SHAFAAF</span>
+      <button type="button" class="close-btn" data-close aria-label="Close menu"><span data-icon="close"></span></button>
+    </div>
+    <div class="drawer__body">
+      <button type="button" class="mobile-menu__search" data-search-toggle style="width:100%"><span data-icon="search"></span> Search fragrances…</button>
+      <nav class="mobile-menu__nav">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop</a>
+        <a href="index.html#collections">Collections</a>
+        <a href="shop.html?filter=bestseller">Best Sellers</a>
+        <a href="fragrance-finder.html">Fragrance Finder</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <div class="mobile-menu__utility">
+        <a href="wishlist.html"><span data-icon="heart"></span> Wishlist</a>
+        <a href="cart.html"><span data-icon="bag"></span> Cart</a>
+      </div>
+    </div>
+  </aside>
+
+  <aside class="drawer" id="filter-drawer" aria-hidden="true" aria-label="Filters">
+    <div class="drawer__header">
+      <h3 class="drawer__title">Filters</h3>
+      <button type="button" class="close-btn" data-close aria-label="Close filters"><span data-icon="close"></span></button>
+    </div>
+    <div class="drawer__body" id="filters-mobile"></div>
+    <div class="drawer__footer">
+      <button type="button" class="btn btn--primary btn--block" data-filters-apply>Show Results</button>
+      <button type="button" class="btn btn--ghost btn--block" data-filters-clear style="margin-top:8px">Clear All</button>
+    </div>
+  </aside>
+
+  <div class="search-overlay" id="search-overlay" aria-hidden="true">
+    <div class="search-overlay__top">
+      <div class="container search-overlay__bar">
+        <span data-icon="search"></span>
+        <input type="text" id="search-overlay-input" class="search-overlay__input" placeholder="Search fragrances, notes, families…" autocomplete="off">
+        <button type="button" class="close-btn" data-close aria-label="Close search"><span data-icon="close"></span></button>
+      </div>
+    </div>
+    <div class="container" style="padding-block:32px 80px">
+      <div id="search-overlay-chips"></div>
+      <div id="search-overlay-results"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="quick-view-modal" aria-hidden="true">
+    <div class="modal__panel">
+      <button type="button" class="close-btn" data-close aria-label="Close" style="position:absolute;top:14px;right:14px;z-index:2;background:rgba(255,253,251,0.85)"><span data-icon="close"></span></button>
+      <div id="quick-view-body"></div>
+    </div>
+  </div>
+
+  <div class="toast-region" id="toast-region" aria-live="polite"></div>
+
+  <script src="js/data/products.js"></script>
+  <script src="js/data/reviews.js"></script>
+  <script src="js/lib/format.js"></script>
+  <script src="js/lib/storage.js"></script>
+  <script src="js/lib/icons.js"></script>
+  <script src="js/lib/overlay-manager.js"></script>
+  <script src="js/lib/cart.js"></script>
+  <script src="js/lib/wishlist.js"></script>
+  <script src="js/lib/whatsapp-checkout.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/components/placeholder-art.js"></script>
+  <script src="js/components/product-card.js"></script>
+  <script src="js/components/header.js"></script>
+  <script src="js/components/cart-drawer.js"></script>
+  <script src="js/components/search-overlay.js"></script>
+  <script src="js/components/quick-view.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/pages/shop.js"></script>
+</body>
+</html>

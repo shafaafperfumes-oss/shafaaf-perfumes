@@ -1,0 +1,44 @@
+/* =========================================================
+   FRAGRANCE FINDER (QUIZ)
+   ========================================================= */
+
+.finder-page { padding-top: calc(var(--header-h) + var(--sp-10)); padding-bottom: var(--sp-20); min-height: 80vh; }
+.finder-shell { max-width: 720px; margin: 0 auto; }
+
+.finder-progress { display: flex; gap: var(--sp-2); margin-bottom: var(--sp-10); }
+.finder-progress__seg { flex: 1; height: 3px; border-radius: var(--r-full); background: var(--c-line); overflow: hidden; }
+.finder-progress__seg span { display: block; height: 100%; width: 0%; background: var(--c-gold); transition: width var(--dur-normal) var(--ease-out); }
+.finder-progress__seg.is-done span { width: 100%; }
+.finder-progress__seg.is-current span { width: 50%; }
+
+.finder-step__eyebrow { color: var(--c-gold); font-size: var(--fs-xs); letter-spacing: var(--ls-widest); text-transform: uppercase; }
+.finder-step__question { font-size: var(--fs-display-sm); margin-top: var(--sp-3); }
+.finder-step__hint { color: var(--c-text-muted); margin-top: var(--sp-3); font-weight: var(--fw-light); }
+
+.finder-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-4); margin-top: var(--sp-10); }
+@media (max-width: 560px) { .finder-options { grid-template-columns: 1fr; } }
+.finder-options--chips { display: flex; flex-wrap: wrap; gap: var(--sp-3); grid-template-columns: none; }
+
+.finder-option {
+  text-align: left; padding: var(--sp-6); border: 1.5px solid var(--c-line-strong); border-radius: var(--r-lg);
+  transition: border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  min-height: 44px;
+}
+.finder-option:hover { border-color: var(--c-gold); transform: translateY(-2px); }
+.finder-option.is-selected { border-color: var(--c-espresso); background: var(--c-champagne); }
+.finder-option__title { font-weight: var(--fw-medium); font-family: var(--font-display); font-size: var(--fs-lg); }
+.finder-option__desc { font-size: var(--fs-xs); color: var(--c-text-faint); margin-top: 4px; }
+
+.finder-option--chip {
+  padding: var(--sp-3) var(--sp-5); border-radius: var(--r-full); min-height: 44px;
+  border: 1.5px solid var(--c-line-strong); font-size: var(--fs-sm);
+}
+.finder-option--chip.is-selected { background: var(--c-espresso); border-color: var(--c-espresso); color: var(--c-text-on-dark); }
+
+.finder-nav { display: flex; align-items: center; justify-content: space-between; margin-top: var(--sp-12); }
+
+/* ---------- Results ---------- */
+.finder-results__intro { text-align: center; }
+.finder-results__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-6); margin-top: var(--sp-10); }
+@media (max-width: 760px) { .finder-results__grid { grid-template-columns: 1fr; } }
+.finder-results__match { font-size: var(--fs-2xs); letter-spacing: var(--ls-wide); text-transform: uppercase; color: var(--c-gold); font-weight: var(--fw-semibold); }
