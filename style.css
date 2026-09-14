@@ -2,6 +2,256 @@ html {
   scroll-behavior: smooth;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  background-color: #fffdfb;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  font-family: 'Playfair Display', serif;
+}
+
+p {
+  margin: 0;
+}
+
+/* Navigation Bar */
+nav {
+  background-color: #3d2a1f;
+  padding: 18px 20px;
+  text-align: center;
+}
+
+nav a {
+  color: #f5e9dd;
+  text-decoration: none;
+  margin: 0 18px;
+  font-size: 15px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: #d4af37;
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(135deg, #f5e9dd, #ffffff);
+  text-align: center;
+  padding: 120px 20px;
+}
+
+.hero h1 {
+  font-size: 56px;
+  color: #3d2a1f;
+  letter-spacing: 1px;
+}
+
+.hero p {
+  font-size: 19px;
+  margin-top: 18px;
+  color: #6b5b4d;
+  font-weight: 300;
+}
+
+.hero button {
+  margin-top: 30px;
+  padding: 14px 40px;
+  background-color: #3d2a1f;
+  color: #f5e9dd;
+  border: 1px solid #3d2a1f;
+  border-radius: 30px;
+  font-size: 15px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.hero button:hover {
+  background-color: #d4af37;
+  border-color: #d4af37;
+  color: #3d2a1f;
+}
+
+/* Products Section */
+.products {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.products h2 {
+  font-size: 36px;
+  margin-bottom: 50px;
+  color: #3d2a1f;
+}
+
+.product-card {
+  display: inline-block;
+  width: 250px;
+  margin: 15px;
+  padding: 25px;
+  background-color: #ffffff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  vertical-align: top;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.product-image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  background-color: #f2f2f2;
+  border-radius: 8px;
+  margin-bottom: 18px;
+}
+
+.product-card h3 {
+  font-size: 20px;
+  color: #3d2a1f;
+  margin-bottom: 6px;
+}
+
+.product-card p {
+  font-size: 14px;
+  color: #555;
+  margin: 4px 0;
+}
+
+.version-tag {
+  display: inline-block;
+  background-color: #f5e9dd;
+  color: #3d2a1f;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 12px;
+  margin: 8px 0;
+}
+
+.accords {
+  font-size: 12px;
+  color: #888;
+  margin: 10px 0;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.add-to-cart {
+  margin-top: 15px;
+  padding: 10px 26px;
+  background-color: #3d2a1f;
+  color: #f5e9dd;
+  border: none;
+  border-radius: 20px;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.add-to-cart:hover {
+  background-color: #d4af37;
+  color: #3d2a1f;
+}
+
+/* About Section */
+.about {
+  background-color: #fdf6ee;
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.about h2 {
+  font-size: 36px;
+  margin-bottom: 25px;
+  color: #3d2a1f;
+}
+
+.about p {
+  max-width: 700px;
+  margin: 0 auto;
+  font-size: 17px;
+  line-height: 1.8;
+  color: #555;
+  font-weight: 300;
+}
+
+/* Contact Section */
+.contact {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.contact h2 {
+  font-size: 36px;
+  margin-bottom: 25px;
+  color: #3d2a1f;
+}
+
+.contact p {
+  text-align: center;
+  font-size: 16px;
+  margin: 10px 0;
+  color: #555;
+}
+
+/* Footer */
+footer {
+  background-color: #2b2b2b;
+  color: #ccc;
+  text-align: center;
+  padding: 25px;
+}
+
+footer p {
+  margin: 5px 0;
+  font-size: 13px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 600px) {
+  nav a {
+    display: block;
+    margin: 10px 0;
+  }
+
+  .hero {
+    padding: 80px 20px;
+  }
+
+  .hero h1 {
+    font-size: 36px;
+  }
+
+  .product-card {
+    display: block;
+    width: 90%;
+    margin: 15px auto;
+  }
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -55,8 +305,8 @@ nav a:hover {
 .hero button {
   margin-top: 25px;
   padding: 12px 30px;
-  background-color: #6b4226;
-  color: white;
+  background-color: #834821;
+  color: rgb(201, 168, 168);
   border: none;
   border-radius: 25px;
   font-size: 16px;
@@ -96,6 +346,12 @@ nav a:hover {
   background-color: #eee;
   border-radius: 8px;
   margin-bottom: 15px;
+}
+.price {
+  font-size: 17px;
+  font-weight: 600;
+  color: #b8860b !important;
+  margin: 10px 0;
 }
 .version-tag {
   display: inline-block;
