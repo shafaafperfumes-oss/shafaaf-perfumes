@@ -55,3 +55,26 @@ function updateCart() {
     });
   });
 }
+const checkoutBtn = document.getElementById("checkout-btn");
+
+checkoutBtn.addEventListener("click", function () {
+  if (cart.length === 0) {
+    alert("Aapka cart khali hai!");
+    return;
+  }
+
+  let message = "Hello Shafaaf Perfumes, main order karna chahta/chahti hoon:\n\n";
+  let total = 0;
+
+  cart.forEach(function (item) {
+    message += item.name + " (" + item.version + ") - " + item.price + " Rs\n";
+    total += item.price;
+  });
+
+  message += "\nTotal: " + total + " Rupees";
+
+  const phoneNumber = "919796906804";
+  const url = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
+
+  window.open(url, "_blank");
+});

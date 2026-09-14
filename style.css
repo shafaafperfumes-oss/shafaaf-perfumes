@@ -512,3 +512,20 @@ footer p {
   font-size: 17px;
   color: #b8860b;
 }
+#checkout-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 14px;
+  background-color: #25D366;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#checkout-btn:hover {
+  background-color: #1ebc59;
+}
