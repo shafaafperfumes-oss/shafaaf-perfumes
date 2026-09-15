@@ -35,6 +35,11 @@ tmp/
 .vscode/
 .idea/
 
+# --- Original, uncompressed photographs ---
+# Kept on the owner's computer as a master copy. They are far too large to
+# serve to customers, so only the compressed versions are committed.
+images/_originals/
+
 # --- OS noise ---
 Thumbs.db
 ehthumbs.db
