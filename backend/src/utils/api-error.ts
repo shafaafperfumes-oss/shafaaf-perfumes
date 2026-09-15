@@ -46,6 +46,10 @@ export class ApiError extends Error {
     return new ApiError(429, "RATE_LIMITED", message);
   }
 
+  static serviceUnavailable(message = "This feature is temporarily unavailable."): ApiError {
+    return new ApiError(503, "SERVICE_UNAVAILABLE", message);
+  }
+
   static internal(message = "Something went wrong on our end."): ApiError {
     return new ApiError(500, "INTERNAL_ERROR", message);
   }

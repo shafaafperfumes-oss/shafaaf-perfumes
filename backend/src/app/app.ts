@@ -6,6 +6,7 @@ import { requestId } from "../middleware/request-id.js";
 import { corsPolicy, securityHeaders } from "../middleware/security.js";
 import { generalLimiter } from "../middleware/rate-limit.js";
 import { errorHandler, notFoundHandler } from "../middleware/error-handler.js";
+import { catalogRouter } from "../routes/catalog.route.js";
 import { healthRouter } from "../routes/health.route.js";
 
 export const API_PREFIX = "/api/v1";
@@ -43,6 +44,7 @@ export function createApp(): Express {
 
   app.use(API_PREFIX, generalLimiter);
   app.use(API_PREFIX, healthRouter);
+  app.use(API_PREFIX, catalogRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

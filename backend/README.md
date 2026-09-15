@@ -61,6 +61,8 @@ seed is safe to re-run and never resets real stock counts.
 |---|---|---|
 | GET | `/api/v1/health` | Liveness — is the process up? |
 | GET | `/api/v1/ready` | Readiness — can it serve traffic? Reports each dependency, including the database |
+| GET | `/api/v1/products` | Every active fragrance, shaped exactly like the website's own catalog |
+| GET | `/api/v1/products/:id` | One fragrance by its url slug (e.g. `shanaya-gold`); 404 if unknown |
 
 Every response uses one envelope:
 
