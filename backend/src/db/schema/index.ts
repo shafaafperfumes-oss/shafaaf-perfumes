@@ -4,3 +4,4 @@
  * so `db.query` and the migration generator always see the whole schema.
  */
 export * from "./catalog.js";
+export * from "./auth.js";

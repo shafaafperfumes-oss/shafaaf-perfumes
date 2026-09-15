@@ -18,6 +18,14 @@ import * as schema from "./schema/index.js";
 
 export type Database = ReturnType<typeof createDatabase>;
 
+/**
+ * The type of `tx` inside `db.transaction(async (tx) => { ... })`. A
+ * repository function that needs to run either standalone or inside a
+ * caller's transaction accepts `Database | Tx` for its connection
+ * parameter, since both support the same query methods.
+ */
+export type Tx = Parameters<Parameters<Database["transaction"]>[0]>[0];
+
 let client: postgres.Sql | null = null;
 let database: Database | null = null;
 

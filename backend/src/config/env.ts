@@ -35,6 +35,27 @@ const envSchema = z.object({
    * transaction-mode pooler. Falls back to DATABASE_URL if not set.
    */
   DIRECT_URL: z.string().min(1).optional(),
+
+  /**
+   * The Supabase project's URL, e.g. https://abcdefgh.supabase.co.
+   * Not a secret — it is the same URL the browser's own Supabase client
+   * uses. The backend uses it to verify sign-in tokens (see
+   * src/lib/supabase-jwt.ts): it fetches Supabase's public signing keys
+   * from `${SUPABASE_URL}/auth/v1/.well-known/jwks.json` and checks every
+   * token's signature against them — no shared secret required.
+   * Optional, like DATABASE_URL: login routes report themselves as
+   * unavailable rather than crashing when it is not set.
+   */
+  SUPABASE_URL: z.string().url().optional(),
+
+  /**
+   * The service-role key. This bypasses every database access rule —
+   * SERVER ONLY, never sent to a browser, never logged. Only used for
+   * account-management calls Supabase does not expose any other way
+   * (kept unused until a phase actually needs it; declared now so the
+   * variable has one documented home from the start).
+   */
+  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -58,6 +79,7 @@ export const env = {
     .map((origin) => origin.trim())
     .filter(Boolean),
   hasDatabase: Boolean(raw.DATABASE_URL),
+  hasAuth: Boolean(raw.SUPABASE_URL),
 } as const;
 
 export type Env = typeof env;

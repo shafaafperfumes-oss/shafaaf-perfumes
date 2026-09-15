@@ -4,10 +4,12 @@ import { logger } from "../utils/logger.js";
 import { env } from "../config/env.js";
 import { requestId } from "../middleware/request-id.js";
 import { corsPolicy, securityHeaders } from "../middleware/security.js";
-import { generalLimiter } from "../middleware/rate-limit.js";
+import { generalLimiter, strictLimiter } from "../middleware/rate-limit.js";
 import { errorHandler, notFoundHandler } from "../middleware/error-handler.js";
+import { adminRouter } from "../routes/admin.route.js";
 import { catalogRouter } from "../routes/catalog.route.js";
 import { healthRouter } from "../routes/health.route.js";
+import { meRouter } from "../routes/me.route.js";
 
 export const API_PREFIX = "/api/v1";
 
@@ -45,6 +47,8 @@ export function createApp(): Express {
   app.use(API_PREFIX, generalLimiter);
   app.use(API_PREFIX, healthRouter);
   app.use(API_PREFIX, catalogRouter);
+  app.use(`${API_PREFIX}/me`, strictLimiter, meRouter);
+  app.use(`${API_PREFIX}/admin`, strictLimiter, adminRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

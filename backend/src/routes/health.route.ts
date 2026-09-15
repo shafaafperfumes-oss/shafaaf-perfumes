@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { env } from "../config/env.js";
 import { isDatabaseConfigured, pingDatabase } from "../db/client.js";
 import { sendSuccess } from "../utils/respond.js";
 
@@ -32,6 +33,9 @@ healthRouter.get("/ready", async (_req, res) => {
   } else {
     checks.database = "not-configured";
   }
+
+  // Config-presence only, not a live call to Supabase — keeps /ready fast.
+  checks.auth = env.hasAuth ? "ok" : "not-configured";
 
   const ready = Object.values(checks).every((status) => status !== "unavailable");
 

@@ -55,14 +55,35 @@ The catalog seed reads the website's own `js/data/products.js`, so product
 names, prices and notes have exactly one source and cannot drift apart. The
 seed is safe to re-run and never resets real stock counts.
 
+## Sign-in (Supabase Auth)
+
+Setting it up for the first time: [`docs/SUPABASE-AUTH-SETUP.md`](docs/SUPABASE-AUTH-SETUP.md).
+
+The browser signs in directly with Supabase — this backend never sees a
+password. It verifies each request's token by checking its signature
+against Supabase's published public keys (no shared secret needed for
+that), then reads the caller's **role from our own `profiles` table**,
+never from the token — a customer cannot become an admin by editing a
+token, only by the database itself saying so.
+
+A Postgres trigger creates a `profiles` row automatically the moment
+someone signs up, so the application code can never forget to.
+
 ## Endpoints so far
 
 | Method | Path | Purpose |
 |---|---|---|
 | GET | `/api/v1/health` | Liveness — is the process up? |
-| GET | `/api/v1/ready` | Readiness — can it serve traffic? Reports each dependency, including the database |
+| GET | `/api/v1/ready` | Readiness — can it serve traffic? Reports each dependency, including the database and sign-in |
 | GET | `/api/v1/products` | Every active fragrance, shaped exactly like the website's own catalog |
 | GET | `/api/v1/products/:id` | One fragrance by its url slug (e.g. `shanaya-gold`); 404 if unknown |
+| GET | `/api/v1/me` | The signed-in customer's own profile *(requires sign-in)* |
+| PATCH | `/api/v1/me` | Update your own name/phone *(requires sign-in)* |
+| GET | `/api/v1/me/addresses` | Your own saved addresses *(requires sign-in)* |
+| POST | `/api/v1/me/addresses` | Add a saved address *(requires sign-in)* |
+| PATCH | `/api/v1/me/addresses/:id` | Update one of your own addresses *(requires sign-in)* |
+| DELETE | `/api/v1/me/addresses/:id` | Remove one of your own addresses *(requires sign-in)* |
+| GET | `/api/v1/admin/whoami` | Proves the admin-only door is locked *(requires an `admin` account)* |
 
 Every response uses one envelope:
 
@@ -90,17 +111,18 @@ without exposing anything sensitive to them.
 
 ```
 src/
-├── app/          app factory + server entry point
-├── config/       validated environment configuration
-├── db/           schema, connection, migrations runner, catalog seed
-├── middleware/   request id, security, rate limiting, error handling
-├── routes/       route definitions
-└── utils/        logger, error types, response helpers
-drizzle/          generated SQL migrations (committed, never edited)
-tests/            API tests (Vitest + Supertest)
-docs/             architecture, database setup, API documentation
+├── app/           app factory + server entry point
+├── config/        validated environment configuration
+├── db/            schema, connection, migrations runner, catalog seed
+├── lib/           small focused helpers (e.g. Supabase token verification)
+├── middleware/    request id, security, rate limiting, error handling, auth
+├── repositories/  the only code that queries the database directly
+├── routes/        route definitions — validate input, call a repository, respond
+└── utils/         logger, error types, response helpers
+drizzle/           generated SQL migrations (committed, never edited)
+tests/             API tests (Vitest + Supertest)
+docs/              architecture, setup guides, API documentation
 ```
 
-Folders for `services/`, `models/`, `repositories/`, `validators/`, `auth/`,
-`products/`, `orders/`, `payments/` and `admin/` are added in later phases as
-their features are built, rather than created empty up front.
+Folders for `services/`, `orders/`, `payments/` and `admin/` are added in
+later phases as their features are built, rather than created empty up front.

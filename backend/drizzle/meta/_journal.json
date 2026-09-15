@@ -15,6 +15,20 @@
       "when": 1789470477052,
       "tag": "0001_enable_row_level_security",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789493566612,
+      "tag": "0002_auth_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789493581084,
+      "tag": "0003_auth_security_and_trigger",
+      "breakpoints": true
     }
   ]
 }
