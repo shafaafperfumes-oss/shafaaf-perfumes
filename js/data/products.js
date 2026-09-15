@@ -11,7 +11,7 @@
  * @typedef {Object} SizeOption
  * @property {string} label   e.g. "30ml"
  * @property {number} ml      numeric volume for sorting/filtering
- * @property {number} price   price in PKR (Rupees)
+ * @property {number} price   price in Indian Rupees (INR)
  *
  * @typedef {Object} ProductVariant
  * @property {'Perfume'|'Attar'} type

@@ -43,6 +43,14 @@ describeWithDatabase("the seeded catalog in Postgres", () => {
     });
   });
 
+  it("prices everything in Indian Rupees", async () => {
+    const rows = await getDb()
+      .select({ currency: productVariants.currency })
+      .from(productVariants);
+
+    rows.forEach((row) => expect(row.currency).toBe("INR"));
+  });
+
   it("kept a known product's exact name and price", async () => {
     const [product] = await getDb()
       .select({ id: products.id, name: products.name })
