@@ -35,9 +35,14 @@
   animation: hero-float 7s ease-in-out infinite;
 }
 @keyframes hero-float { 0%, 100% { transform: translateY(-50%); } 50% { transform: translateY(-54%); } }
+@media (max-width: 1279px) { .hero__bottle { width: min(26vw, 300px); right: 4%; } }
 @media (max-width: 900px) { .hero__bottle { opacity: 0.18; width: 70vw; right: 50%; transform: translate(50%,-50%); } }
 
 .hero__inner { position: relative; z-index: 2; max-width: 660px; }
+/* Above the mobile breakpoint the bottle sits at the right edge, so cap the
+   copy column by viewport share too — otherwise at mid widths the headline
+   runs into the bottle. */
+@media (min-width: 901px) { .hero__inner { max-width: min(660px, 66%); } }
 .hero__eyebrow {
   display: flex; align-items: center; gap: var(--sp-3);
   color: var(--c-gold-soft); font-size: var(--fs-xs); letter-spacing: var(--ls-widest); text-transform: uppercase;
@@ -59,6 +64,11 @@
   line-height: var(--lh-relaxed);
 }
 .hero__ctas { display: flex; gap: var(--sp-4); flex-wrap: wrap; margin-top: var(--sp-10); }
+/* Between 901px and 1279px the copy column is capped to clear the bottle;
+   trim the CTA padding so both buttons still sit on one row. */
+@media (min-width: 901px) and (max-width: 1279px) {
+  .hero__ctas .btn { padding-inline: var(--sp-6); }
+}
 
 .hero__scroll {
   position: absolute; left: 50%; bottom: var(--sp-8); transform: translateX(-50%);

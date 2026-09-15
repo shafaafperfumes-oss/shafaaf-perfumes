@@ -85,6 +85,10 @@
     var p = shafaafGetProductById("oud-magestic");
     el.innerHTML = shafaafPlaceholderBottle(p);
     el.style.background = "none";
+    // The placeholder ships with its own tinted panel, which reads as a stray
+    // square against the hero gradient — the bottle should float here.
+    var art = el.querySelector(".placeholder-bottle");
+    if (art) art.style.background = "none";
   }
 
   document.addEventListener("DOMContentLoaded", function () {
