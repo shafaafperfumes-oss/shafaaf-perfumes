@@ -7,6 +7,9 @@
   position: relative;
   min-height: 100svh;
   display: flex; align-items: center;
+  /* Reserve room for the fixed header, so on short/zoomed viewports the
+     centered hero copy grows the section instead of sliding up behind it. */
+  padding-block: calc(var(--header-h) + var(--sp-8)) var(--sp-32);
   overflow: hidden;
   background: radial-gradient(120% 90% at 78% 15%, #4d3627 0%, #2a241d 45%, #1a1611 100%);
   isolation: isolate;
