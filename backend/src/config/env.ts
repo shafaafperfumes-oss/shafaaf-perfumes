@@ -22,8 +22,19 @@ const envSchema = z.object({
    * and its tests still run, on a machine that has no database configured —
    * routes that need data report themselves as unavailable instead.
    * Contains a password: it belongs in `.env` only, never in git.
+   *
+   * This is normally Supabase's *pooled* (transaction-mode, port 6543)
+   * connection string — what the running API uses for everyday queries.
    */
   DATABASE_URL: z.string().min(1).optional(),
+
+  /**
+   * Supabase's *direct/session-mode* connection string (port 5432, no
+   * pgbouncer). Schema migrations run through this one instead, because
+   * DDL and multi-statement transactions are not reliable over a
+   * transaction-mode pooler. Falls back to DATABASE_URL if not set.
+   */
+  DIRECT_URL: z.string().min(1).optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);
