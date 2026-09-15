@@ -86,11 +86,25 @@
   display: flex; align-items: flex-end; padding: var(--sp-8);
   color: var(--c-text-on-dark);
 }
-.collection-tile::before { content:''; position:absolute; inset:0; background: linear-gradient(180deg, transparent 40%, rgba(26,22,17,0.78) 100%); z-index: 1; }
+/* Photography here is bright and busy, so the scrim has to carry the label
+   text on its own rather than relying on whatever happens to be behind it. */
+.collection-tile::before {
+  content:''; position:absolute; inset:0; z-index: 1;
+  background: linear-gradient(180deg, rgba(26,22,17,0.10) 30%, rgba(26,22,17,0.62) 62%, rgba(26,22,17,0.92) 100%);
+}
 .collection-tile__art { position: absolute; inset: 0; }
+.collection-tile__art img,
+.collection-tile__art .placeholder-bottle {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.collection-tile__art img.is-alt { display: none; }
 .collection-tile__content { position: relative; z-index: 2; }
 .collection-tile__label { font-size: var(--fs-2xs); letter-spacing: var(--ls-widest); text-transform: uppercase; color: var(--c-gold-soft); }
-.collection-tile__name { font-size: var(--fs-display-sm); margin-top: var(--sp-2); }
+/* Headings default to ink in base.css; on a dark tile they must take the
+   tile's own on-dark colour or they vanish into the photograph. */
+.collection-tile__name { font-size: var(--fs-display-sm); margin-top: var(--sp-2); color: inherit; }
 .collection-tile__link { display: inline-flex; align-items: center; gap: var(--sp-2); margin-top: var(--sp-4); font-size: var(--fs-xs); letter-spacing: var(--ls-wide); text-transform: uppercase; }
 .collection-tile__link svg { width: 14px; height: 14px; transition: transform var(--dur-fast) var(--ease-out); }
 .collection-tile:hover .collection-tile__link svg { transform: translateX(4px); }
@@ -117,7 +131,7 @@
   content: ''; position: absolute; right: -80px; top: -80px; width: 280px; height: 280px; border-radius: 50%;
   background: radial-gradient(circle, rgba(198,161,95,0.28), transparent 70%);
 }
-.discovery-band__title { font-size: var(--fs-display-sm); position: relative; z-index: 1; }
+.discovery-band__title { font-size: var(--fs-display-sm); position: relative; z-index: 1; color: inherit; }
 .discovery-band__text { color: var(--c-text-on-dark-muted); margin-top: var(--sp-3); max-width: 46ch; font-weight: var(--fw-light); position: relative; z-index: 1; }
 .discovery-band__steps { display: flex; gap: var(--sp-6); margin-top: var(--sp-6); position: relative; z-index: 1; flex-wrap: wrap; }
 .discovery-band__step { display: flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-xs); color: var(--c-text-on-dark-muted); letter-spacing: var(--ls-wide); text-transform: uppercase; }
