@@ -13,23 +13,35 @@
     "start": "node dist/app/server.js",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:seed": "tsx src/db/seed.ts",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.45.2",
     "express": "^5.1.0",
     "express-rate-limit": "^8.1.0",
     "helmet": "^8.1.0",
     "pino": "^9.13.1",
     "pino-http": "^10.5.0",
+    "postgres": "^3.4.9",
     "zod": "^4.1.13"
+  },
+  "overrides": {
+    "@esbuild-kit/core-utils": {
+      "esbuild": "^0.25.12"
+    }
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^24.7.2",
     "@types/supertest": "^6.0.3",
+    "drizzle-kit": "^0.31.10",
     "pino-pretty": "^13.1.2",
     "supertest": "^7.1.4",
     "tsx": "^4.20.6",

@@ -27,13 +27,40 @@ cp .env.example .env
 | `npm run typecheck` | Check types without building |
 | `npm run build` | Compile TypeScript to `dist/` |
 | `npm start` | Run the compiled build (production) |
+| `npm run db:generate` | Turn `src/db/schema` changes into a new SQL migration |
+| `npm run db:migrate` | Apply pending migrations to the database |
+| `npm run db:seed` | Load the website's real catalog into the database |
+| `npm run db:studio` | Open Drizzle Studio to browse the data |
+
+## Database
+
+Setting Supabase up for the first time: [`docs/SUPABASE-SETUP.md`](docs/SUPABASE-SETUP.md).
+
+The schema lives in `src/db/schema/`, and `npm run db:generate` turns it into
+versioned SQL files under `drizzle/`. Migrations are applied, never edited
+after they have run anywhere.
+
+Rules the database enforces by itself, so a code bug cannot break them:
+
+- **Money is stored in paise as whole numbers** (₹599 → `59900`), never as a
+  decimal. Prices must be greater than zero.
+- **Stock can never go negative**, and reserved stock can never exceed stock
+  on hand.
+- **Products are deactivated, never deleted**, so past orders keep their history.
+- **Row Level Security is on for every table with no public policy**, so the
+  tables are unreachable through Supabase's own public API — only this backend
+  can read or write them.
+
+The catalog seed reads the website's own `js/data/products.js`, so product
+names, prices and notes have exactly one source and cannot drift apart. The
+seed is safe to re-run and never resets real stock counts.
 
 ## Endpoints so far
 
 | Method | Path | Purpose |
 |---|---|---|
 | GET | `/api/v1/health` | Liveness — is the process up? |
-| GET | `/api/v1/ready` | Readiness — can it serve traffic? (checks grow as dependencies are added) |
+| GET | `/api/v1/ready` | Readiness — can it serve traffic? Reports each dependency, including the database |
 
 Every response uses one envelope:
 
@@ -63,11 +90,13 @@ without exposing anything sensitive to them.
 src/
 ├── app/          app factory + server entry point
 ├── config/       validated environment configuration
+├── db/           schema, connection, migrations runner, catalog seed
 ├── middleware/   request id, security, rate limiting, error handling
 ├── routes/       route definitions
 └── utils/        logger, error types, response helpers
+drizzle/          generated SQL migrations (committed, never edited)
 tests/            API tests (Vitest + Supertest)
-docs/             architecture and API documentation
+docs/             architecture, database setup, API documentation
 ```
 
 Folders for `services/`, `models/`, `repositories/`, `validators/`, `auth/`,

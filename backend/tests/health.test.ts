@@ -21,6 +21,18 @@ describe("health endpoints", () => {
     expect(res.body.data.ready).toBe(true);
   });
 
+  it("reports the database in its readiness checks", async () => {
+    const res = await request(app).get(`${API_PREFIX}/ready`);
+
+    expect(["ok", "not-configured", "unavailable"]).toContain(res.body.data.checks.database);
+  });
+
+  it("never reveals the database host or password in the readiness body", async () => {
+    const res = await request(app).get(`${API_PREFIX}/ready`);
+
+    expect(JSON.stringify(res.body)).not.toMatch(/postgres(ql)?:\/\/|supabase\.co|password/i);
+  });
+
   it("returns a request id header that clients can quote in support", async () => {
     const res = await request(app).get(`${API_PREFIX}/health`);
 

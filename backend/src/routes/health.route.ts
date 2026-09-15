@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { isDatabaseConfigured, pingDatabase } from "../db/client.js";
 import { sendSuccess } from "../utils/respond.js";
 
 export const healthRouter: Router = Router();
@@ -16,13 +17,23 @@ healthRouter.get("/health", (_req, res) => {
 });
 
 /**
- * Readiness: can this instance serve traffic? Once the database and other
- * dependencies exist, their checks are added here and this returns 503
- * while any of them are unavailable.
+ * Readiness: can this instance serve traffic? Each dependency is checked and
+ * the endpoint returns 503 while any of them is unavailable, so a host does
+ * not send customers to an instance that cannot answer them.
+ *
+ * A database that is not configured yet is reported as "not-configured"
+ * rather than failing, so the API still runs before Supabase is connected.
  */
-healthRouter.get("/ready", (_req, res) => {
-  const checks: Record<string, "ok" | "unavailable"> = {};
-  const ready = Object.values(checks).every((status) => status === "ok");
+healthRouter.get("/ready", async (_req, res) => {
+  const checks: Record<string, "ok" | "unavailable" | "not-configured"> = {};
+
+  if (isDatabaseConfigured()) {
+    checks.database = (await pingDatabase()) ? "ok" : "unavailable";
+  } else {
+    checks.database = "not-configured";
+  }
+
+  const ready = Object.values(checks).every((status) => status !== "unavailable");
 
   sendSuccess(res, { ready, checks }, undefined, ready ? 200 : 503);
 });

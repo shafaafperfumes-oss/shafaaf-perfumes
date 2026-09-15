@@ -16,6 +16,14 @@ const envSchema = z.object({
 
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(120),
+
+  /**
+   * Postgres connection string (Supabase). Optional so the API still boots,
+   * and its tests still run, on a machine that has no database configured —
+   * routes that need data report themselves as unavailable instead.
+   * Contains a password: it belongs in `.env` only, never in git.
+   */
+  DATABASE_URL: z.string().min(1).optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -38,6 +46,7 @@ export const env = {
   corsAllowedOrigins: raw.CORS_ALLOWED_ORIGINS.split(",")
     .map((origin) => origin.trim())
     .filter(Boolean),
+  hasDatabase: Boolean(raw.DATABASE_URL),
 } as const;
 
 export type Env = typeof env;

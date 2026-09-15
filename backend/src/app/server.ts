@@ -1,5 +1,6 @@
 import { createApp } from "./app.js";
 import { env } from "../config/env.js";
+import { closeDatabase } from "../db/client.js";
 import { logger } from "../utils/logger.js";
 
 const app = createApp();
@@ -21,11 +22,15 @@ function shutdown(signal: string): void {
   }, 10_000);
   forceExit.unref();
 
-  server.close((error) => {
+  server.close(async (error) => {
     if (error) {
       logger.error({ err: error }, "Error during shutdown");
       process.exit(1);
     }
+    // Close the database pool last, once no request can still need it.
+    await closeDatabase().catch((closeError) => {
+      logger.error({ err: closeError }, "Error closing the database pool");
+    });
     logger.info("Shutdown complete");
     process.exit(0);
   });
