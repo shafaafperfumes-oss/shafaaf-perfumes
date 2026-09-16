@@ -11,6 +11,7 @@ import {
   productVariants,
   products,
   type Address,
+  type Order,
 } from "../db/schema/index.js";
 import { getAddress } from "./address.repository.js";
 
@@ -372,6 +373,21 @@ export async function listOrders(userId: string): Promise<OrderSummary[]> {
     total: row.totalPaise / 100,
     createdAt: row.createdAt,
   }));
+}
+
+/**
+ * Raw order row, scoped to its owner — used by payment.repository.ts,
+ * which needs the actual `totalPaise`/`status` columns rather than the
+ * rupee-shaped `OrderDetail` this file returns to routes.
+ * Returns null if the order does not exist or belongs to someone else.
+ */
+export async function findOrderRow(userId: string, orderId: string): Promise<Order | null> {
+  const db = getDb();
+  const [order] = await db
+    .select()
+    .from(orders)
+    .where(and(eq(orders.id, orderId), eq(orders.userId, userId)));
+  return order ?? null;
 }
 
 export interface OrderDetail extends OrderSummary {

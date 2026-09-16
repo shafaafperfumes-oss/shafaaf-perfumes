@@ -2,6 +2,12 @@ import { Router } from "express";
 import { isDatabaseConfigured } from "../db/client.js";
 import { requireAuth } from "../middleware/auth.js";
 import { getOrderDetail, listOrders } from "../repositories/order.repository.js";
+import {
+  OrderNotFoundError,
+  OrderNotPayableError,
+  PaymentsNotConfiguredError,
+  createPaymentForOrder,
+} from "../repositories/payment.repository.js";
 import { ApiError } from "../utils/api-error.js";
 import { sendSuccess } from "../utils/respond.js";
 
@@ -39,6 +45,34 @@ ordersRouter.get("/:id", async (req, res, next) => {
     }
     sendSuccess(res, { order });
   } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * (Re-)issues a Razorpay payment intent for one of your own still-pending
+ * orders. Exists for retries — a closed checkout popup, an expired widget,
+ * or the transient failure `POST /checkout/place` already logs and shrugs
+ * off — not for creating new orders, which only `/checkout/place` can do.
+ */
+ordersRouter.post("/:id/pay", async (req, res, next) => {
+  try {
+    assertDatabaseReady();
+    const payment = await createPaymentForOrder(req.user!.id, req.params.id);
+    sendSuccess(res, { payment });
+  } catch (error) {
+    if (error instanceof OrderNotFoundError) {
+      next(ApiError.notFound(error.message));
+      return;
+    }
+    if (error instanceof OrderNotPayableError) {
+      next(ApiError.conflict(error.message));
+      return;
+    }
+    if (error instanceof PaymentsNotConfiguredError) {
+      next(ApiError.serviceUnavailable(error.message));
+      return;
+    }
     next(error);
   }
 });

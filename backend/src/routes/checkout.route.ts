@@ -9,7 +9,9 @@ import {
   getCheckoutQuote,
   placeOrder,
 } from "../repositories/order.repository.js";
+import { createPaymentForOrder, type PaymentIntent } from "../repositories/payment.repository.js";
 import { ApiError } from "../utils/api-error.js";
+import { logger } from "../utils/logger.js";
 import { sendSuccess } from "../utils/respond.js";
 
 /**
@@ -64,7 +66,20 @@ checkoutRouter.post("/place", async (req, res, next) => {
     assertDatabaseReady();
     const input = placeOrderSchema.parse(req.body);
     const order = await placeOrder(req.user!.id, input.addressId);
-    sendSuccess(res, { order }, undefined, 201);
+
+    // The order itself is already safely committed at this point (stock
+    // reserved, cart emptied). Asking Razorpay for a payment intent is a
+    // separate network call to a third party and can fail on its own —
+    // that must not make the customer think their order was never placed.
+    // The frontend can retry via POST /orders/:id/pay if this comes back null.
+    let payment: PaymentIntent | null = null;
+    try {
+      payment = await createPaymentForOrder(req.user!.id, order.id);
+    } catch (paymentError) {
+      logger.error({ err: paymentError, orderId: order.id }, "could not create a Razorpay order for a placed order");
+    }
+
+    sendSuccess(res, { order, payment }, undefined, 201);
   } catch (error) {
     handleCheckoutError(error, next);
   }

@@ -13,6 +13,7 @@ import { checkoutRouter } from "../routes/checkout.route.js";
 import { healthRouter } from "../routes/health.route.js";
 import { meRouter } from "../routes/me.route.js";
 import { ordersRouter } from "../routes/orders.route.js";
+import { webhooksRouter } from "../routes/webhooks.route.js";
 import { wishlistRouter } from "../routes/wishlist.route.js";
 
 export const API_PREFIX = "/api/v1";
@@ -44,6 +45,16 @@ export function createApp(): Express {
 
   app.use(securityHeaders());
   app.use(corsPolicy());
+
+  // Razorpay's webhook signature is computed over the exact request bytes,
+  // so this route gets its own raw-body parser and must be mounted before
+  // the general JSON parser below would otherwise consume the body first.
+  app.use(
+    `${API_PREFIX}/webhooks`,
+    generalLimiter,
+    express.raw({ type: "application/json", limit: "100kb" }),
+    webhooksRouter,
+  );
 
   app.use(express.json({ limit: "100kb" }));
   app.use(express.urlencoded({ extended: false, limit: "100kb" }));

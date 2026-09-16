@@ -64,6 +64,20 @@
       "when": 1789540484144,
       "tag": "0008_orders_order_number_sequence",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1789543287502,
+      "tag": "0009_tiresome_roulette",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1789543306586,
+      "tag": "0010_enable_payments_row_level_security",
+      "breakpoints": true
     }
   ]
 }

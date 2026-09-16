@@ -90,8 +90,25 @@ cart. Two customers racing for the last bottle cannot both succeed — the
 lock makes the loser's request fail cleanly instead of overselling.
 
 An order does not charge anyone by itself; it is created `pending_payment`
-and stays that way until Phase 7 wires up Razorpay's webhook, which is the
-only thing allowed to move it to `paid`.
+until a real payment is confirmed.
+
+## Payments (Razorpay)
+
+Setting it up for the first time: [`docs/RAZORPAY-SETUP.md`](docs/RAZORPAY-SETUP.md).
+
+`POST /checkout/place` also asks Razorpay for a payment and returns it
+alongside the new order, so the frontend can open Razorpay's checkout
+widget immediately. If that call to Razorpay fails, or Razorpay is not
+configured yet, the order still exists — `payment` just comes back `null`
+— and `POST /orders/:id/pay` can (re-)request one for it later.
+
+The browser's own "payment succeeded" message is only ever a hint for the
+UI. The only thing that actually moves an order to `paid` and turns its
+stock reservation into a real stock decrease is `POST /webhooks/razorpay`
+— Razorpay calls this route directly, with no `Authorization` header, and
+an HMAC signature stands in as the authentication instead. Every webhook
+delivery's own id is recorded before anything else happens, so a retried
+delivery of the same event is safely ignored rather than applied twice.
 
 ## Endpoints so far
 
@@ -116,9 +133,11 @@ only thing allowed to move it to `paid`.
 | POST | `/api/v1/wishlist` | Save a product *(requires sign-in)* |
 | DELETE | `/api/v1/wishlist/:productId` | Remove a saved product *(requires sign-in)* |
 | POST | `/api/v1/checkout/quote` | Live total for your own cart, changes nothing *(requires sign-in)* |
-| POST | `/api/v1/checkout/place` | Turn your cart into an order and reserve stock *(requires sign-in)* |
+| POST | `/api/v1/checkout/place` | Turn your cart into an order, reserve stock, and start a payment *(requires sign-in)* |
 | GET | `/api/v1/orders` | Your own past orders *(requires sign-in)* |
 | GET | `/api/v1/orders/:id` | One of your own orders, in full *(requires sign-in)* |
+| POST | `/api/v1/orders/:id/pay` | (Re-)start a payment for one of your own still-pending orders *(requires sign-in)* |
+| POST | `/api/v1/webhooks/razorpay` | Razorpay's own callback — signature-verified, not for browser use |
 | GET | `/api/v1/admin/whoami` | Proves the admin-only door is locked *(requires an `admin` account)* |
 
 Every response uses one envelope:

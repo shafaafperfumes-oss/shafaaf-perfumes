@@ -56,6 +56,24 @@ const envSchema = z.object({
    * variable has one documented home from the start).
    */
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
+
+  /**
+   * Razorpay. All three optional, like the database/auth config above: the
+   * API still boots without them, and checkout still places orders — it
+   * simply cannot create a payment for one yet (`payment: null` in the
+   * response) until these are set. See docs/RAZORPAY-SETUP.md.
+   *
+   * RAZORPAY_KEY_ID        — not a secret; also used by the browser's
+   *                           Razorpay Checkout widget.
+   * RAZORPAY_KEY_SECRET    — SERVER ONLY. Signs API requests to Razorpay.
+   * RAZORPAY_WEBHOOK_SECRET — SERVER ONLY. A separate secret (set in the
+   *                           Razorpay dashboard's webhook config, not the
+   *                           API keys page) used only to verify that a
+   *                           webhook call really came from Razorpay.
+   */
+  RAZORPAY_KEY_ID: z.string().min(1).optional(),
+  RAZORPAY_KEY_SECRET: z.string().min(1).optional(),
+  RAZORPAY_WEBHOOK_SECRET: z.string().min(1).optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -80,6 +98,8 @@ export const env = {
     .filter(Boolean),
   hasDatabase: Boolean(raw.DATABASE_URL),
   hasAuth: Boolean(raw.SUPABASE_URL),
+  hasPayments: Boolean(raw.RAZORPAY_KEY_ID && raw.RAZORPAY_KEY_SECRET),
+  hasPaymentWebhook: Boolean(raw.RAZORPAY_WEBHOOK_SECRET),
 } as const;
 
 export type Env = typeof env;

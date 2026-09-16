@@ -10,6 +10,7 @@ import {
   orderItems,
   orderStatusHistory,
   orders,
+  payments,
   productVariants,
   products,
 } from "../src/db/schema/index.js";
@@ -67,6 +68,7 @@ describeWithAuth("checkout", () => {
   afterAll(async () => {
     if (placedOrderId) {
       const db = getDb();
+      await db.delete(payments).where(eq(payments.orderId, placedOrderId));
       await db.delete(inventoryMovements).where(eq(inventoryMovements.orderId, placedOrderId));
       await db.delete(orderItems).where(eq(orderItems.orderId, placedOrderId));
       await db.delete(orderStatusHistory).where(eq(orderStatusHistory.orderId, placedOrderId));
@@ -134,6 +136,18 @@ describeWithAuth("checkout", () => {
 
     placedOrderId = order.id;
     reservedQuantity = 2;
+
+    // Razorpay may or may not be configured on this machine (see
+    // docs/RAZORPAY-SETUP.md) — either way, placing an order must never
+    // fail because of it. `payment` is only non-null once it is.
+    if (env.hasPayments) {
+      expect(res.body.data.payment).toBeTruthy();
+      expect(res.body.data.payment.razorpayOrderId).toMatch(/^order_/);
+      expect(res.body.data.payment.amountPaise).toBe(Math.round(order.total * 100));
+      expect(res.body.data.payment.keyId).toBe(env.RAZORPAY_KEY_ID);
+    } else {
+      expect(res.body.data.payment).toBeNull();
+    }
 
     const cart = await auth(request(app).get(`${API_PREFIX}/cart`));
     expect(cart.body.data.items).toEqual([]);
