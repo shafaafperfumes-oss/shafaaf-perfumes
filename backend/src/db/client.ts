@@ -63,7 +63,10 @@ export function getDb(): Database {
     // Supabase requires TLS; a plain local Postgres does not.
     ssl: env.DATABASE_URL.includes("localhost") ? false : "require",
     max: env.isTest ? 1 : 10,
-    idle_timeout: 20,
+    // Opening a fresh TLS connection to Supabase costs 3-4 seconds, and a
+    // small shop idles for minutes at a time — keep connections around long
+    // enough that a visitor rarely pays that cost.
+    idle_timeout: 120,
     connect_timeout: 15,
   });
 

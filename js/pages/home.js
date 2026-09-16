@@ -91,7 +91,7 @@
     if (art) art.style.background = "none";
   }
 
-  document.addEventListener("DOMContentLoaded", function () {
+  shafaafOnCatalogReady(function () {
     renderCollections();
     renderBestsellers();
     renderStoryMedia();

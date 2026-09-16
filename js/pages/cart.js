@@ -60,7 +60,7 @@
       '</div>';
   }
 
-  document.addEventListener("DOMContentLoaded", render);
+  shafaafOnCatalogReady(render);
   document.addEventListener("shafaaf:cart:change", render);
 
   document.addEventListener("submit", function (e) {

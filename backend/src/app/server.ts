@@ -1,12 +1,15 @@
 import { createApp } from "./app.js";
 import { env } from "../config/env.js";
-import { closeDatabase } from "../db/client.js";
+import { closeDatabase, pingDatabase } from "../db/client.js";
 import { logger } from "../utils/logger.js";
 
 const app = createApp();
 
 const server = app.listen(env.PORT, () => {
   logger.info(`Shafaaf Perfumes API listening on http://localhost:${env.PORT} [${env.NODE_ENV}]`);
+  // Open the first database connection now, not when the first visitor
+  // arrives, so they never wait on the cold handshake to Supabase.
+  void pingDatabase();
 });
 
 /**

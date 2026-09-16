@@ -4,7 +4,20 @@ Premium international perfume e-commerce frontend.
 
 ## Status
 
-Frontend-only build: no backend, database, payment processing, AI agents, or WhatsApp API automation. Checkout currently opens a pre-filled WhatsApp message (`js/lib/whatsapp-checkout.js`) as a placeholder for real checkout.
+The storefront now reads its catalog from the live backend (`backend/`,
+deployed on Railway — see `backend/README.md`). Sign-in, the server-side
+cart and real checkout exist in the backend but are not wired into the
+pages yet: checkout still opens a pre-filled WhatsApp message
+(`js/lib/whatsapp-checkout.js`) until that step lands.
+
+**Where the site gets its data:** `js/config.js` holds the backend's
+address (nothing secret — it is served to every visitor).
+`js/lib/catalog-loader.js` fetches `/products` before any page draws and
+swaps the result into the catalog; if the backend cannot be reached, the
+copy embedded in `js/data/products.js` is shown instead, so the shop never
+renders blank. Pages wait via `shafaafOnCatalogReady(fn)` rather than
+`DOMContentLoaded`. Add `?api=local` to any page URL to point that browser
+tab at a backend running on this machine (`npm run dev` in `backend/`).
 
 ## Tech Stack
 
@@ -12,7 +25,7 @@ Vanilla HTML/CSS/JS — no build step, no framework, no Node dependency. Chosen 
 
 - **Pages** are self-contained HTML files (no templating) — shared header/footer/overlay markup is duplicated per page by design.
 - **Design system**: `css/tokens.css` (colors, type, spacing, shadows, motion, z-index), `css/base.css` (reset), `css/components.css` (buttons, cards, drawers, modals, etc.), `css/layout.css` (header/footer/grid), `css/pages/*.css` (page-specific).
-- **Data layer**: `js/data/products.js` is the single source of truth for the catalog (typed via JSDoc), accessed only through its exported functions (`shafaafGetAllProducts`, etc.) — swapping in a real backend later means replacing this file's internals, not the pages that read it.
+- **Data layer**: pages read the catalog only through the accessor functions in `js/data/products.js` (`shafaafGetAllProducts`, etc.). At runtime that list is what the backend returned; the embedded array is the offline fallback and the source `npm run db:seed` loads into the database, so it must keep the same shape.
 - **State**: `js/lib/cart.js` and `js/lib/wishlist.js` are small pub/sub stores backed by `localStorage`, broadcasting `shafaaf:cart:change` / `shafaaf:wishlist:change` events that any component can listen for.
 - **Components**: `js/components/*.js` — header, cart drawer, search overlay, quick view modal, product cards, toasts, accordion — all delegated-event-based so they work with dynamically injected HTML.
 

@@ -21,6 +21,6 @@
     grid.innerHTML = shafaafRenderProductGrid(products);
   }
 
-  document.addEventListener("DOMContentLoaded", render);
+  shafaafOnCatalogReady(render);
   document.addEventListener("shafaaf:wishlist:change", render);
 })();

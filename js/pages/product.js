@@ -1,7 +1,7 @@
 /**
  * Product detail page.
  */
-(function () {
+shafaafOnCatalogReady(function () {
   var params = new URLSearchParams(window.location.search);
   var product = shafaafGetProductById(params.get("id"));
 
@@ -257,4 +257,4 @@
   bindEvents();
   bindStickyBar();
   shafaafHydrateIcons();
-})();
+});

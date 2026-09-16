@@ -224,7 +224,7 @@
     if (applyBtn) applyBtn.addEventListener("click", close);
   }
 
-  document.addEventListener("DOMContentLoaded", function () {
+  shafaafOnCatalogReady(function () {
     bindFilterInputs();
     bindMobileFilterDrawer();
     renderAll();

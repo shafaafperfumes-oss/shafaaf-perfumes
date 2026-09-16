@@ -221,5 +221,5 @@
     renderQuestion();
   }
 
-  document.addEventListener("DOMContentLoaded", render);
+  shafaafOnCatalogReady(render);
 })();

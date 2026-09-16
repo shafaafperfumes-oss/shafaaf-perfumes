@@ -1,12 +1,14 @@
 /**
  * SHAFAAF PERFUMES — PRODUCT CATALOG
  * ------------------------------------------------------------
- * This is the single source of truth for product data on the
- * frontend. It is written as a typed, structured module so a
- * future backend/CMS/database can replace `SHAFAAF_PRODUCTS`
- * with a fetched payload of the same shape without touching
- * any rendering code — every page reads product data only
- * through the accessor functions at the bottom of this file.
+ * At runtime the shop shows what the backend's database holds:
+ * js/lib/catalog-loader.js fetches it and swaps it in through
+ * `shafaafReplaceCatalog` before any page draws. The list below is
+ * what the shop falls back to when the backend cannot be reached,
+ * and it is also what `npm run db:seed` in backend/ loads into the
+ * database in the first place — so it must keep exactly this shape.
+ * Every page reads product data only through the accessor
+ * functions at the bottom of this file, never this array directly.
  *
  * @typedef {Object} SizeOption
  * @property {string} label   e.g. "30ml"
@@ -293,6 +295,15 @@ const SHAFAAF_PRODUCTS = [
    Accessors — all pages must read the catalog through these
    so a future API-backed implementation is a drop-in swap.
    --------------------------------------------------------- */
+
+/**
+ * Replaces the catalog in place with a list of the same shape (used by
+ * the catalog loader once the backend answers). In place, not
+ * reassigned, so every accessor above and below keeps working unchanged.
+ */
+function shafaafReplaceCatalog(products) {
+  SHAFAAF_PRODUCTS.splice.apply(SHAFAAF_PRODUCTS, [0, SHAFAAF_PRODUCTS.length].concat(products));
+}
 
 function shafaafGetAllProducts() {
   return SHAFAAF_PRODUCTS;

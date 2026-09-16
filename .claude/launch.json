@@ -14,6 +14,12 @@
         "8080"
       ],
       "port": 8080
+    },
+    {
+      "name": "backend-api",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "backend"],
+      "port": 4000
     }
   ]
 }
