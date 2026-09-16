@@ -5,10 +5,21 @@ Premium international perfume e-commerce frontend.
 ## Status
 
 The storefront now reads its catalog from the live backend (`backend/`,
-deployed on Railway — see `backend/README.md`). Sign-in, the server-side
-cart and real checkout exist in the backend but are not wired into the
-pages yet: checkout still opens a pre-filled WhatsApp message
+deployed on Railway — see `backend/README.md`) and customers can create
+an account and sign in (header account icon; `js/lib/auth.js` +
+`js/components/account-modal.js`). The server-side cart and real
+checkout exist in the backend but are not wired into the pages yet:
+checkout still opens a pre-filled WhatsApp message
 (`js/lib/whatsapp-checkout.js`) until that step lands.
+
+**Sign-in:** the browser talks to Supabase Auth directly using the
+project URL and *publishable* key in `js/config.js` (both are meant to
+be public — the key can only sign people in, every table is locked to
+the backend). The backend never sees a password; it receives a signed,
+short-lived token on each call (`js/lib/api.js` attaches it) and checks
+the signature. If the key is blank or the Supabase library fails to
+load, the account modal says sign-in is unavailable and the shop keeps
+working.
 
 **Where the site gets its data:** `js/config.js` holds the backend's
 address (nothing secret — it is served to every visitor).

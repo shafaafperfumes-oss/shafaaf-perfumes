@@ -76,20 +76,13 @@
     });
   }
 
-  function initAccountStub() {
-    document.querySelectorAll("[data-account-toggle]").forEach(function (btn) {
-      btn.addEventListener("click", function (e) {
-        e.preventDefault();
-        ShafaafToast.show("Accounts are coming soon — order directly via WhatsApp for now.");
-      });
-    });
-  }
+  // The account icon ([data-account-toggle]) is handled by
+  // js/components/account-modal.js.
 
   document.addEventListener("DOMContentLoaded", function () {
     initScrollState();
     initMobileMenu();
     initCounts();
-    initAccountStub();
   });
 })();
 

@@ -655,3 +655,49 @@
 .star-input button svg { width: 22px; height: 22px; color: var(--c-line-strong); transition: color var(--dur-fast) var(--ease-out); }
 .star-input button.is-active svg,
 .star-input button:hover svg { color: var(--c-gold); }
+
+/* ---------- Account modal / auth forms ---------- */
+.account-panel {
+  position: relative;
+  max-width: 460px;
+  padding: var(--sp-10) var(--sp-8) var(--sp-8);
+}
+.account-panel__title { font-size: var(--fs-display-sm); margin-top: 6px; }
+.account-panel__email { margin-top: var(--sp-2); }
+.account-panel__actions { display: flex; flex-direction: column; gap: var(--sp-3); margin-top: var(--sp-6); }
+
+.auth-tabs { display: flex; gap: var(--sp-6); margin-top: var(--sp-6); border-bottom: 1px solid var(--c-line); }
+.auth-tab {
+  padding: 0 0 var(--sp-3);
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+  font-size: var(--fs-xs); font-weight: var(--fw-medium);
+  letter-spacing: var(--ls-wide); text-transform: uppercase;
+  color: var(--c-text-muted);
+  transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.auth-tab:hover { color: var(--c-ink); }
+.auth-tab.is-active { color: var(--c-ink); border-bottom-color: var(--c-gold); }
+
+.auth-form { display: flex; flex-direction: column; gap: var(--sp-4); margin-top: var(--sp-6); }
+.auth-form .btn[disabled] { opacity: 0.6; cursor: wait; }
+.auth-form__link { align-self: flex-start; font-size: var(--fs-sm); color: var(--c-text-muted); }
+.field__hint { font-size: var(--fs-xs); color: var(--c-text-faint); }
+
+.form-notice {
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-md);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+.form-notice--error { background: var(--c-error-bg); color: var(--c-error); }
+.form-notice--success { background: var(--c-success-bg); color: var(--c-success); }
+
+/* A small gold dot on the header account icon once signed in. */
+.icon-btn.is-signed-in::after {
+  content: "";
+  position: absolute; top: 9px; right: 9px;
+  width: 8px; height: 8px; border-radius: var(--r-full);
+  background: var(--c-gold);
+  box-shadow: 0 0 0 2px var(--c-offwhite);
+}
