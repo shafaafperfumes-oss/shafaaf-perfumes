@@ -24,6 +24,16 @@ export async function listAddresses(userId: string): Promise<Address[]> {
     .orderBy(asc(addresses.createdAt));
 }
 
+/** Returns null if the address does not exist or belongs to someone else. */
+export async function getAddress(userId: string, addressId: string): Promise<Address | null> {
+  const db = getDb();
+  const [address] = await db
+    .select()
+    .from(addresses)
+    .where(and(eq(addresses.id, addressId), eq(addresses.userId, userId)));
+  return address ?? null;
+}
+
 /**
  * Making an address the default clears the flag on every other address
  * the same customer owns first, inside one transaction — never two

@@ -34,8 +34,8 @@ export class ApiError extends Error {
     return new ApiError(404, "NOT_FOUND", message);
   }
 
-  static conflict(message = "That action conflicts with the current state."): ApiError {
-    return new ApiError(409, "CONFLICT", message);
+  static conflict(message = "That action conflicts with the current state.", details?: unknown): ApiError {
+    return new ApiError(409, "CONFLICT", message, details);
   }
 
   static validation(message = "Some fields are invalid.", details?: unknown): ApiError {

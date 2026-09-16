@@ -43,6 +43,27 @@
       "when": 1789539052671,
       "tag": "0005_enable_shopping_row_level_security",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1789540448385,
+      "tag": "0006_neat_nightmare",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1789540463890,
+      "tag": "0007_enable_orders_row_level_security",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1789540484144,
+      "tag": "0008_orders_order_number_sequence",
+      "breakpoints": true
     }
   ]
 }

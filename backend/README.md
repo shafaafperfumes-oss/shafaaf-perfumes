@@ -77,6 +77,22 @@ added, so a later catalog price change never silently changes what a
 customer already sees sitting in their cart — checkout, in a later phase,
 is what actually re-checks the live price before anyone is charged.
 
+## Checkout and orders
+
+`/checkout/quote` re-prices the signed-in customer's own cart from the
+database right now — never from what the cart remembered — and never
+changes anything, so the frontend can call it as often as it likes.
+`/checkout/place` is the only place in the whole API that turns a cart
+into an order: inside one locked database transaction it re-checks stock
+for every line, reserves it, snapshots the order (so a later catalog
+price edit never rewrites what was actually bought), and empties the
+cart. Two customers racing for the last bottle cannot both succeed — the
+lock makes the loser's request fail cleanly instead of overselling.
+
+An order does not charge anyone by itself; it is created `pending_payment`
+and stays that way until Phase 7 wires up Razorpay's webhook, which is the
+only thing allowed to move it to `paid`.
+
 ## Endpoints so far
 
 | Method | Path | Purpose |
@@ -99,6 +115,10 @@ is what actually re-checks the live price before anyone is charged.
 | GET | `/api/v1/wishlist` | Your own saved products *(requires sign-in)* |
 | POST | `/api/v1/wishlist` | Save a product *(requires sign-in)* |
 | DELETE | `/api/v1/wishlist/:productId` | Remove a saved product *(requires sign-in)* |
+| POST | `/api/v1/checkout/quote` | Live total for your own cart, changes nothing *(requires sign-in)* |
+| POST | `/api/v1/checkout/place` | Turn your cart into an order and reserve stock *(requires sign-in)* |
+| GET | `/api/v1/orders` | Your own past orders *(requires sign-in)* |
+| GET | `/api/v1/orders/:id` | One of your own orders, in full *(requires sign-in)* |
 | GET | `/api/v1/admin/whoami` | Proves the admin-only door is locked *(requires an `admin` account)* |
 
 Every response uses one envelope:
