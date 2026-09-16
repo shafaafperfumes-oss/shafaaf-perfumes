@@ -118,6 +118,7 @@ export const inventoryMovementReasonEnum = pgEnum("inventory_movement_reason", [
   "order_reserved",
   "order_released",
   "order_committed",
+  "admin_adjustment",
 ]);
 
 /**

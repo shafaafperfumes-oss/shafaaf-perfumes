@@ -110,6 +110,35 @@ an HMAC signature stands in as the authentication instead. Every webhook
 delivery's own id is recorded before anything else happens, so a retried
 delivery of the same event is safely ignored rather than applied twice.
 
+## The admin area
+
+Everything under `/api/v1/admin` is closed by one role check applied to
+the whole router, so a new admin route cannot accidentally be published
+without it. The role is read from our own `profiles` table on every
+request — never from the sign-in token — so the only way to make someone
+an admin is to change that row in the database. No API route hands out
+admin access, on purpose.
+
+What an admin can do: add and edit products, variants and categories,
+hide a product from the shop (never delete it — past orders still point
+at it), correct stock, see every customer's orders, cancel an unpaid
+order, and look a customer up to answer a support question.
+
+What an admin deliberately **cannot** do:
+
+- **Mark an order paid.** Only the signature-verified Razorpay webhook
+  can do that, because only it can prove money actually arrived.
+- **Cancel an order that was already paid for.** That needs a real
+  refund against Razorpay first, which is not an admin button.
+- **Take stock below what is already promised** to unpaid orders.
+- **Change a customer's role**, or edit a customer's own details.
+
+Every change writes a row to `audit_logs` — who did it, what changed,
+from which IP, and when — **inside the same database transaction as the
+change itself**. So the log can never miss something that happened, and
+can never show something that was rolled back. `GET /admin/audit-logs`
+reads it back; nothing in the API ever edits or deletes those rows.
+
 ## Endpoints so far
 
 | Method | Path | Purpose |
@@ -138,7 +167,29 @@ delivery of the same event is safely ignored rather than applied twice.
 | GET | `/api/v1/orders/:id` | One of your own orders, in full *(requires sign-in)* |
 | POST | `/api/v1/orders/:id/pay` | (Re-)start a payment for one of your own still-pending orders *(requires sign-in)* |
 | POST | `/api/v1/webhooks/razorpay` | Razorpay's own callback — signature-verified, not for browser use |
-| GET | `/api/v1/admin/whoami` | Proves the admin-only door is locked *(requires an `admin` account)* |
+
+Admin only — every route below needs an `admin` account and writes to `audit_logs`:
+
+| Method | Path | Purpose |
+|---|---|---|
+| GET | `/api/v1/admin/whoami` | Proves the admin-only door is locked |
+| GET | `/api/v1/admin/products` | Every product, hidden ones included, paged and searchable |
+| GET | `/api/v1/admin/products/:id` | One product with its variants and their stock |
+| POST | `/api/v1/admin/products` | Add a product |
+| PATCH | `/api/v1/admin/products/:id` | Edit a product, or hide it with `isActive: false` |
+| POST | `/api/v1/admin/products/:id/variants` | Add a sellable size/type, with its stock row |
+| PATCH | `/api/v1/admin/variants/:id` | Edit a variant's price, label or availability |
+| GET | `/api/v1/admin/categories` | Fragrance families, with how many products use each |
+| POST | `/api/v1/admin/categories` | Add a category |
+| PATCH | `/api/v1/admin/categories/:id` | Edit a category |
+| GET | `/api/v1/admin/inventory/low-stock` | The restock list — anything at or below its threshold |
+| POST | `/api/v1/admin/inventory/adjust` | Correct stock by a relative amount, with a reason |
+| GET | `/api/v1/admin/orders` | Every customer's orders, paged, filterable by status |
+| GET | `/api/v1/admin/orders/:id` | One order in full, with who placed it |
+| PATCH | `/api/v1/admin/orders/:id` | Cancel an unpaid order and release its stock |
+| GET | `/api/v1/admin/customers` | Customers with order count and lifetime spend |
+| GET | `/api/v1/admin/customers/:id` | One customer with their addresses and orders |
+| GET | `/api/v1/admin/audit-logs` | The admin paper trail, newest first |
 
 Every response uses one envelope:
 
@@ -179,5 +230,7 @@ tests/             API tests (Vitest + Supertest)
 docs/              architecture, setup guides, API documentation
 ```
 
-Folders for `services/`, `orders/`, `payments/` and `admin/` are added in
-later phases as their features are built, rather than created empty up front.
+Each feature adds its own `*.route.ts` and `*.repository.ts` rather than a
+folder of its own, so a route is always one file away from the queries it
+runs. Admin routes are split across `admin-*.route.ts` files but all hang
+off the single guarded router in `admin.route.ts`.

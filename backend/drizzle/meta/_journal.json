@@ -78,6 +78,20 @@
       "when": 1789543306586,
       "tag": "0010_enable_payments_row_level_security",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1789545453793,
+      "tag": "0011_rapid_dragon_lord",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1789545488009,
+      "tag": "0012_enable_audit_logs_row_level_security",
+      "breakpoints": true
     }
   ]
 }
