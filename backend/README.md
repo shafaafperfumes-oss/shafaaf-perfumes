@@ -69,6 +69,14 @@ token, only by the database itself saying so.
 A Postgres trigger creates a `profiles` row automatically the moment
 someone signs up, so the application code can never forget to.
 
+## Cart and wishlist
+
+Each signed-in customer has one server-side cart, created the first time
+they add something. Every line remembers the price at the moment it was
+added, so a later catalog price change never silently changes what a
+customer already sees sitting in their cart — checkout, in a later phase,
+is what actually re-checks the live price before anyone is charged.
+
 ## Endpoints so far
 
 | Method | Path | Purpose |
@@ -83,6 +91,14 @@ someone signs up, so the application code can never forget to.
 | POST | `/api/v1/me/addresses` | Add a saved address *(requires sign-in)* |
 | PATCH | `/api/v1/me/addresses/:id` | Update one of your own addresses *(requires sign-in)* |
 | DELETE | `/api/v1/me/addresses/:id` | Remove one of your own addresses *(requires sign-in)* |
+| GET | `/api/v1/cart` | Your own server-side cart *(requires sign-in)* |
+| POST | `/api/v1/cart/items` | Add an item, or increase it if already in the cart *(requires sign-in)* |
+| PATCH | `/api/v1/cart/items/:id` | Change one item's quantity *(requires sign-in)* |
+| DELETE | `/api/v1/cart/items/:id` | Remove one item *(requires sign-in)* |
+| DELETE | `/api/v1/cart` | Empty the whole cart *(requires sign-in)* |
+| GET | `/api/v1/wishlist` | Your own saved products *(requires sign-in)* |
+| POST | `/api/v1/wishlist` | Save a product *(requires sign-in)* |
+| DELETE | `/api/v1/wishlist/:productId` | Remove a saved product *(requires sign-in)* |
 | GET | `/api/v1/admin/whoami` | Proves the admin-only door is locked *(requires an `admin` account)* |
 
 Every response uses one envelope:

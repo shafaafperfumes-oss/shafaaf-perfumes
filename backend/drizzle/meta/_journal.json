@@ -29,6 +29,20 @@
       "when": 1789493581084,
       "tag": "0003_auth_security_and_trigger",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1789539035800,
+      "tag": "0004_tan_shocker",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1789539052671,
+      "tag": "0005_enable_shopping_row_level_security",
+      "breakpoints": true
     }
   ]
 }
