@@ -29,6 +29,7 @@ cp .env.example .env
 | `npm start` | Run the compiled build (production) |
 | `npm run db:generate` | Turn `src/db/schema` changes into a new SQL migration |
 | `npm run db:migrate` | Apply pending migrations to the database |
+| `npm run db:migrate:prod` | The same, from the compiled build — what the host runs on deploy |
 | `npm run db:seed` | Load the website's real catalog into the database |
 | `npm run db:studio` | Open Drizzle Studio to browse the data |
 
@@ -109,6 +110,26 @@ stock reservation into a real stock decrease is `POST /webhooks/razorpay`
 an HMAC signature stands in as the authentication instead. Every webhook
 delivery's own id is recorded before anything else happens, so a retried
 delivery of the same event is safely ignored rather than applied twice.
+
+## Hosting
+
+Putting it online for the first time: [`docs/RAILWAY-DEPLOY.md`](docs/RAILWAY-DEPLOY.md).
+
+The backend is deployed to **Railway**; the database stays on Supabase,
+so the host only ever runs the code. `railway.json` holds the whole
+deployment recipe, which means the build command, the start command and
+the health check are reviewed in a pull request like any other code.
+
+Two things it does on every deploy worth knowing:
+
+- **Migrations run before the new version starts** (`preDeployCommand`),
+  so the database schema can never lag behind the code that expects it.
+- **Traffic only moves once `/api/v1/health` answers**, and the old
+  version is given time to finish requests already in flight — a deploy
+  never cuts a customer off mid-checkout.
+
+If a build or a migration fails, Railway keeps the previous working
+version serving.
 
 ## The admin area
 
