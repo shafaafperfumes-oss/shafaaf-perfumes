@@ -38,24 +38,45 @@ You already have everything needed:
 Railway will immediately try to build and fail. That is expected — it is
 looking in the wrong folder. Step 2 fixes that.
 
-## Step 2 — Point Railway at the `backend` folder
+## Step 2 — Tell Railway how to run the backend
 
-Our repository holds the website *and* the backend. Railway needs to know
-it should only build the backend.
+Our repository holds the website *and* the backend, so Railway needs to
+know which folder to build and how to run it. Open the service →
+**Settings** and fill these in. The list on the right-hand side jumps
+between sections; each value has a small "+" button to click before you
+can type.
 
-Open the service → **Settings**, and set:
+**Source**
 
 | Setting | Value |
 |---|---|
 | Root Directory | `backend` |
-| Config file path | `/backend/railway.json` |
 
-Both are needed. Railway's own note: the config file path does **not**
-follow the root directory, so it has to be written out in full.
+**Build**
 
-Everything else — build command, start command, health check, running
-database migrations — is already written down in `backend/railway.json`,
-so there is nothing else to fill in by hand.
+| Setting | Value |
+|---|---|
+| Custom Build Command | `npm run build` |
+
+**Deploy**
+
+| Setting | Value |
+|---|---|
+| Custom Start Command | `npm start` |
+| Pre-deploy Command | `npm run db:migrate:prod` |
+| Healthcheck Path | `/api/v1/health` |
+| Restart Policy | On Failure |
+
+The three that matter most: **Root Directory** (without it Railway looks
+in the wrong folder and finds only the website's HTML), **Pre-deploy
+Command** (this is what applies database migrations before each new
+version starts) and **Healthcheck Path** (Railway only switches traffic to
+a new version once this answers).
+
+Skip the **Config-as-code** section entirely, and do not click "Add File
+Path" there. Railway retired that mechanism for services created after
+August 2026, which is why these settings live in the dashboard rather
+than in a file in the repository.
 
 ## Step 3 — Add the environment variables
 
@@ -140,8 +161,8 @@ If all three work, the backend is live.
 Railway watches the GitHub repository. On every push to `main` it will:
 
 1. install and build the backend,
-2. **apply any new database migrations** (`preDeployCommand` in
-   `railway.json`) — so the database schema never falls behind the code,
+2. **apply any new database migrations** (the Pre-deploy Command from
+   Step 2) — so the database schema never falls behind the code,
 3. start the new version, and only switch traffic over once
    `/api/v1/health` answers,
 4. give the old version time to finish any request already in progress,
@@ -174,3 +195,5 @@ the red build and push more on top of it.
 | Website says "blocked by CORS" | Website address not in `CORS_ALLOWED_ORIGINS` | Step 5 — it must match exactly, including `https://` |
 | Orders never become `paid` | Razorpay webhook URL wrong or not set | Step 6; Razorpay's dashboard shows every webhook attempt |
 | Deploy log stops at "db:migrate" | `DIRECT_URL` missing — migrations need the port-5432 connection | Step 3 |
+| Log says `Missing script: db:migrate:pro` (or similar) | A command in Step 2 was typed with a letter missing | Re-check the Pre-deploy / Start / Build commands character by character |
+| Deploy shows the website's HTML instead of JSON | Root Directory is not set, so Railway served the site folder | Step 2 |

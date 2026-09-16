@@ -116,9 +116,10 @@ delivery of the same event is safely ignored rather than applied twice.
 Putting it online for the first time: [`docs/RAILWAY-DEPLOY.md`](docs/RAILWAY-DEPLOY.md).
 
 The backend is deployed to **Railway**; the database stays on Supabase,
-so the host only ever runs the code. `railway.json` holds the whole
-deployment recipe, which means the build command, the start command and
-the health check are reviewed in a pull request like any other code.
+so the host only ever runs the code. The build, start, pre-deploy and
+health-check settings live in the Railway dashboard — Railway retired its
+in-repo `railway.json` mechanism for services created after August 2026 —
+and the guide above lists every value so they can be re-entered exactly.
 
 Two things it does on every deploy worth knowing:
 
