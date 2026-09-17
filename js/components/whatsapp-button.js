@@ -27,7 +27,7 @@
     link.rel = "noopener";
     link.setAttribute("aria-label", "Chat with us on WhatsApp");
     link.title = "Chat with us on WhatsApp";
-    link.innerHTML = shafaafIcon("whatsapp", "wa-fab__icon");
+    link.innerHTML = shafaafIcon("whatsapp", "wa-fab__icon") + '<span class="wa-fab__label">Chat with us</span>';
     document.body.appendChild(link);
   }
 
