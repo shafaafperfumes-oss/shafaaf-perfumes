@@ -35,7 +35,7 @@
 .pdp-field__label { font-size: var(--fs-xs); font-weight: var(--fw-medium); letter-spacing: var(--ls-wide); text-transform: uppercase; color: var(--c-text-muted); margin-bottom: var(--sp-3); display: block; }
 
 .pdp-actions { display: flex; gap: var(--sp-3); margin-top: var(--sp-8); flex-wrap: wrap; }
-.pdp-actions .btn--primary, .pdp-actions .btn--outline { flex: 1; min-width: 160px; }
+.pdp-actions .btn--metal { flex: 1; min-width: 160px; }
 .pdp-wishlist-btn {
   width: 52px; height: 52px; border-radius: var(--r-full); border: 1px solid var(--c-line-strong);
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;

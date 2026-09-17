@@ -88,8 +88,8 @@ shafaafOnCatalogReady(function () {
         '</div>' +
 
         '<div class="pdp-actions">' +
-          '<button type="button" class="btn btn--outline" id="pdp-add-cart">Add to Cart</button>' +
-          '<button type="button" class="btn btn--primary" id="pdp-buy-now">Buy Now</button>' +
+          '<button type="button" class="btn btn--metal" id="pdp-add-cart">Add to Cart</button>' +
+          '<button type="button" class="btn btn--metal" id="pdp-buy-now">Buy Now</button>' +
           '<button type="button" class="pdp-wishlist-btn" id="pdp-wishlist" data-active="' + wishlisted + '" aria-pressed="' + wishlisted + '" aria-label="Toggle wishlist">' + shafaafIcon("heart") + '</button>' +
         '</div>' +
 
