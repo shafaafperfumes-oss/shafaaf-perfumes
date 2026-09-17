@@ -89,6 +89,12 @@ upload. Live at `https://shafaaf-perfumes.shafaafperfumes.workers.dev`
 until the shop's own domain is attached. `.html` links are redirected
 to clean URLs (`/shop.html` → `/shop`), query strings kept.
 
+`worker.js` is the one bit of code that runs on Cloudflare: it answers
+`/sitemap.xml` (every public page plus each product, read live from the
+backend) and `/robots.txt` (keeps cart, checkout, orders, wishlist and
+admin out of search results). Both use whatever address the site is
+reached on, so they need no change when the domain is attached.
+
 The backend is a separate service on Railway (`backend/README.md`); its
 `CORS_ALLOWED_ORIGINS` variable must list every address the website is
 served from, or the site cannot reach it.

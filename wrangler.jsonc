@@ -5,9 +5,19 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "shafaaf-perfumes",
   "compatibility_date": "2026-09-01",
+  // Runs only for URLs that match no file: today /sitemap.xml and
+  // /robots.txt (see worker.js). Every real page is served as a plain
+  // file without touching it.
+  "main": "worker.js",
   "assets": {
     "directory": "./",
+    "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "none"
+  },
+  "vars": {
+    // Where worker.js reads the product list from (not a secret — the
+    // same address every visitor's browser calls; see js/config.js).
+    "API_BASE_URL": "https://shafaaf-perfumes-production.up.railway.app/api/v1"
   }
 }

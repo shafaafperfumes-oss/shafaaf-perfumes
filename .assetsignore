@@ -10,3 +10,4 @@ scripts/
 wrangler.jsonc
 CLAUDE.md
 README.md
+worker.js
