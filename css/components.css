@@ -511,6 +511,23 @@
   animation: toast-in var(--dur-normal) var(--ease-out) forwards;
 }
 .toast.is-leaving { animation: toast-out var(--dur-fast) var(--ease-out) forwards; }
+
+/* ---------- Floating WhatsApp button ---------- */
+.wa-fab {
+  position: fixed; right: var(--sp-5); bottom: var(--sp-5); z-index: var(--z-header);
+  width: 56px; height: 56px; border-radius: var(--r-full);
+  display: flex; align-items: center; justify-content: center;
+  background: var(--c-whatsapp); color: #fff;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.4), var(--shadow-md);
+  transition: transform var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+.wa-fab:hover { background: var(--c-whatsapp-dark); color: #fff; transform: translateY(-2px) scale(1.04); }
+.wa-fab__icon { width: 30px; height: 30px; }
+/* Product page on phones: sit above the sticky "add to cart" bar. */
+@media (max-width: 767px) {
+  .wa-fab { right: var(--sp-4); bottom: max(var(--sp-4), env(safe-area-inset-bottom)); }
+  .sticky-buybar.is-visible ~ .wa-fab { bottom: calc(76px + env(safe-area-inset-bottom)); }
+}
 @keyframes toast-in { to { opacity: 1; transform: translateY(0); } }
 @keyframes toast-out { to { opacity: 0; transform: translateY(8px); } }
 .toast__icon { width: 20px; height: 20px; flex-shrink: 0; color: var(--c-gold); }

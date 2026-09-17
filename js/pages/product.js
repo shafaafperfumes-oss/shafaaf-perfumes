@@ -244,6 +244,8 @@ shafaafOnCatalogReady(function () {
   }
 
   document.title = product.name + " — Shafaaf Perfumes";
+  document.body.setAttribute("data-whatsapp-topic", product.name);
+  document.dispatchEvent(new CustomEvent("shafaaf:whatsapp:topic"));
   var metaDesc = document.getElementById("page-desc");
   if (metaDesc) metaDesc.setAttribute("content", product.description);
 
