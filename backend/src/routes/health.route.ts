@@ -36,6 +36,10 @@ healthRouter.get("/ready", async (_req, res) => {
 
   // Config-presence only, not a live call to Supabase — keeps /ready fast.
   checks.auth = env.hasAuth ? "ok" : "not-configured";
+  // Presence of the Razorpay keys and webhook secret, nothing more — so
+  // the owner can confirm a Railway variable landed without exposing it.
+  checks.payments = env.hasPayments ? "ok" : "not-configured";
+  checks.paymentWebhook = env.hasPaymentWebhook ? "ok" : "not-configured";
 
   const ready = Object.values(checks).every((status) => status !== "unavailable");
 

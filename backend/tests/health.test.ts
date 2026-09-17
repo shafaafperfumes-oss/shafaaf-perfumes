@@ -27,6 +27,14 @@ describe("health endpoints", () => {
     expect(["ok", "not-configured", "unavailable"]).toContain(res.body.data.checks.database);
   });
 
+  it("reports whether payments are configured, without any key material", async () => {
+    const res = await request(app).get(`${API_PREFIX}/ready`);
+
+    expect(["ok", "not-configured"]).toContain(res.body.data.checks.payments);
+    expect(["ok", "not-configured"]).toContain(res.body.data.checks.paymentWebhook);
+    expect(JSON.stringify(res.body)).not.toMatch(/rzp_(test|live)_/);
+  });
+
   it("never reveals the database host or password in the readiness body", async () => {
     const res = await request(app).get(`${API_PREFIX}/ready`);
 
