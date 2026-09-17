@@ -39,6 +39,6 @@
     supabaseUrl: "https://uaigqaqpghsqvwelmofx.supabase.co",
     // Supabase dashboard -> Project Settings -> API Keys -> "Publishable key".
     // Leave empty and the site still works; sign-in just says it is unavailable.
-    supabasePublishableKey: ""
+    supabasePublishableKey: "sb_publishable_0jgOd7PfsKXfnl39S9DxRw_xggaBJHx"
   };
 })();
