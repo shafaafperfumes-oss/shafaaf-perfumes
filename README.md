@@ -79,6 +79,20 @@ images/
 scripts/dev-server.ps1   local static file server (no Node/Python required)
 ```
 
+## Hosting
+
+The website is served by Cloudflare (Workers static assets) straight from
+this repository: every push to `main` redeploys it within a minute.
+`wrangler.jsonc` says "serve this folder as a static site" and
+`.assetsignore` keeps the backend source, scripts and notes out of the
+upload. Live at `https://shafaaf-perfumes.shafaafperfumes.workers.dev`
+until the shop's own domain is attached. `.html` links are redirected
+to clean URLs (`/shop.html` → `/shop`), query strings kept.
+
+The backend is a separate service on Railway (`backend/README.md`); its
+`CORS_ALLOWED_ORIGINS` variable must list every address the website is
+served from, or the site cannot reach it.
+
 ## Running Locally
 
 No build step needed. Either:
