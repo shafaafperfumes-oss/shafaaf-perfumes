@@ -337,6 +337,7 @@
 }
 
 .logo {
+  display: inline-flex; align-items: center; gap: var(--sp-3);
   font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: var(--fw-bold);
@@ -345,8 +346,15 @@
   white-space: nowrap;
 }
 .logo span { color: var(--c-gold); }
-@media (max-width: 480px) {
-  .logo { font-size: 1.05rem; letter-spacing: var(--ls-tight); }
+/* gold calligraphy mark beside the wordmark; shrinks with the header */
+.logo__mark { flex: 0 0 auto; height: 44px; width: auto; transition: height var(--dur-normal) var(--ease-out); }
+.site-header.is-solid .logo__mark { height: 38px; }
+.footer-brand .logo__mark { height: 56px; }
+.drawer__header .logo__mark { height: 30px; }
+@media (max-width: 640px) {
+  .logo { font-size: 1.05rem; letter-spacing: var(--ls-tight); gap: var(--sp-2); }
+  .site-header .logo__mark { height: 34px; }
+  .site-header.is-solid .logo__mark { height: 30px; }
 }
 
 .nav-primary { display: none; align-items: center; gap: var(--sp-8); }
