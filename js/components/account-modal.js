@@ -4,6 +4,11 @@
  * menu). Injects its own markup, so pages only need the script tag.
  * Re-renders whenever "shafaaf:auth:change" fires, so it always
  * shows the right state without any page-level wiring.
+ *
+ * Administrators also get a "Store admin" shortcut to admin.html. That
+ * is purely a convenience: the role is asked of the backend (/me) and
+ * every admin page and API re-checks it server-side, so hiding or
+ * showing the button here grants nothing.
  */
 
 var ShafaafAccountModal = (function () {
@@ -14,6 +19,9 @@ var ShafaafAccountModal = (function () {
   var busy = false;
   // What the shopper last typed, so an error re-render does not wipe it.
   var draft = { fullName: "", email: "" };
+  // The signed-in account's role, looked up once per sign-in:
+  // { userId, isAdmin }. Null until asked, or after a sign-out.
+  var role = null;
 
   function modal() { return document.getElementById(MODAL_ID); }
   function body() { return document.getElementById("account-modal-body"); }
@@ -62,11 +70,33 @@ var ShafaafAccountModal = (function () {
       '<p class="section-sub account-panel__email">' + escapeHtml(user.email || "") + '</p>' +
       noticeHtml() +
       '<div class="account-panel__actions">' +
-        '<a href="orders.html" class="btn btn--primary btn--block">Your orders</a>' +
+        (isAdmin(user) ? '<a href="admin.html" class="btn btn--primary btn--block">Store admin</a>' : "") +
+        '<a href="orders.html" class="btn btn--' + (isAdmin(user) ? "outline" : "primary") + ' btn--block">Your orders</a>' +
         '<a href="cart.html" class="btn btn--outline btn--block">View your cart</a>' +
         '<button type="button" class="btn btn--outline btn--block" data-account-signout>' + submitLabel("Sign out") + '</button>' +
       '</div>'
     );
+  }
+
+  function isAdmin(user) {
+    return Boolean(role && user && role.userId === user.id && role.isAdmin);
+  }
+
+  /**
+   * Asks the backend whether the signed-in account is an administrator,
+   * then re-renders if the modal is still open for that same account.
+   * A failed lookup (offline, backend down) just means no shortcut.
+   */
+  function lookupRole(user) {
+    if (!user || (role && role.userId === user.id)) return;
+    if (typeof ShafaafApi === "undefined") return;
+    ShafaafApi.get("/me", { auth: true }).then(function (data) {
+      var profile = data && data.profile;
+      if (!profile) return;
+      role = { userId: user.id, isAdmin: profile.role === "admin" };
+      var current = ShafaafAuth.getUser();
+      if (isOpen() && current && current.id === user.id) render();
+    }).catch(function () { /* no shortcut this time */ });
   }
 
   function renderTabs() {
@@ -136,6 +166,7 @@ var ShafaafAccountModal = (function () {
     var user = ShafaafAuth.getUser();
     if (user) {
       el.innerHTML = renderSignedIn(user);
+      lookupRole(user);
       return;
     }
 
@@ -296,6 +327,8 @@ var ShafaafAccountModal = (function () {
     });
 
     document.addEventListener("shafaaf:auth:change", function () {
+      var user = ShafaafAuth.getUser();
+      if (!user || (role && role.userId !== user.id)) role = null;
       reflectHeader();
       if (isOpen()) render();
     });
