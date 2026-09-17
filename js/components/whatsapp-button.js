@@ -28,6 +28,10 @@
     link.setAttribute("aria-label", "Chat with us on WhatsApp");
     link.title = "Chat with us on WhatsApp";
     link.innerHTML = shafaafIcon("whatsapp", "wa-fab__icon") + '<span class="wa-fab__label">Chat with us</span>';
+    // The shared icon keeps a little air around the logo; crop it so the
+    // logo fills the circle.
+    var svg = link.querySelector("svg");
+    if (svg) svg.setAttribute("viewBox", "1.6 1.6 20.8 20.8");
     document.body.appendChild(link);
   }
 
