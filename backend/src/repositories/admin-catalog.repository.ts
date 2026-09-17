@@ -2,7 +2,9 @@ import { and, asc, eq, ilike, inArray, sql } from "drizzle-orm";
 import { getDb } from "../db/client.js";
 import {
   fragranceFamilies,
+  fragranceNotes,
   inventory,
+  productNotes,
   productVariants,
   products,
   type Product,
@@ -147,6 +149,8 @@ export interface AdminVariantDetail {
 export interface AdminProductDetail extends Omit<AdminProductSummary, "variantCount" | "stockOnHand"> {
   familyId: string | null;
   description: string;
+  /** Fragrance notes in display order, read-only here (the shop shows them). */
+  notes: string[];
   heroImageUrl: string | null;
   heroImageAlt: string | null;
   sortOrder: number;
@@ -180,6 +184,13 @@ export async function getAdminProduct(productId: string): Promise<AdminProductDe
 
   if (!row) return null;
 
+  const noteRows = await db
+    .select({ name: fragranceNotes.name })
+    .from(productNotes)
+    .innerJoin(fragranceNotes, eq(productNotes.noteId, fragranceNotes.id))
+    .where(eq(productNotes.productId, productId))
+    .orderBy(asc(productNotes.position));
+
   const variants = await db
     .select({
       id: productVariants.id,
@@ -202,6 +213,7 @@ export async function getAdminProduct(productId: string): Promise<AdminProductDe
 
   return {
     ...row,
+    notes: noteRows.map((note) => note.name),
     variants: variants.map((variant) => ({
       ...variant,
       quantity: variant.quantity ?? 0,

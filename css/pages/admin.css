@@ -79,6 +79,11 @@
 .admin-product__chevron { width: 18px; height: 18px; color: var(--c-text-faint); transition: transform var(--dur-fast) var(--ease-out); }
 .admin-product.is-open .admin-product__chevron { transform: rotate(90deg); }
 .admin-product__body { padding: 0 var(--sp-6) var(--sp-5); border-top: 1px solid var(--c-line); min-width: 0; }
+.admin-details { padding: var(--sp-4) 0; border-bottom: 1px solid var(--c-line); margin-bottom: var(--sp-2); }
+.admin-details__desc { font-size: var(--fs-sm); color: var(--c-text-muted); line-height: 1.6; max-width: 70ch; }
+.admin-notes { display: flex; flex-direction: column; gap: var(--sp-2); margin-top: var(--sp-3); }
+.admin-notes__band { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); }
+.admin-notes__label { min-width: 48px; font-size: var(--fs-xs); letter-spacing: var(--ls-wide); text-transform: uppercase; color: var(--c-text-faint); }
 .admin-adjust { display: flex; gap: var(--sp-2); align-items: center; flex-wrap: wrap; }
 .admin-adjust .input { min-height: 38px; padding: 0 10px; font-size: var(--fs-sm); }
 .admin-adjust__delta { width: 72px; text-align: center; }

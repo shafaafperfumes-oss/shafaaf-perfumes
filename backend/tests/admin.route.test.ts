@@ -174,6 +174,8 @@ describeWithAuth("the admin API", () => {
     expect(detail.status).toBe(200);
     expect(detail.body.data.product.variants).toHaveLength(1);
     expect(detail.body.data.product.variants[0].quantity).toBe(4);
+    // A product made through the API has no notes yet; the field is still there for the admin page.
+    expect(detail.body.data.product.notes).toEqual([]);
   });
 
   it("refuses a second product with the same web address", async () => {

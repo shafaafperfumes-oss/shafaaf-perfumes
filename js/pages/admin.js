@@ -349,10 +349,32 @@
     return (v.variantType === "attar" ? "Attar" : "Perfume") + " · " + v.sizeLabel;
   }
 
+  // What the shop shows the customer for this product, for reference —
+  // read-only here, so names, notes and copy can never be changed by accident.
+  function renderDetails(detail) {
+    var groups = shafaafGroupNotes(detail.notes || []);
+    var bands = [["top", "Top"], ["heart", "Heart"], ["base", "Base"]];
+    var notesHtml = bands.map(function (b) {
+      if (!groups[b[0]].length) return "";
+      return (
+        '<div class="admin-notes__band"><span class="admin-notes__label">' + b[1] + '</span>' +
+          groups[b[0]].map(function (n) { return '<span class="badge badge--soft">' + escapeHtml(n) + '</span>'; }).join("") +
+        '</div>'
+      );
+    }).join("");
+    return (
+      '<div class="admin-details">' +
+        '<p class="admin-details__desc">' + (detail.description ? escapeHtml(detail.description) : '<span class="admin-empty">No description yet.</span>') + '</p>' +
+        '<div class="admin-notes">' + (notesHtml || '<span class="admin-empty">No notes yet.</span>') + '</div>' +
+      '</div>'
+    );
+  }
+
   function renderVariants(detail) {
     if (!detail) return '<p class="admin-empty">Loading…</p>';
-    if (!detail.variants.length) return '<p class="admin-empty">No sizes yet.</p>';
+    if (!detail.variants.length) return renderDetails(detail) + '<p class="admin-empty">No sizes yet.</p>';
     return (
+      renderDetails(detail) +
       '<div class="admin-table__wrap"><table class="admin-table">' +
         '<thead><tr><th>Size</th><th>SKU</th><th class="num">Price</th><th class="num">In stock</th><th class="num">Reserved</th><th class="num">Available</th><th>Adjust</th></tr></thead>' +
         '<tbody>' +
