@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Wishlist — Shafaaf Perfumes</title>
-  <meta name="description" content="Your saved fragrances from Shafaaf Perfumes.">
+  <title>Checkout — Shafaaf Perfumes</title>
+  <meta name="description" content="Choose a delivery address and pay securely for your Shafaaf Perfumes order.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/pages/cart.css">
+  <link rel="stylesheet" href="css/pages/checkout.css">
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -40,14 +40,13 @@
   </header>
 
   <main id="main">
-    <div class="wishlist-page">
+    <div class="checkout-page">
       <div class="container">
         <nav class="breadcrumbs" aria-label="Breadcrumb">
-          <a href="index.html">Home</a><span class="breadcrumbs__sep">/</span><span aria-current="page">Wishlist</span>
+          <a href="index.html">Home</a><span class="breadcrumbs__sep">/</span><a href="cart.html">Your Bag</a><span class="breadcrumbs__sep">/</span><span aria-current="page">Checkout</span>
         </nav>
-        <h1 class="section-title" style="margin-top:12px">Your Wishlist</h1>
-        <p class="section-sub" id="wishlist-count-label"></p>
-        <div class="grid-products" id="wishlist-grid" style="margin-top:var(--sp-10)"></div>
+        <h1 class="section-title" style="margin-top:12px">Checkout</h1>
+        <div id="checkout-content" aria-live="polite"></div>
       </div>
     </div>
   </main>
@@ -169,6 +168,7 @@
   <script src="js/lib/overlay-manager.js"></script>
   <script src="js/lib/cart.js"></script>
   <script src="js/lib/wishlist.js"></script>
+  <script src="js/lib/payment.js"></script>
   <script src="js/components/toast.js"></script>
   <script src="js/components/placeholder-art.js"></script>
   <script src="js/components/product-card.js"></script>
@@ -178,6 +178,6 @@
   <script src="js/components/search-overlay.js"></script>
   <script src="js/components/quick-view.js"></script>
   <script src="js/main.js"></script>
-  <script src="js/pages/wishlist.js"></script>
+  <script src="js/pages/checkout.js"></script>
 </body>
 </html>

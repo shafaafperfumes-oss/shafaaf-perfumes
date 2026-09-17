@@ -47,14 +47,14 @@
         '<div class="cart-summary">' +
           '<h3 style="font-size:var(--fs-lg)">Order Summary</h3>' +
           '<div class="cart-summary__row"><span>Subtotal</span><span>' + shafaafFormatPrice(subtotal) + '</span></div>' +
-          '<div class="cart-summary__row"><span>Shipping</span><span>Calculated on WhatsApp</span></div>' +
+          '<div class="cart-summary__row"><span>Shipping</span><span>Free</span></div>' +
           '<div class="cart-summary__row cart-summary__row--total"><span>Total</span><span>' + shafaafFormatPrice(subtotal) + '</span></div>' +
-          '<p class="cart-summary__note">Taxes, if applicable, and final shipping cost are confirmed with you directly on WhatsApp before dispatch.</p>' +
+          '<p class="cart-summary__note">Prices and stock are confirmed at checkout. Pay securely by card, UPI, net banking or wallet.</p>' +
           '<form id="promo-form">' +
             '<input type="text" class="input" placeholder="Promo code" aria-label="Promo code">' +
             '<button type="submit" class="btn btn--outline">Apply</button>' +
           '</form>' +
-          '<button type="button" class="btn btn--whatsapp btn--block" style="margin-top:24px" data-checkout>' + shafaafIcon("whatsapp") + ' Checkout on WhatsApp</button>' +
+          '<a href="checkout.html" class="btn btn--primary btn--block" style="margin-top:24px">Proceed to Checkout</a>' +
           '<a href="shop.html" class="btn btn--ghost btn--block" style="margin-top:8px;justify-content:center">Continue Shopping</a>' +
         '</div>' +
       '</div>';
@@ -80,9 +80,6 @@
         if (e.target.closest("[data-qty-dec]")) ShafaafCart.setQty(id, current.qty - 1);
         if (e.target.closest("[data-line-remove]")) { ShafaafCart.removeLine(id); ShafaafToast.show("Removed from cart"); }
       }
-    }
-    if (e.target.closest("[data-checkout]")) {
-      shafaafCheckout(ShafaafCart.getItems());
     }
   });
 })();

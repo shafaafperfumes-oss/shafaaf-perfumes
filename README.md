@@ -10,9 +10,17 @@ an account and sign in (header account icon; `js/lib/auth.js` +
 `js/components/account-modal.js`). A signed-in customer's cart is kept
 on the backend (`/cart`) so it follows them to any device; guests keep
 a browser-only cart, which is merged into their account the moment
-they sign in (`js/lib/cart.js`). Real checkout exists in the backend
-but is not wired into the pages yet: checkout still opens a pre-filled
-WhatsApp message (`js/lib/whatsapp-checkout.js`) until that step lands.
+they sign in (`js/lib/cart.js`). Checkout is real: `checkout.html`
+asks a signed-in customer for a delivery address (saved via
+`/me/addresses`), shows the order as the backend priced it
+(`POST /checkout/quote`), places it (`POST /checkout/place`) and opens
+Razorpay's payment window (`js/lib/payment.js`, loaded only at that
+moment). `orders.html` lists the customer's orders; `orders.html?id=…`
+shows one, with a "Pay now" button while it is still awaiting payment.
+The browser never marks an order paid — Razorpay tells the backend
+(webhook) and the page simply reads the status back. Until the Razorpay
+keys are set on the backend, orders are still created and stock
+reserved; the page just says payments are unavailable.
 
 **Sign-in:** the browser talks to Supabase Auth directly using the
 project URL and *publishable* key in `js/config.js` (both are meant to
@@ -45,14 +53,14 @@ Vanilla HTML/CSS/JS — no build step, no framework, no Node dependency. Chosen 
 ## Project Structure
 
 ```
-index.html, shop.html, product.html, cart.html, wishlist.html,
-fragrance-finder.html, about.html, contact.html
+index.html, shop.html, product.html, cart.html, checkout.html, orders.html,
+wishlist.html, fragrance-finder.html, about.html, contact.html
 css/
   tokens.css, base.css, components.css, layout.css
-  pages/  (home.css, shop.css, product.css, cart.css, finder.css, static.css)
+  pages/  (home.css, shop.css, product.css, cart.css, checkout.css, finder.css, static.css)
 js/
   data/       product + review data
-  lib/        cart, wishlist, storage, format, icons, whatsapp checkout, note-family grouping
+  lib/        config, auth, api, cart, wishlist, payment (Razorpay window), storage, format, icons, note-family grouping
   components/ header, cart-drawer, search-overlay, quick-view, product-card, toast, accordion, placeholder-art
   pages/      one file per page for page-specific rendering
 images/
@@ -79,5 +87,5 @@ Then visit `http://localhost:8080`.
 ## Known Follow-ups
 
 - `images/yemberzal.jpg` is ~28MB and `images/velvet-petal.jpg` is ~2MB — both should be compressed/resized before this site is pointed at real traffic. No image tooling was available in the build environment to do this automatically.
-- `SHAFAAF_WHATSAPP_NUMBER` in `js/lib/whatsapp-checkout.js` is the number carried over from the previous site version — confirm it's still correct.
+- `js/lib/whatsapp-checkout.js` is no longer loaded by any page (checkout now goes through the backend and Razorpay); it can be deleted. The WhatsApp number in the footer links is the one carried over from the previous site version — confirm it's still correct.
 - Ratings/review counts and the "bestseller"/"new" badges are placeholder merchandising data, structured so a real reviews/inventory backend can replace them later.

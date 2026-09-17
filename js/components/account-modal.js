@@ -62,7 +62,8 @@ var ShafaafAccountModal = (function () {
       '<p class="section-sub account-panel__email">' + escapeHtml(user.email || "") + '</p>' +
       noticeHtml() +
       '<div class="account-panel__actions">' +
-        '<a href="cart.html" class="btn btn--primary btn--block">View your cart</a>' +
+        '<a href="orders.html" class="btn btn--primary btn--block">Your orders</a>' +
+        '<a href="cart.html" class="btn btn--outline btn--block">View your cart</a>' +
         '<button type="button" class="btn btn--outline btn--block" data-account-signout>' + submitLabel("Sign out") + '</button>' +
       '</div>'
     );

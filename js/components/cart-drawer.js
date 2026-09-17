@@ -58,8 +58,8 @@
       var subtotal = ShafaafCart.getSubtotal();
       e.footer.innerHTML =
         '<div class="cart-drawer__subtotal"><span>Subtotal</span><span class="price__current">' + shafaafFormatPrice(subtotal) + '</span></div>' +
-        '<p class="cart-drawer__note">Shipping and delivery time confirmed on WhatsApp.</p>' +
-        '<button type="button" class="btn btn--whatsapp btn--block" data-checkout>' + shafaafIcon("whatsapp") + ' Checkout on WhatsApp</button>' +
+        '<p class="cart-drawer__note">Free shipping. Secure payment by card, UPI, net banking or wallet.</p>' +
+        '<a href="checkout.html" class="btn btn--primary btn--block">Checkout</a>' +
         '<a href="cart.html" class="btn btn--outline btn--block" style="margin-top:10px">View Full Cart</a>';
     }
   }
@@ -104,12 +104,6 @@
     if (e.target.closest("[data-line-remove]")) {
       ShafaafCart.removeLine(id);
       ShafaafToast.show("Removed from cart");
-    }
-  });
-
-  document.addEventListener("click", function (e) {
-    if (e.target.closest("[data-checkout]")) {
-      shafaafCheckout(ShafaafCart.getItems());
     }
   });
 

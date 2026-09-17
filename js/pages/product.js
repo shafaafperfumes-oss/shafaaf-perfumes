@@ -208,7 +208,7 @@ shafaafOnCatalogReady(function () {
 
       if (e.target.closest("#pdp-buy-now")) {
         addToCart();
-        shafaafCheckout(ShafaafCart.getItems());
+        window.location.href = "checkout.html";
         return;
       }
     });
