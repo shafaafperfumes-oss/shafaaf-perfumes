@@ -6,8 +6,8 @@
 var ShafaafIcons = {
   search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>',
   heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20.5s-7.5-4.6-10-9.3C0.3 7.7 2 4 5.8 4c2.1 0 3.6 1.2 4.6 2.6C11.4 5.2 12.9 4 15 4c3.8 0 5.5 3.7 3.8 7.2-2.5 4.7-10 9.3-10 9.3z" stroke-linejoin="round"/></svg>',
-  bag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 8h12l-1 13H7L6 8z" stroke-linejoin="round"/><path d="M9 8a3 3 0 016 0" stroke-linecap="round"/></svg>',
-  cart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 4h2.2l2.3 10.5h10.6L20 7H6.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 18.5h.01M17 18.5h.01" stroke-width="3" stroke-linecap="round"/></svg>',
+  // cart/trolley drawing; the old bag shape read like a bin
+  bag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 4h2.2l2.3 10.5h10.6L20 7H6.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 18.5h.01M17 18.5h.01" stroke-width="3" stroke-linecap="round"/></svg>',
   user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.5-4 5-5.5 7.5-5.5s6 1.5 7.5 5.5" stroke-linecap="round"/></svg>',
   close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 5l14 14M19 5L5 19" stroke-linecap="round"/></svg>',
   chevronDown: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
