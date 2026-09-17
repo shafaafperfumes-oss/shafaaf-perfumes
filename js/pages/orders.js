@@ -16,6 +16,8 @@
   var STATUS = {
     pending_payment: { label: "Awaiting payment", tone: "pending" },
     paid: { label: "Paid", tone: "paid" },
+    shipped: { label: "Shipped", tone: "shipped" },
+    delivered: { label: "Delivered", tone: "delivered" },
     cancelled: { label: "Cancelled", tone: "cancelled" }
   };
   var CONFIRM_ATTEMPTS = 12;   // ~30 seconds of polling after the popup closes

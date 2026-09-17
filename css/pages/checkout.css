@@ -87,6 +87,8 @@
 }
 .order-status--pending { background: var(--c-champagne); color: var(--c-espresso); }
 .order-status--paid { background: var(--c-success-bg); color: var(--c-success); }
+.order-status--shipped { background: #e8eef7; color: #2f4f7f; }
+.order-status--delivered { background: var(--c-espresso); color: var(--c-text-on-dark); }
 .order-status--cancelled { background: var(--c-error-bg); color: var(--c-error); }
 
 /* Order detail */

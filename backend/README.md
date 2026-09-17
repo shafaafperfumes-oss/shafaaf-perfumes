@@ -91,7 +91,11 @@ cart. Two customers racing for the last bottle cannot both succeed — the
 lock makes the loser's request fail cleanly instead of overselling.
 
 An order does not charge anyone by itself; it is created `pending_payment`
-until a real payment is confirmed.
+until a real payment is confirmed. From there its life is
+`paid` → `shipped` → `delivered`, each step set by an administrator once
+the parcel actually moves (with a note the customer sees — courier,
+tracking number), or `cancelled`, which is only possible while still
+unpaid and hands the reserved stock back.
 
 ## Payments (Razorpay)
 
@@ -143,8 +147,9 @@ admin access, on purpose.
 
 What an admin can do: add and edit products, variants and categories,
 hide a product from the shop (never delete it — past orders still point
-at it), correct stock, see every customer's orders, cancel an unpaid
-order, and look a customer up to answer a support question.
+at it), correct stock, see every customer's orders, mark a paid order
+shipped and then delivered, cancel an unpaid order, and look a customer
+up to answer a support question.
 
 What an admin deliberately **cannot** do:
 
@@ -208,7 +213,7 @@ Admin only — every route below needs an `admin` account and writes to `audit_l
 | POST | `/api/v1/admin/inventory/adjust` | Correct stock by a relative amount, with a reason |
 | GET | `/api/v1/admin/orders` | Every customer's orders, paged, filterable by status |
 | GET | `/api/v1/admin/orders/:id` | One order in full, with who placed it |
-| PATCH | `/api/v1/admin/orders/:id` | Cancel an unpaid order and release its stock |
+| PATCH | `/api/v1/admin/orders/:id` | Move an order on: `cancelled` (unpaid only, releases stock), `shipped` (paid only) or `delivered` (shipped only), with an optional note |
 | GET | `/api/v1/admin/customers` | Customers with order count and lifetime spend |
 | GET | `/api/v1/admin/customers/:id` | One customer with their addresses and orders |
 | GET | `/api/v1/admin/audit-logs` | The admin paper trail, newest first |

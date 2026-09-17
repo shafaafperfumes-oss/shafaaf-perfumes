@@ -14,6 +14,8 @@ import { addresses, orders, profiles } from "../db/schema/index.js";
  * table, and are not copied in here.
  */
 
+const PAID_STATUSES = new Set(["paid", "shipped", "delivered"]);
+
 export interface AdminCustomerSummary {
   id: string;
   fullName: string | null;
@@ -68,13 +70,14 @@ export async function listCustomers(options: {
 
   if (rows.length === 0) return { customers: [], total: totals?.count ?? 0 };
 
-  // Lifetime spend counts paid orders only — an unpaid or cancelled order
-  // is not money the shop ever received.
+  // Lifetime spend counts orders that were paid for (including ones since
+  // shipped or delivered) — an unpaid or cancelled order is not money the
+  // shop ever received.
   const spend = await db
     .select({
       userId: orders.userId,
       orderCount: sql<number>`count(*)`.mapWith(Number),
-      paidPaise: sql<number>`coalesce(sum(${orders.totalPaise}) filter (where ${orders.status} = 'paid'), 0)`.mapWith(
+      paidPaise: sql<number>`coalesce(sum(${orders.totalPaise}) filter (where ${orders.status} in ('paid', 'shipped', 'delivered')), 0)`.mapWith(
         Number,
       ),
     })
@@ -148,7 +151,7 @@ export async function getCustomerDetail(userId: string): Promise<AdminCustomerDe
   ]);
 
   const paidPaise = orderRows
-    .filter((order) => order.status === "paid")
+    .filter((order) => PAID_STATUSES.has(order.status))
     .reduce((sum, order) => sum + order.totalPaise, 0);
 
   return {

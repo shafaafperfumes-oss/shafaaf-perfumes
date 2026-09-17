@@ -25,14 +25,21 @@ import { productVariants } from "./catalog.js";
  * itself are frozen copies: a later catalog price edit or an address book
  * change must never rewrite what a customer already bought.
  *
- * Payment is not wired up yet (that is Phase 7), so every order made in
- * this phase stays `pending_payment` — it already reserved real stock
- * (see `inventory.reserved` on the matching product_variant row and the
- * ledger entry this creates in `inventory_movements`), it just has no way
- * yet to move forward to `paid` or back to `cancelled`.
+ * An order's life: `pending_payment` (stock reserved) -> `paid` (set only
+ * by the signature-verified Razorpay webhook, stock committed) -> `shipped`
+ * -> `delivered`, each set by an administrator once the parcel actually
+ * moves. `cancelled` is reachable only from `pending_payment` and hands
+ * the reserved stock back; a paid order is never cancelled here because
+ * that would need a real refund first.
  */
 
-export const orderStatusEnum = pgEnum("order_status", ["pending_payment", "paid", "cancelled"]);
+export const orderStatusEnum = pgEnum("order_status", [
+  "pending_payment",
+  "paid",
+  "shipped",
+  "delivered",
+  "cancelled",
+]);
 
 export const orders = pgTable(
   "orders",

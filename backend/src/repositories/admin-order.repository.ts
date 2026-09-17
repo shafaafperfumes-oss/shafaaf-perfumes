@@ -18,22 +18,48 @@ import { writeAuditLog, type AuditContext } from "./audit.repository.js";
  * point of it — which is exactly why nothing here is reachable except
  * through the admin router's server-verified role check.
  *
- * Only one status change is allowed from here: cancelling an order that
- * has not been paid for, which hands its reserved stock back. Moving an
- * order to `paid` stays the signature-verified Razorpay webhook's job
- * alone, and cancelling an order that *was* paid would need a real refund
- * against Razorpay — neither belongs in an admin button.
+ * Three status changes are allowed from here, each from exactly one
+ * starting point:
+ *   pending_payment -> cancelled   (hands the reserved stock back)
+ *   paid            -> shipped     (the parcel has been dispatched)
+ *   shipped         -> delivered
+ * Moving an order to `paid` stays the signature-verified Razorpay
+ * webhook's job alone, and cancelling an order that *was* paid would need
+ * a real refund against Razorpay — neither belongs in an admin button.
  */
 
 export class OrderNotFoundError extends Error {}
 
-export class OrderNotCancellableError extends Error {
+/** The order is not at the one status this change is allowed from. */
+export class InvalidOrderTransitionError extends Error {
   readonly status: string;
   constructor(message: string, status: string) {
     super(message);
     this.status = status;
   }
 }
+
+export type AdminOrderStatus = "cancelled" | "shipped" | "delivered";
+export type OrderStatus = "pending_payment" | "paid" | "shipped" | "delivered" | "cancelled";
+
+/** For each change an admin may make: the only status it may start from. */
+const ALLOWED_FROM: Record<AdminOrderStatus, OrderStatus> = {
+  cancelled: "pending_payment",
+  shipped: "paid",
+  delivered: "shipped",
+};
+
+const DEFAULT_NOTE: Record<AdminOrderStatus, string> = {
+  cancelled: "Cancelled by an administrator.",
+  shipped: "Your order has been dispatched.",
+  delivered: "Your order has been delivered.",
+};
+
+const AUDIT_ACTION: Record<AdminOrderStatus, string> = {
+  cancelled: "order.cancel",
+  shipped: "order.ship",
+  delivered: "order.deliver",
+};
 
 export interface AdminOrderSummary {
   id: string;
@@ -54,7 +80,7 @@ export interface AdminOrderPage {
 export async function listAllOrders(options: {
   page: number;
   perPage: number;
-  status?: "pending_payment" | "paid" | "cancelled";
+  status?: OrderStatus;
 }): Promise<AdminOrderPage> {
   const db = getDb();
 
@@ -199,14 +225,22 @@ export async function getAdminOrderDetail(orderId: string): Promise<AdminOrderDe
 }
 
 /**
- * Cancels an unpaid order and releases the stock it was holding, inside
- * one transaction — the exact mirror of the reservation `placeOrder` made.
- * Refuses anything that is not still `pending_payment`, so a paid order
- * can never be "cancelled" without a real refund happening first.
+ * Moves an order one step along its life (see the table at the top of
+ * this file), inside one transaction, with the row locked so two admins
+ * clicking at once cannot both succeed. Refuses any order that is not at
+ * the one status the change is allowed from.
+ *
+ * Cancelling also releases the stock the order was holding — the exact
+ * mirror of the reservation `placeOrder` made. Shipping and delivering
+ * touch no stock: it was already committed when the payment arrived.
+ *
+ * The note is what the customer sees on their order page (courier name,
+ * tracking number, reason for cancelling), so it gets a plain default.
  */
-export async function cancelOrder(
+export async function updateOrderStatus(
   actor: AuditContext,
   orderId: string,
+  status: AdminOrderStatus,
   note: string | null,
 ): Promise<AdminOrderDetail> {
   const db = getDb();
@@ -215,39 +249,42 @@ export async function cancelOrder(
     const [order] = await tx.select().from(orders).where(eq(orders.id, orderId)).for("update");
 
     if (!order) throw new OrderNotFoundError("No order matches that id.");
-    if (order.status !== "pending_payment") {
-      throw new OrderNotCancellableError(
-        `This order is already ${order.status} and cannot be cancelled here.`,
+    if (order.status !== ALLOWED_FROM[status]) {
+      throw new InvalidOrderTransitionError(
+        `This order is ${order.status.replace("_", " ")}, so it cannot be marked ${status} here.`,
         order.status,
       );
     }
 
-    await tx.update(orders).set({ status: "cancelled", updatedAt: new Date() }).where(eq(orders.id, orderId));
+    await tx.update(orders).set({ status, updatedAt: new Date() }).where(eq(orders.id, orderId));
 
     await tx.insert(orderStatusHistory).values({
       orderId,
-      status: "cancelled",
-      note: note ?? "Cancelled by an administrator.",
+      status,
+      note: note ?? DEFAULT_NOTE[status],
     });
 
-    const items = await tx.select().from(orderItems).where(eq(orderItems.orderId, orderId));
+    if (status === "cancelled") {
+      const items = await tx.select().from(orderItems).where(eq(orderItems.orderId, orderId));
 
-    for (const item of items) {
-      await tx
-        .update(inventory)
-        .set({ reserved: sql`${inventory.reserved} - ${item.quantity}`, updatedAt: new Date() })
-        .where(eq(inventory.variantId, item.variantId));
+      for (const item of items) {
+        await tx
+          .update(inventory)
+          .set({ reserved: sql`${inventory.reserved} - ${item.quantity}`, updatedAt: new Date() })
+          .where(eq(inventory.variantId, item.variantId));
 
-      await tx.insert(inventoryMovements).values({
-        variantId: item.variantId,
-        orderId,
-        reason: "order_released",
-        reservedChange: -item.quantity,
-      });
+        await tx.insert(inventoryMovements).values({
+          variantId: item.variantId,
+          orderId,
+          reason: "order_released",
+          reservedChange: -item.quantity,
+        });
+      }
     }
 
-    await writeAuditLog(tx, actor, "order.cancel", "order", orderId, {
+    await writeAuditLog(tx, actor, AUDIT_ACTION[status], "order", orderId, {
       orderNumber: order.orderNumber,
+      from: order.status,
       note,
     });
   });

@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { eq, inArray } from "drizzle-orm";
+import { eq, inArray, sql } from "drizzle-orm";
 import request from "supertest";
 import { API_PREFIX, createApp } from "../src/app/app.js";
 import { env } from "../src/config/env.js";
@@ -39,6 +39,9 @@ describeWithAuth("the admin API", () => {
   // parallel and sharing a variant would race their stock deltas.
   let order: PlacedOrder;
   let orderedVariantId: string;
+  // A second order, marked paid directly in the database (only the Razorpay
+  // webhook does that for real), for the ship -> deliver tests.
+  let paidOrder: PlacedOrder;
 
   beforeAll(async () => {
     [admin, customer] = await Promise.all([createSignedInTestUser(), createSignedInTestUser()]);
@@ -68,6 +71,10 @@ describeWithAuth("the admin API", () => {
     });
     await addToCart(customer.id, orderedVariantId, 1);
     order = await placeOrder(customer.id, address.id);
+
+    await addToCart(customer.id, orderedVariantId, 1);
+    paidOrder = await placeOrder(customer.id, address.id);
+    await db.update(orders).set({ status: "paid" }).where(eq(orders.id, paidOrder.id));
   }, 40_000);
 
   afterAll(async () => {
@@ -78,6 +85,17 @@ describeWithAuth("the admin API", () => {
       await db.delete(orderStatusHistory).where(eq(orderStatusHistory.orderId, order.id));
       // order_items cascades with the order itself.
       await db.delete(orders).where(eq(orders.id, order.id));
+    }
+    if (paidOrder) {
+      // This order was never really paid, so its reservation was never
+      // committed: hand the reserved unit back before deleting it.
+      await db
+        .update(inventory)
+        .set({ reserved: sql`${inventory.reserved} - 1` })
+        .where(eq(inventory.variantId, orderedVariantId));
+      await db.delete(inventoryMovements).where(eq(inventoryMovements.orderId, paidOrder.id));
+      await db.delete(orderStatusHistory).where(eq(orderStatusHistory.orderId, paidOrder.id));
+      await db.delete(orders).where(eq(orders.id, paidOrder.id));
     }
 
     if (createdVariantId) {
@@ -260,6 +278,71 @@ describeWithAuth("the admin API", () => {
     expect(res.status).toBe(422);
   });
 
+  it("will not ship an order that has not been paid for", async () => {
+    const res = await asAdmin(request(app).patch(`${API_PREFIX}/admin/orders/${order.id}`)).send({
+      status: "shipped",
+    });
+
+    expect(res.status).toBe(409);
+  });
+
+  it("will not mark a paid order delivered before it is shipped", async () => {
+    const res = await asAdmin(request(app).patch(`${API_PREFIX}/admin/orders/${paidOrder.id}`)).send({
+      status: "delivered",
+    });
+
+    expect(res.status).toBe(409);
+  });
+
+  it("marks a paid order shipped, with the note the customer will see", async () => {
+    const [before] = await getDb()
+      .select({ quantity: inventory.quantity, reserved: inventory.reserved })
+      .from(inventory)
+      .where(eq(inventory.variantId, orderedVariantId));
+
+    const res = await asAdmin(request(app).patch(`${API_PREFIX}/admin/orders/${paidOrder.id}`)).send({
+      status: "shipped",
+      note: "Sent by Delhivery, tracking 123456",
+    });
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.order.status).toBe("shipped");
+    expect(res.body.data.order.statusHistory.at(-1)).toMatchObject({
+      status: "shipped",
+      note: "Sent by Delhivery, tracking 123456",
+    });
+
+    // Dispatching touches no stock: it was committed when the payment arrived.
+    const [after] = await getDb()
+      .select({ quantity: inventory.quantity, reserved: inventory.reserved })
+      .from(inventory)
+      .where(eq(inventory.variantId, orderedVariantId));
+    expect(after).toEqual(before);
+  });
+
+  it("then marks it delivered, and refuses to cancel it", async () => {
+    const delivered = await asAdmin(request(app).patch(`${API_PREFIX}/admin/orders/${paidOrder.id}`)).send({
+      status: "delivered",
+    });
+
+    expect(delivered.status).toBe(200);
+    expect(delivered.body.data.order.status).toBe("delivered");
+    expect(delivered.body.data.order.statusHistory.at(-1).note).toBe("Your order has been delivered.");
+
+    const cancel = await asAdmin(request(app).patch(`${API_PREFIX}/admin/orders/${paidOrder.id}`)).send({
+      status: "cancelled",
+    });
+    expect(cancel.status).toBe(409);
+  });
+
+  it("filters the order list by status", async () => {
+    const res = await asAdmin(request(app).get(`${API_PREFIX}/admin/orders?status=delivered&perPage=100`));
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.orders.every((row: { status: string }) => row.status === "delivered")).toBe(true);
+    expect(res.body.data.orders.some((row: { id: string }) => row.id === paidOrder.id)).toBe(true);
+  });
+
   it("finds a customer and their orders", async () => {
     const res = await asAdmin(request(app).get(`${API_PREFIX}/admin/customers/${customer.id}`));
 
@@ -281,6 +364,8 @@ describeWithAuth("the admin API", () => {
     expect(actions).toContain("product.update");
     expect(actions).toContain("inventory.adjust");
     expect(actions).toContain("order.cancel");
+    expect(actions).toContain("order.ship");
+    expect(actions).toContain("order.deliver");
   });
 
   it("does not write an audit row for a change that was refused", async () => {

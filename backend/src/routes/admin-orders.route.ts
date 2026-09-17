@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { z } from "zod";
 import {
-  OrderNotCancellableError,
+  InvalidOrderTransitionError,
   OrderNotFoundError,
-  cancelOrder,
   getAdminOrderDetail,
   listAllOrders,
+  updateOrderStatus,
 } from "../repositories/admin-order.repository.js";
 import { ApiError } from "../utils/api-error.js";
 import { sendSuccess } from "../utils/respond.js";
@@ -15,18 +15,19 @@ import { assertAdminDatabaseReady, auditContext, pageQuerySchema } from "./admin
 export const adminOrdersRouter: Router = Router();
 
 const listQuerySchema = pageQuerySchema.extend({
-  status: z.enum(["pending_payment", "paid", "cancelled"]).optional(),
+  status: z.enum(["pending_payment", "paid", "shipped", "delivered", "cancelled"]).optional(),
 });
 
 /**
- * `cancelled` is the only status an admin may set. `paid` is reserved for
- * the Razorpay webhook, which is the one thing that can prove money
- * actually arrived.
+ * The statuses an admin may set. `paid` is deliberately absent: it is
+ * reserved for the Razorpay webhook, which is the one thing that can prove
+ * money actually arrived. The note is shown to the customer (courier and
+ * tracking number for a dispatch, a reason for a cancellation).
  */
 const updateOrderSchema = z
   .object({
-    status: z.literal("cancelled"),
-    note: z.string().max(300).optional(),
+    status: z.enum(["cancelled", "shipped", "delivered"]),
+    note: z.string().trim().max(300).optional(),
   })
   .strict();
 
@@ -56,14 +57,14 @@ adminOrdersRouter.patch("/:id", async (req, res, next) => {
   try {
     assertAdminDatabaseReady();
     const input = updateOrderSchema.parse(req.body);
-    const order = await cancelOrder(auditContext(req), req.params.id, input.note ?? null);
+    const order = await updateOrderStatus(auditContext(req), req.params.id, input.status, input.note || null);
     sendSuccess(res, { order });
   } catch (error) {
     if (error instanceof OrderNotFoundError) {
       next(ApiError.notFound(error.message));
       return;
     }
-    if (error instanceof OrderNotCancellableError) {
+    if (error instanceof InvalidOrderTransitionError) {
       next(ApiError.conflict(error.message, { status: error.status }));
       return;
     }
