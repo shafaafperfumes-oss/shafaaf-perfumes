@@ -7,10 +7,12 @@ Premium international perfume e-commerce frontend.
 The storefront now reads its catalog from the live backend (`backend/`,
 deployed on Railway — see `backend/README.md`) and customers can create
 an account and sign in (header account icon; `js/lib/auth.js` +
-`js/components/account-modal.js`). The server-side cart and real
-checkout exist in the backend but are not wired into the pages yet:
-checkout still opens a pre-filled WhatsApp message
-(`js/lib/whatsapp-checkout.js`) until that step lands.
+`js/components/account-modal.js`). A signed-in customer's cart is kept
+on the backend (`/cart`) so it follows them to any device; guests keep
+a browser-only cart, which is merged into their account the moment
+they sign in (`js/lib/cart.js`). Real checkout exists in the backend
+but is not wired into the pages yet: checkout still opens a pre-filled
+WhatsApp message (`js/lib/whatsapp-checkout.js`) until that step lands.
 
 **Sign-in:** the browser talks to Supabase Auth directly using the
 project URL and *publishable* key in `js/config.js` (both are meant to
@@ -37,7 +39,7 @@ Vanilla HTML/CSS/JS — no build step, no framework, no Node dependency. Chosen 
 - **Pages** are self-contained HTML files (no templating) — shared header/footer/overlay markup is duplicated per page by design.
 - **Design system**: `css/tokens.css` (colors, type, spacing, shadows, motion, z-index), `css/base.css` (reset), `css/components.css` (buttons, cards, drawers, modals, etc.), `css/layout.css` (header/footer/grid), `css/pages/*.css` (page-specific).
 - **Data layer**: pages read the catalog only through the accessor functions in `js/data/products.js` (`shafaafGetAllProducts`, etc.). At runtime that list is what the backend returned; the embedded array is the offline fallback and the source `npm run db:seed` loads into the database, so it must keep the same shape.
-- **State**: `js/lib/cart.js` and `js/lib/wishlist.js` are small pub/sub stores backed by `localStorage`, broadcasting `shafaaf:cart:change` / `shafaaf:wishlist:change` events that any component can listen for.
+- **State**: `js/lib/cart.js` (localStorage for guests, backend `/cart` when signed in — changes apply instantly on screen and are sent to the backend one after another) and `js/lib/wishlist.js` (localStorage) are small pub/sub stores broadcasting `shafaaf:cart:change` / `shafaaf:wishlist:change` events that any component can listen for.
 - **Components**: `js/components/*.js` — header, cart drawer, search overlay, quick view modal, product cards, toasts, accordion — all delegated-event-based so they work with dynamically injected HTML.
 
 ## Project Structure

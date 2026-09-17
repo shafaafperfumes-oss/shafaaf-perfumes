@@ -23,6 +23,9 @@ import {
  */
 
 export interface CatalogSize {
+  /** The variant's id — what the cart API takes in `POST /cart/items`.
+   *  Not secret: it identifies a size the way the slug identifies a product. */
+  variantId: string;
   label: string;
   ml: number;
   /** Whole rupees, e.g. 599 — never paise. This is the one place the stored
@@ -117,6 +120,7 @@ async function attachNotesAndVariants(db: Db, rows: ProductRow[]): Promise<Catal
       .orderBy(asc(productNotes.position)),
     db
       .select({
+        id: productVariants.id,
         productId: productVariants.productId,
         variantType: productVariants.variantType,
         sizeLabel: productVariants.sizeLabel,
@@ -146,6 +150,7 @@ async function attachNotesAndVariants(db: Db, rows: ProductRow[]): Promise<Catal
       list.push(group);
     }
     group.sizes.push({
+      variantId: variant.id,
       label: variant.sizeLabel,
       ml: variant.sizeMl,
       // Paise -> rupees, the one conversion point for anything leaving the DB.

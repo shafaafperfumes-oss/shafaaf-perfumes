@@ -36,7 +36,10 @@ describeWithDatabase("GET /products", () => {
         | {
             name: string;
             notes: string[];
-            variants: { type: string; sizes: { label: string; ml: number; price: number }[] }[];
+            variants: {
+              type: string;
+              sizes: { variantId: string; label: string; ml: number; price: number }[];
+            }[];
           }
         | undefined;
 
@@ -54,6 +57,8 @@ describeWithDatabase("GET /products", () => {
           expect(actualSize!.label).toBe(expectedSize.label);
           // Whole rupees — the API converts paise back, this proves no drift.
           expect(actualSize!.price).toBe(expectedSize.price);
+          // The cart API is keyed by variant, so every size must carry its id.
+          expect(actualSize!.variantId).toMatch(/^[0-9a-f-]{36}$/);
         });
       });
     });

@@ -62,12 +62,16 @@ export function createApp(): Express {
   app.use(API_PREFIX, generalLimiter);
   app.use(API_PREFIX, healthRouter);
   app.use(API_PREFIX, catalogRouter);
-  app.use(`${API_PREFIX}/me`, strictLimiter, meRouter);
-  app.use(`${API_PREFIX}/cart`, strictLimiter, cartRouter);
-  app.use(`${API_PREFIX}/wishlist`, strictLimiter, wishlistRouter);
+  // Signed-in routes ride on the general limiter above: a shopper nudging
+  // quantities in their cart makes a request per tap, which the strict
+  // budget (20 per 15 min) would exhaust in minutes. Only checkout, which
+  // creates payment intents, keeps the tight limit.
+  app.use(`${API_PREFIX}/me`, meRouter);
+  app.use(`${API_PREFIX}/cart`, cartRouter);
+  app.use(`${API_PREFIX}/wishlist`, wishlistRouter);
   app.use(`${API_PREFIX}/checkout`, strictLimiter, checkoutRouter);
-  app.use(`${API_PREFIX}/orders`, strictLimiter, ordersRouter);
-  app.use(`${API_PREFIX}/admin`, strictLimiter, adminRouter);
+  app.use(`${API_PREFIX}/orders`, ordersRouter);
+  app.use(`${API_PREFIX}/admin`, adminRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

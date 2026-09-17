@@ -94,6 +94,7 @@
       var size = variant.sizes[state.sizeIndex];
       ShafaafCart.add({
         id: shafaafLineId(state.product.id, variant.type, size.label),
+        variantId: size.variantId,
         productId: state.product.id,
         name: state.product.name,
         variantType: variant.type,

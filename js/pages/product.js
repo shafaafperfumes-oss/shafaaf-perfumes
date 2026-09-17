@@ -219,6 +219,7 @@ shafaafOnCatalogReady(function () {
     var size = currentSize();
     ShafaafCart.add({
       id: shafaafLineId(product.id, variant.type, size.label),
+      variantId: size.variantId,
       productId: product.id,
       name: product.name,
       variantType: variant.type,

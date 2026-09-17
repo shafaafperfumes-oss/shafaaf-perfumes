@@ -24,5 +24,5 @@ function buildLimiter(windowMs: number, max: number): RateLimitRequestHandler {
 /** Applied to every API request. */
 export const generalLimiter = buildLimiter(env.RATE_LIMIT_WINDOW_MS, env.RATE_LIMIT_MAX);
 
-/** For authentication, password reset, checkout and payment routes. */
+/** For checkout and payment routes — the ones attackers hammer. */
 export const strictLimiter = buildLimiter(15 * 60_000, 20);
