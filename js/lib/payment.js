@@ -38,6 +38,18 @@ var ShafaafPayment = (function () {
     return loading;
   }
 
+  /**
+   * Razorpay only pre-fills a phone number it recognises as complete, so a
+   * bare 10-digit Indian mobile is given its +91; anything else is passed
+   * through as typed.
+   */
+  function contactFor(phone) {
+    var digits = String(phone || "").replace(/\D/g, "");
+    if (digits.length === 10) return "+91" + digits;
+    if (digits.length === 12 && digits.indexOf("91") === 0) return "+" + digits;
+    return phone || "";
+  }
+
   function open(payment, opts) {
     opts = opts || {};
     if (!payment || !payment.razorpayOrderId || !payment.keyId) {
@@ -62,7 +74,7 @@ var ShafaafPayment = (function () {
           prefill: {
             name: opts.name || "",
             email: opts.email || "",
-            contact: opts.contact || ""
+            contact: contactFor(opts.contact)
           },
           notes: opts.orderNumber ? { orderNumber: opts.orderNumber } : undefined,
           theme: { color: "#3d2a1f" },
