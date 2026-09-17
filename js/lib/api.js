@@ -73,7 +73,9 @@ var ShafaafApi = (function () {
           );
         })
         .then(function (body) {
-          if (body.success) return body.data;
+          // Paged replies carry { page, perPage, total } in `meta`; a
+          // caller that needs it asks with { withMeta: true }.
+          if (body.success) return opts.withMeta ? { data: body.data, meta: body.meta || null } : body.data;
           var err = body.error || {};
           throw new ShafaafApiError(
             err.message || "Something went wrong. Please try again.",

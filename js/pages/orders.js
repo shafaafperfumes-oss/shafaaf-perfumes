@@ -145,9 +145,17 @@
     if (order.status === "paid") {
       return '<div class="form-notice form-notice--success" role="status">' + shafaafIcon("check") + ' Payment received. We will pack your order and be in touch about dispatch.</div>';
     }
+    if (order.status === "shipped") {
+      return '<div class="form-notice form-notice--success" role="status">' + shafaafIcon("truck") + ' Your order is on its way. Courier details are in the history below.</div>';
+    }
+    if (order.status === "delivered") {
+      return '<div class="form-notice form-notice--success" role="status">' + shafaafIcon("check") + ' Delivered. We hope you love it.</div>';
+    }
     if (order.status === "cancelled") {
       return '<div class="form-notice form-notice--error" role="status">This order was cancelled. Any reserved stock has been released.</div>';
     }
+    // Only an order still awaiting payment gets a Pay now button.
+    if (order.status !== "pending_payment") return "";
     var text = justPaid
       ? "We have not heard back from Razorpay yet. If you completed the payment, it can take a minute to show here — refresh this page in a moment. If not, you can pay now."
       : "This order is waiting for payment. Nothing has been charged yet.";

@@ -22,6 +22,18 @@ The browser never marks an order paid — Razorpay tells the backend
 keys are set on the backend, orders are still created and stock
 reserved; the page just says payments are unavailable.
 
+**Admin:** `admin.html` is the store owner's page (`js/pages/admin.js`,
+`css/pages/admin.css`). It opens only for an account whose role is
+`admin` in the backend's `profiles` table — the backend checks that on
+every call, so anyone else just sees "No access". Orders: every
+customer's orders, filterable by status, with each order's customer,
+address, items and history, and the one action the backend allows next
+(cancel while unpaid, mark shipped with a courier/tracking note once
+paid, then mark delivered). Stock: a running-low list, every product's
+sizes with in-stock / reserved / available counts, and a +/− adjustment
+with a reason. Nothing is decided in the browser; the page only offers
+what `/api/v1/admin/*` would accept.
+
 **Sign-in:** the browser talks to Supabase Auth directly using the
 project URL and *publishable* key in `js/config.js` (both are meant to
 be public — the key can only sign people in, every table is locked to
@@ -54,10 +66,10 @@ Vanilla HTML/CSS/JS — no build step, no framework, no Node dependency. Chosen 
 
 ```
 index.html, shop.html, product.html, cart.html, checkout.html, orders.html,
-wishlist.html, fragrance-finder.html, about.html, contact.html
+admin.html, wishlist.html, fragrance-finder.html, about.html, contact.html
 css/
   tokens.css, base.css, components.css, layout.css
-  pages/  (home.css, shop.css, product.css, cart.css, checkout.css, finder.css, static.css)
+  pages/  (home.css, shop.css, product.css, cart.css, checkout.css, admin.css, finder.css, static.css)
 js/
   data/       product + review data
   lib/        config, auth, api, cart, wishlist, payment (Razorpay window), storage, format, icons, note-family grouping
