@@ -1,0 +1,13 @@
+{
+  // Cloudflare hosting for the website (the static files in this folder).
+  // The backend is a separate Node service on Railway and is NOT deployed
+  // here — `.assetsignore` keeps it and other non-website files out.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "shafaaf-perfumes",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none"
+  }
+}

@@ -1,0 +1,12 @@
+# Files in this repo that are NOT part of the public website.
+# Cloudflare reads this when uploading the site (same syntax as .gitignore).
+backend/
+scripts/
+.claude/
+.playwright-mcp/
+.git/
+.gitignore
+.assetsignore
+wrangler.jsonc
+CLAUDE.md
+README.md
