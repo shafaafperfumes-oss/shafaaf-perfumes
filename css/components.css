@@ -347,7 +347,10 @@
 }
 .logo span { color: var(--c-gold); }
 /* gold calligraphy mark beside the wordmark; shrinks with the header */
-.logo__mark { flex: 0 0 auto; height: 44px; width: auto; transition: height var(--dur-normal) var(--ease-out); }
+.logo__mark { flex: 0 0 auto; height: 44px; width: auto; filter: drop-shadow(0 2px 4px rgba(26, 22, 17, 0.18)); transition: filter var(--dur-normal) var(--ease-out), height var(--dur-normal) var(--ease-out); }
+/* on the dark hero the mark gets a soft gold glow */
+.site-header.is-transparent .logo__mark,
+.footer-brand .logo__mark { filter: drop-shadow(0 0 10px rgba(201, 162, 74, 0.45)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35)); }
 .site-header.is-solid .logo__mark { height: 38px; }
 .footer-brand .logo__mark { height: 56px; }
 .drawer__header .logo__mark { height: 30px; }
