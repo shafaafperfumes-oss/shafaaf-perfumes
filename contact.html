@@ -70,7 +70,7 @@
               <span class="contact-card__icon"><span data-icon="truck"></span></span>
               <span>
                 <span class="contact-card__title">Delivery</span>
-                <span class="contact-card__text">Nationwide shipping, cost confirmed on WhatsApp before dispatch.</span>
+                <span class="contact-card__text">Free nationwide shipping on every order.</span>
               </span>
             </div>
           </div>
@@ -229,7 +229,8 @@
       var form = e.target;
       var name = form.name.value, email = form.email.value, message = form.message.value;
       var text = "Hello Shafaaf Perfumes,\n\nName: " + name + "\nEmail: " + email + "\n\n" + message;
-      window.open("https://wa.me/" + SHAFAAF_WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text), "_blank", "noopener");
+      // Same business number as the WhatsApp links on this page.
+      window.open("https://wa.me/919796906804?text=" + encodeURIComponent(text), "_blank", "noopener");
       form.reset();
     });
   </script>

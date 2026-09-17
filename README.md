@@ -87,5 +87,5 @@ Then visit `http://localhost:8080`.
 ## Known Follow-ups
 
 - `images/yemberzal.jpg` is ~28MB and `images/velvet-petal.jpg` is ~2MB — both should be compressed/resized before this site is pointed at real traffic. No image tooling was available in the build environment to do this automatically.
-- `js/lib/whatsapp-checkout.js` is no longer loaded by any page (checkout now goes through the backend and Razorpay); it can be deleted. The WhatsApp number in the footer links is the one carried over from the previous site version — confirm it's still correct.
+- The WhatsApp number in the footer and contact page (`919796906804`) is the one carried over from the previous site version — confirm it's still correct.
 - Ratings/review counts and the "bestseller"/"new" badges are placeholder merchandising data, structured so a real reviews/inventory backend can replace them later.
