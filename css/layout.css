@@ -43,7 +43,9 @@ main { display: block; }
 
 .footer-brand .logo { color: var(--c-text-on-dark); }
 .footer-brand p { margin-top: var(--sp-4); font-weight: var(--fw-light); line-height: var(--lh-relaxed); max-width: 34ch; }
-.footer-social { display: flex; gap: var(--sp-3); margin-top: var(--sp-6); }
+.footer-social__title { margin-top: var(--sp-6); font-size: var(--fs-sm); letter-spacing: var(--ls-wide); color: var(--c-text-on-dark); }
+.footer-social__title span { color: var(--c-gold); }
+.footer-social { display: flex; gap: var(--sp-3); margin-top: var(--sp-3); }
 .footer-social a {
   width: 38px; height: 38px; border-radius: var(--r-full);
   border: 1px solid rgba(243,234,217,0.25);

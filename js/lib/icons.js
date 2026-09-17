@@ -25,6 +25,7 @@ var ShafaafIcons = {
   leaf: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 19C4 11 9 4 19 4c1 8-4 14-14 14z" stroke-linejoin="round"/><path d="M5 19c3-3 6-6 12-10" stroke-linecap="round"/></svg>',
   mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18v12H3z" stroke-linejoin="round"/><path d="M3 7l9 6 9-6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   instagram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>',
+  youtube: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.5 8.2c.2-1.4 1.2-2.4 2.6-2.5C8 5.5 10 5.4 12 5.4s4 .1 5.9.3c1.4.1 2.4 1.1 2.6 2.5.2 1.2.3 2.5.3 3.8s-.1 2.6-.3 3.8c-.2 1.4-1.2 2.4-2.6 2.5-1.9.2-3.9.3-5.9.3s-4-.1-5.9-.3c-1.4-.1-2.4-1.1-2.6-2.5A26 26 0 013.2 12c0-1.3.1-2.6.3-3.8z" stroke-linejoin="round"/><path d="M10 9.3v5.4l4.6-2.7L10 9.3z" fill="currentColor" stroke="none"/></svg>',
   facebook: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 8h2V4h-2a4 4 0 00-4 4v2H9v4h2v6h4v-6h2.5l.5-4H15V8z" stroke-linejoin="round"/></svg>',
   arrowRight: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12h16M14 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 };
