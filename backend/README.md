@@ -115,6 +115,19 @@ an HMAC signature stands in as the authentication instead. Every webhook
 delivery's own id is recorded before anything else happens, so a retried
 delivery of the same event is safely ignored rather than applied twice.
 
+## Email (Resend)
+
+Setting it up for the first time: [`docs/EMAIL-SETUP.md`](docs/EMAIL-SETUP.md).
+
+The API sends one kind of email so far: an alert to the shop owner the
+moment an order is paid, with the items, the total and the delivery
+address, sent from the webhook right after the order is committed. Mail
+goes through Resend's plain HTTP API (`src/lib/email.ts`, no SDK), and
+is strictly best-effort — a failed send is logged and never fails the
+webhook, because the order itself is already saved. Without
+`RESEND_API_KEY` and `ORDER_ALERT_EMAIL` set, nothing is sent and
+`GET /ready` reports `orderAlerts: "not-configured"`.
+
 ## Hosting
 
 Putting it online for the first time: [`docs/RAILWAY-DEPLOY.md`](docs/RAILWAY-DEPLOY.md).
@@ -251,6 +264,7 @@ src/
 ├── middleware/    request id, security, rate limiting, error handling, auth
 ├── repositories/  the only code that queries the database directly
 ├── routes/        route definitions — validate input, call a repository, respond
+├── services/      work that spans repositories and outside services (e.g. order alerts)
 └── utils/         logger, error types, response helpers
 drizzle/           generated SQL migrations (committed, never edited)
 tests/             API tests (Vitest + Supertest)

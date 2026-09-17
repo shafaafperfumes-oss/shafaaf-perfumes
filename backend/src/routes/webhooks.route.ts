@@ -2,6 +2,7 @@ import { Router } from "express";
 import { isDatabaseConfigured } from "../db/client.js";
 import { markOrderPaid, recordWebhookEvent } from "../repositories/payment.repository.js";
 import { verifyRazorpayWebhookSignature } from "../lib/razorpay-webhook.js";
+import { notifyOrderPaid } from "../services/order-alerts.js";
 import { ApiError } from "../utils/api-error.js";
 import { logger } from "../utils/logger.js";
 import { sendSuccess } from "../utils/respond.js";
@@ -78,7 +79,10 @@ webhooksRouter.post("/razorpay", async (req, res, next) => {
     if (event.event === "payment.captured") {
       const paymentEntity = event.payload?.payment?.entity;
       if (paymentEntity?.order_id && paymentEntity?.id) {
-        await markOrderPaid(paymentEntity.order_id, paymentEntity.id);
+        const paid = await markOrderPaid(paymentEntity.order_id, paymentEntity.id);
+        // The order and its stock are already committed above; the alert
+        // is best-effort and never fails the webhook (see services/order-alerts.ts).
+        if (paid) await notifyOrderPaid(paid.orderId);
       } else {
         logger.warn({ eventId }, "payment.captured webhook missing order_id/payment id");
       }

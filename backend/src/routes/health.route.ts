@@ -40,6 +40,8 @@ healthRouter.get("/ready", async (_req, res) => {
   // the owner can confirm a Railway variable landed without exposing it.
   checks.payments = env.hasPayments ? "ok" : "not-configured";
   checks.paymentWebhook = env.hasPaymentWebhook ? "ok" : "not-configured";
+  // Same idea for email: is RESEND_API_KEY + ORDER_ALERT_EMAIL set?
+  checks.orderAlerts = env.hasOrderAlerts ? "ok" : "not-configured";
 
   const ready = Object.values(checks).every((status) => status !== "unavailable");
 

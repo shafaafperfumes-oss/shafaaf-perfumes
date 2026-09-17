@@ -74,9 +74,33 @@ const envSchema = z.object({
   RAZORPAY_KEY_ID: z.string().min(1).optional(),
   RAZORPAY_KEY_SECRET: z.string().min(1).optional(),
   RAZORPAY_WEBHOOK_SECRET: z.string().min(1).optional(),
+
+  /**
+   * Outgoing email (Resend) — see docs/EMAIL-SETUP.md. Optional like
+   * everything above: without a key the API boots and simply sends no
+   * mail. Today this powers one thing: an alert to the shop owner the
+   * moment an order is paid.
+   *
+   * RESEND_API_KEY    — SERVER ONLY. Authenticates calls to Resend.
+   * EMAIL_FROM        — not a secret; the sender shown to recipients.
+   *                     Resend's shared onboarding address works with no
+   *                     domain setup but only delivers to the Resend
+   *                     account's own inbox — swap in an address on the
+   *                     shop's verified domain once it has one.
+   * ORDER_ALERT_EMAIL — not a secret; where "new paid order" alerts go.
+   *                     Blank means no alerts, even with a key set.
+   */
+  RESEND_API_KEY: z.string().min(1).optional(),
+  EMAIL_FROM: z.string().min(1).default("Shafaaf Perfumes <onboarding@resend.dev>"),
+  ORDER_ALERT_EMAIL: z.string().email().optional(),
 });
 
-const parsed = envSchema.safeParse(process.env);
+// A variable left blank (`RESEND_API_KEY=` in .env, or an empty Railway
+// variable) means "not set", exactly like a missing one — otherwise every
+// optional value above would reject the empty string it was left as.
+const source = Object.fromEntries(Object.entries(process.env).filter(([, value]) => value !== ""));
+
+const parsed = envSchema.safeParse(source);
 
 if (!parsed.success) {
   const issues = parsed.error.issues
@@ -100,6 +124,17 @@ export const env = {
   hasAuth: Boolean(raw.SUPABASE_URL),
   hasPayments: Boolean(raw.RAZORPAY_KEY_ID && raw.RAZORPAY_KEY_SECRET),
   hasPaymentWebhook: Boolean(raw.RAZORPAY_WEBHOOK_SECRET),
+  hasEmail: Boolean(raw.RESEND_API_KEY),
+  hasOrderAlerts: Boolean(raw.RESEND_API_KEY && raw.ORDER_ALERT_EMAIL),
+  /**
+   * The public website, used only to build links in emails: the first
+   * non-localhost origin the API is allowed to serve. Null when only
+   * local origins are configured, in which case emails carry no links.
+   */
+  siteUrl:
+    raw.CORS_ALLOWED_ORIGINS.split(",")
+      .map((origin) => origin.trim())
+      .find((origin) => origin && !/^https?:\/\/(localhost|127\.0\.0\.1)(:|$)/.test(origin)) ?? null,
 } as const;
 
 export type Env = typeof env;

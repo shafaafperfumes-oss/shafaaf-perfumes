@@ -129,11 +129,18 @@ export async function recordWebhookEvent(
  * payment we created, or if the order already moved past `pending_payment`
  * — both are expected under retried/duplicate webhook deliveries, not
  * errors the caller needs to react to.
+ *
+ * Resolves to the order's id only when this call is the one that moved it
+ * to `paid`, so the caller can react (an owner alert) exactly once per
+ * order, and null in every no-op case above.
  */
-export async function markOrderPaid(razorpayOrderId: string, razorpayPaymentId: string): Promise<void> {
+export async function markOrderPaid(
+  razorpayOrderId: string,
+  razorpayPaymentId: string,
+): Promise<{ orderId: string } | null> {
   const db = getDb();
 
-  await db.transaction(async (tx) => {
+  return db.transaction(async (tx) => {
     const [payment] = await tx
       .select()
       .from(payments)
@@ -142,10 +149,10 @@ export async function markOrderPaid(razorpayOrderId: string, razorpayPaymentId: 
 
     if (!payment) {
       logger.warn({ razorpayOrderId }, "webhook referenced an unknown Razorpay order");
-      return;
+      return null;
     }
     if (payment.status === "captured") {
-      return;
+      return null;
     }
 
     await tx
@@ -163,7 +170,7 @@ export async function markOrderPaid(razorpayOrderId: string, razorpayPaymentId: 
       // The order already moved on (e.g. an earlier delivery of the same
       // conceptual event already committed stock) — the payment row above
       // is still updated, but nothing else here should run twice.
-      return;
+      return null;
     }
 
     await tx.insert(orderStatusHistory).values({
@@ -192,5 +199,7 @@ export async function markOrderPaid(razorpayOrderId: string, razorpayPaymentId: 
         reservedChange: -item.quantity,
       });
     }
+
+    return { orderId: payment.orderId };
   });
 }
