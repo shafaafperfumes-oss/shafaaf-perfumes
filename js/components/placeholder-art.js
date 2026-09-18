@@ -53,9 +53,12 @@ function shafaafPlaceholderBottle(product) {
 function shafaafProductMedia(product, opts) {
   opts = opts || {};
   var sizeAttr = opts.eager ? '' : ' loading="lazy"';
-  if (product.image) {
-    var alt = product.imageAlt && product.imageAlt !== product.image ? product.imageAlt : null;
-    var html = '<img class="is-primary" src="' + product.image + '" alt="' + product.name + '"' + sizeAttr + '>';
+  var primary = shafaafProductImageFor(product, opts.type);
+  if (primary) {
+    // Hover shows the other photo we have — the second product shot, or the
+    // product's main shot when a type-specific one is in front.
+    var alt = [product.imageAlt, product.image].filter(function (src) { return src && src !== primary; })[0] || null;
+    var html = '<img class="is-primary" src="' + primary + '" alt="' + product.name + '"' + sizeAttr + '>';
     if (alt) {
       html += '<img class="is-alt" src="' + alt + '" alt=""' + sizeAttr + '>';
     }

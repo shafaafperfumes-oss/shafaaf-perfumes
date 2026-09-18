@@ -22,7 +22,7 @@
     var size = currentSize();
     e.body.innerHTML =
       '<div class="quick-view">' +
-        '<div class="quick-view__media">' + shafaafProductMedia(p, { eager: true }) + '</div>' +
+        '<div class="quick-view__media">' + shafaafProductMedia(p, { eager: true, type: p.variants[state.variantIndex].type }) + '</div>' +
         '<div class="quick-view__info">' +
           '<span class="product-card__collection">' + p.family + '</span>' +
           '<h2 class="section-title" style="font-size:var(--fs-display-sm);margin-top:6px">' + p.name + '</h2>' +
@@ -100,7 +100,7 @@
         variantType: variant.type,
         sizeLabel: size.label,
         price: size.price,
-        image: state.product.image
+        image: shafaafProductImageFor(state.product, variant.type)
       }, state.qty);
       ShafaafToast.show(state.product.name + " added to cart");
       close();

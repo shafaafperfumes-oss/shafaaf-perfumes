@@ -38,6 +38,8 @@ export interface CatalogSize {
 
 export interface CatalogVariant {
   type: string; // "Perfume" | "Attar" | "Bakhoor" — see VARIANT_TYPE_LABEL
+  /** Photo of this form, or null to fall back to the product image. */
+  image: string | null;
   sizes: CatalogSize[];
 }
 
@@ -125,6 +127,7 @@ async function attachNotesAndVariants(db: Db, rows: ProductRow[]): Promise<Catal
         sizeMl: productVariants.sizeMl,
         pricePaise: productVariants.pricePaise,
         compareAtPricePaise: productVariants.compareAtPricePaise,
+        imageUrl: productVariants.imageUrl,
         position: productVariants.position,
       })
       .from(productVariants)
@@ -145,9 +148,10 @@ async function attachNotesAndVariants(db: Db, rows: ProductRow[]): Promise<Catal
     const typeLabel = VARIANT_TYPE_LABEL[variant.variantType];
     let group = list.find((v) => v.type === typeLabel);
     if (!group) {
-      group = { type: typeLabel, sizes: [] };
+      group = { type: typeLabel, image: null, sizes: [] };
       list.push(group);
     }
+    if (!group.image && variant.imageUrl) group.image = variant.imageUrl;
     group.sizes.push({
       variantId: variant.id,
       label: variant.sizeLabel,

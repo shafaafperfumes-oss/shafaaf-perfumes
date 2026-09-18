@@ -36,6 +36,7 @@ const sizeSchema = z.object({
 
 const variantSchema = z.object({
   type: z.enum(["Perfume", "Attar", "Bakhoor"]),
+  image: z.string().min(1).nullable().optional(),
   sizes: z.array(sizeSchema).min(1),
 });
 
@@ -132,6 +133,7 @@ export interface CatalogVariantRow {
   sizeMl: number;
   pricePaise: number;
   compareAtPricePaise: number | null;
+  imageUrl: string | null;
   position: number;
 }
 
@@ -169,6 +171,7 @@ export function buildCatalogRows(products = loadSourceProducts()): CatalogProduc
           sizeMl: size.ml,
           pricePaise: rupeesToPaise(size.price),
           compareAtPricePaise: size.compareAt === undefined ? null : rupeesToPaise(size.compareAt),
+          imageUrl: variant.image ?? null,
           position: variants.length,
         });
       });

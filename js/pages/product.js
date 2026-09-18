@@ -27,10 +27,18 @@ shafaafOnCatalogReady(function () {
       '<span aria-current="page">' + product.name + '</span>';
   }
 
+  function currentTypeImage() {
+    return shafaafProductImageFor(product, product.variants[state.variantIndex].type);
+  }
+
+  // The selected form's photo leads; every other photo we have follows as a thumbnail.
   function galleryImages() {
     var imgs = [];
-    if (product.image) imgs.push(product.image);
-    if (product.imageAlt && product.imageAlt !== product.image) imgs.push(product.imageAlt);
+    function add(src) { if (src && imgs.indexOf(src) === -1) imgs.push(src); }
+    add(currentTypeImage());
+    product.variants.forEach(function (v) { add(v.image); });
+    add(product.image);
+    add(product.imageAlt);
     return imgs;
   }
 
@@ -195,7 +203,7 @@ shafaafOnCatalogReady(function () {
   function bindEvents() {
     document.addEventListener("click", function (e) {
       var variantBtn = e.target.closest("#pdp-variants [data-variant]");
-      if (variantBtn) { state.variantIndex = Number(variantBtn.getAttribute("data-variant")); state.sizeIndex = 0; renderSizes(); updatePriceDisplay(); document.querySelectorAll("#pdp-variants .option-pill").forEach(function (b) { b.classList.toggle("is-active", b === variantBtn); }); return; }
+      if (variantBtn) { state.variantIndex = Number(variantBtn.getAttribute("data-variant")); state.sizeIndex = 0; renderSizes(); updatePriceDisplay(); if (currentTypeImage()) switchMainImage(currentTypeImage()); document.querySelectorAll("#pdp-variants .option-pill").forEach(function (b) { b.classList.toggle("is-active", b === variantBtn); }); return; }
 
       var sizeBtn = e.target.closest("#pdp-sizes [data-size]");
       if (sizeBtn) { state.sizeIndex = Number(sizeBtn.getAttribute("data-size")); updatePriceDisplay(); document.querySelectorAll("#pdp-sizes .option-pill").forEach(function (b) { b.classList.toggle("is-active", b === sizeBtn); }); return; }
@@ -239,7 +247,7 @@ shafaafOnCatalogReady(function () {
       variantType: variant.type,
       sizeLabel: size.label,
       price: size.price,
-      image: product.image
+      image: currentTypeImage()
     }, state.qty);
     ShafaafToast.show(product.name + " added to cart");
     if (typeof window.shafaafOpenCartDrawer === "function") window.shafaafOpenCartDrawer();

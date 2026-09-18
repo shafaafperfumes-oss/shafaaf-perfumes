@@ -168,6 +168,8 @@ export const productVariants = pgTable(
     pricePaise: integer("price_paise").notNull(),
     /** Optional "was" price in paise, for showing a discount. */
     compareAtPricePaise: integer("compare_at_price_paise"),
+    /** Photo of this form (perfume bottle vs attar vial); falls back to the product hero. */
+    imageUrl: text("image_url"),
     currency: varchar("currency", { length: 3 }).notNull().default("INR"),
     isActive: boolean("is_active").notNull().default(true),
     position: smallint("position").notNull().default(0),

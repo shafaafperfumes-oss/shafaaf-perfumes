@@ -31,7 +31,7 @@ function shafaafRenderProductCard(product, opts) {
     '<article class="product-card" data-product-id="' + product.id + '">' +
       '<div class="product-card__media">' +
         '<a href="' + href + '" aria-label="View ' + product.name + '">' +
-          shafaafProductMedia(product) +
+          shafaafProductMedia(product, { type: type }) +
         '</a>' +
         (badges ? '<div class="product-card__badges">' + badges + '</div>' : '') +
         '<button type="button" class="product-card__wishlist" data-wishlist-toggle="' + product.id + '" aria-pressed="' + isWishlisted + '" data-active="' + isWishlisted + '" aria-label="Add ' + product.name + ' to wishlist">' +

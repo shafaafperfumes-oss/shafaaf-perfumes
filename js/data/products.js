@@ -29,6 +29,8 @@
  * @property {string} description   editorial copy
  * @property {string|null} image    primary photo path, or null to use generated placeholder art
  * @property {string|null} imageAlt secondary photo path shown on hover, or null
+ *   A variant may also carry its own `image` (the perfume bottle vs the attar
+ *   vial); the type sections, product page and quick view prefer it.
  * @property {boolean} bestseller
  * @property {boolean} isNew
  * @property {number} rating        0-5, mock until a reviews backend exists
@@ -53,7 +55,7 @@ const SHAFAAF_PRODUCTS = [
     reviewCount: 126,
     variants: [
       { type: "Perfume", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
-      { type: "Attar", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
+      { type: "Attar", image: "images/shanaya-gold.webp", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
     ]
   },
   {
@@ -70,8 +72,8 @@ const SHAFAAF_PRODUCTS = [
     rating: 4.9,
     reviewCount: 214,
     variants: [
-      { type: "Perfume", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
-      { type: "Attar", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
+      { type: "Perfume", image: "images/khamrah-spl-perfume.webp", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
+      { type: "Attar", image: "images/khamrah-spl.webp", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
     ]
   },
   {
@@ -89,7 +91,7 @@ const SHAFAAF_PRODUCTS = [
     reviewCount: 58,
     variants: [
       { type: "Perfume", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
-      { type: "Attar", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
+      { type: "Attar", image: "images/khamra-qahwa.webp", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
     ]
   },
   {
@@ -107,7 +109,7 @@ const SHAFAAF_PRODUCTS = [
     reviewCount: 187,
     variants: [
       { type: "Perfume", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
-      { type: "Attar", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
+      { type: "Attar", image: "images/yemberzal-2.webp", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
     ]
   },
   {
@@ -124,7 +126,7 @@ const SHAFAAF_PRODUCTS = [
     rating: 4.6,
     reviewCount: 74,
     variants: [
-      { type: "Perfume", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
+      { type: "Perfume", image: "images/musk-rijali-super.webp", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
       { type: "Attar", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
     ]
   },
@@ -142,8 +144,8 @@ const SHAFAAF_PRODUCTS = [
     rating: 4.5,
     reviewCount: 41,
     variants: [
-      { type: "Perfume", sizes: [{ label: "30ml", ml: 30, price: 449 }, { label: "50ml", ml: 50, price: 649 }] },
-      { type: "Attar", sizes: [{ label: "6ml", ml: 6, price: 249 }, { label: "12ml", ml: 12, price: 499 }] }
+      { type: "Perfume", image: "images/purple-oud-perfume.webp", sizes: [{ label: "30ml", ml: 30, price: 449 }, { label: "50ml", ml: 50, price: 649 }] },
+      { type: "Attar", image: "images/purple-oud.webp", sizes: [{ label: "6ml", ml: 6, price: 249 }, { label: "12ml", ml: 12, price: 499 }] }
     ]
   },
   {
@@ -214,7 +216,7 @@ const SHAFAAF_PRODUCTS = [
     rating: 4.7,
     reviewCount: 52,
     variants: [
-      { type: "Perfume", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
+      { type: "Perfume", image: "images/velvet-petal-perfume.webp", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
       { type: "Attar", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
     ]
   },
@@ -232,8 +234,8 @@ const SHAFAAF_PRODUCTS = [
     rating: 4.8,
     reviewCount: 103,
     variants: [
-      { type: "Perfume", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
-      { type: "Attar", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
+      { type: "Perfume", image: "images/ameer-al-oud-gold-perfume-2.webp", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
+      { type: "Attar", image: "images/ameer-al-oud-gold-2.webp", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
     ]
   },
   {
@@ -251,7 +253,7 @@ const SHAFAAF_PRODUCTS = [
     reviewCount: 47,
     variants: [
       { type: "Perfume", sizes: [{ label: "30ml", ml: 30, price: 499 }, { label: "50ml", ml: 50, price: 699 }] },
-      { type: "Attar", sizes: [{ label: "6ml", ml: 6, price: 299 }, { label: "12ml", ml: 12, price: 599 }] }
+      { type: "Attar", image: "images/white-oud-spl.webp", sizes: [{ label: "6ml", ml: 6, price: 299 }, { label: "12ml", ml: 12, price: 599 }] }
     ]
   },
   {
@@ -286,8 +288,8 @@ const SHAFAAF_PRODUCTS = [
     rating: 4.8,
     reviewCount: 161,
     variants: [
-      { type: "Perfume", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
-      { type: "Attar", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
+      { type: "Perfume", image: "images/oud-kaaba-perfume.jpg", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
+      { type: "Attar", image: "images/oud-kaaba-attar.webp", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
     ]
   },
 
@@ -430,6 +432,22 @@ function shafaafProductHasType(product, typeKey) {
 }
 
 /** The cheapest size of the given type (or overall) — what a card's "From" price shows. */
+/**
+ * Photo for one form of a product: the variant's own image when it has one,
+ * otherwise the product's main photo. `typeKey` is "perfume" | "attar" |
+ * "bakhoor" (case-insensitive) or null for "whatever the product shows".
+ */
+function shafaafProductImageFor(product, typeKey) {
+  if (typeKey && product.variants) {
+    var key = String(typeKey).toLowerCase();
+    for (var i = 0; i < product.variants.length; i++) {
+      var v = product.variants[i];
+      if (v.image && String(v.type).toLowerCase() === key) return v.image;
+    }
+  }
+  return product.image || null;
+}
+
 function shafaafGetLowestSize(product, typeKey) {
   var best = null;
   shafaafVariantsOfType(product, typeKey).forEach(function (v) {
