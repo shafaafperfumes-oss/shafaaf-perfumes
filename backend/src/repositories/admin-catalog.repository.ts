@@ -9,6 +9,7 @@ import {
   products,
   type Product,
   type ProductVariant,
+  type VariantType,
 } from "../db/schema/index.js";
 import { writeAuditLog, type AuditContext } from "./audit.repository.js";
 
@@ -134,7 +135,7 @@ export async function listAdminProducts(options: {
 export interface AdminVariantDetail {
   id: string;
   sku: string;
-  variantType: "perfume" | "attar";
+  variantType: VariantType;
   sizeLabel: string;
   sizeMl: number;
   pricePaise: number;
@@ -298,7 +299,7 @@ export async function updateProduct(
 
 export interface VariantInput {
   sku: string;
-  variantType: "perfume" | "attar";
+  variantType: VariantType;
   sizeLabel: string;
   sizeMl: number;
   pricePaise: number;

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
+import { variantTypeEnum } from "../db/schema/index.js";
 import {
   ProductNotFoundError,
   SkuTakenError,
@@ -58,7 +59,7 @@ const productChangesSchema = productBodySchema.partial().extend({ isActive: z.bo
 const variantBodySchema = z
   .object({
     sku: z.string().min(1).max(64),
-    variantType: z.enum(["perfume", "attar"]),
+    variantType: z.enum(variantTypeEnum.enumValues),
     sizeLabel: z.string().min(1).max(24),
     sizeMl: z.number().int().positive().max(32_000),
     // Paise, not rupees: this is the number the database actually stores,

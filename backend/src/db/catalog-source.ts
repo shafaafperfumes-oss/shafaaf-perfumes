@@ -3,6 +3,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { runInNewContext } from "node:vm";
 import { z } from "zod";
+import { variantTypeFromLabel, type VariantType } from "./schema/index.js";
 
 /**
  * READING THE REAL CATALOG
@@ -29,7 +30,7 @@ const sizeSchema = z.object({
 });
 
 const variantSchema = z.object({
-  type: z.enum(["Perfume", "Attar"]),
+  type: z.enum(["Perfume", "Attar", "Bakhoor"]),
   sizes: z.array(sizeSchema).min(1),
 });
 
@@ -121,7 +122,7 @@ export function loadSourceProducts(): SourceProduct[] {
 
 export interface CatalogVariantRow {
   sku: string;
-  variantType: "perfume" | "attar";
+  variantType: VariantType;
   sizeLabel: string;
   sizeMl: number;
   pricePaise: number;
@@ -152,7 +153,8 @@ export function buildCatalogRows(products = loadSourceProducts()): CatalogProduc
     const variants: CatalogVariantRow[] = [];
 
     product.variants.forEach((variant) => {
-      const variantType = variant.type.toLowerCase() as "perfume" | "attar";
+      const variantType = variantTypeFromLabel(variant.type);
+      if (!variantType) throw new Error(`Unknown product type "${variant.type}" on "${product.id}".`);
       variant.sizes.forEach((size) => {
         variants.push({
           sku: buildSku(product.id, variantType, size.ml),

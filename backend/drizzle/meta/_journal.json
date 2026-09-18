@@ -99,6 +99,13 @@
       "when": 1789636761146,
       "tag": "0013_order_fulfilment_statuses",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1789714018198,
+      "tag": "0014_bakhoor_variant_type",
+      "breakpoints": true
     }
   ]
 }

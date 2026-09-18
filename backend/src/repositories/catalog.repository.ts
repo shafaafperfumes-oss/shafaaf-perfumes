@@ -6,6 +6,7 @@ import {
   productNotes,
   products,
   productVariants,
+  VARIANT_TYPE_LABEL,
 } from "../db/schema/index.js";
 
 /**
@@ -34,7 +35,7 @@ export interface CatalogSize {
 }
 
 export interface CatalogVariant {
-  type: "Perfume" | "Attar";
+  type: string; // "Perfume" | "Attar" | "Bakhoor" — see VARIANT_TYPE_LABEL
   sizes: CatalogSize[];
 }
 
@@ -53,11 +54,6 @@ export interface CatalogProduct {
   reviewCount: number;
   variants: CatalogVariant[];
 }
-
-const VARIANT_TYPE_LABEL: Record<string, "Perfume" | "Attar"> = {
-  perfume: "Perfume",
-  attar: "Attar",
-};
 
 interface ProductRow {
   productId: string;
@@ -143,7 +139,7 @@ async function attachNotesAndVariants(db: Db, rows: ProductRow[]): Promise<Catal
   const variantsByProduct = new Map<string, CatalogVariant[]>();
   variantRows.forEach((variant) => {
     const list = variantsByProduct.get(variant.productId) ?? [];
-    const typeLabel = VARIANT_TYPE_LABEL[variant.variantType] ?? "Perfume";
+    const typeLabel = VARIANT_TYPE_LABEL[variant.variantType];
     let group = list.find((v) => v.type === typeLabel);
     if (!group) {
       group = { type: typeLabel, sizes: [] };

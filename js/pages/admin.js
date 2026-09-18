@@ -346,7 +346,8 @@
   }
 
   function variantLabel(v) {
-    return (v.variantType === "attar" ? "Attar" : "Perfume") + " · " + v.sizeLabel;
+    var type = shafaafGetProductType(v.variantType);
+    return (type ? type.label : v.variantType) + " · " + v.sizeLabel;
   }
 
   // What the shop shows the customer for this product, for reference —

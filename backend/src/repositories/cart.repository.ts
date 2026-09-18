@@ -1,6 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { getDb } from "../db/client.js";
-import { cartItems, carts, products, productVariants } from "../db/schema/index.js";
+import { cartItems, carts, products, productVariants, type VariantType } from "../db/schema/index.js";
 
 /**
  * SERVER-SIDE CART
@@ -23,7 +23,7 @@ export interface CartLine {
   productId: string;
   productSlug: string;
   productName: string;
-  variantType: "perfume" | "attar";
+  variantType: VariantType;
   sizeLabel: string;
   sizeMl: number;
   quantity: number;
@@ -45,7 +45,7 @@ function summarize(
     productId: string;
     productSlug: string;
     productName: string;
-    variantType: "perfume" | "attar";
+    variantType: VariantType;
     sizeLabel: string;
     sizeMl: number;
     quantity: number;

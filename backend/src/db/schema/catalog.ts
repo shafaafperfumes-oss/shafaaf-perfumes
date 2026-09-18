@@ -30,7 +30,23 @@ import {
  * primary key stays an internal uuid that is never guessable.
  */
 
-export const variantTypeEnum = pgEnum("variant_type", ["perfume", "attar"]);
+export const variantTypeEnum = pgEnum("variant_type", ["perfume", "attar", "bakhoor"]);
+
+/** The forms a fragrance is sold in, exactly as the database spells them. */
+export type VariantType = (typeof variantTypeEnum.enumValues)[number];
+
+/** How each form is written for customers ("Perfume", "Attar", "Bakhoor"). */
+export const VARIANT_TYPE_LABEL: Record<VariantType, string> = {
+  perfume: "Perfume",
+  attar: "Attar",
+  bakhoor: "Bakhoor",
+};
+
+/** Label -> database value, for reading the website catalog file. */
+export function variantTypeFromLabel(label: string): VariantType | null {
+  const key = label.toLowerCase();
+  return (variantTypeEnum.enumValues as readonly string[]).includes(key) ? (key as VariantType) : null;
+}
 
 /** Where a note sits in the fragrance pyramid. The current catalog lists
  *  accords without a pyramid position, so they seed as "accord". */

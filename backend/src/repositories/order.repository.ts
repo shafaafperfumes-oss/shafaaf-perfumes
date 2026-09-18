@@ -12,6 +12,8 @@ import {
   products,
   type Address,
   type Order,
+  type VariantType,
+  VARIANT_TYPE_LABEL,
 } from "../db/schema/index.js";
 import { getAddress } from "./address.repository.js";
 
@@ -74,7 +76,7 @@ interface PricedCartRow {
   cartItemId: string;
   variantId: string;
   productName: string;
-  variantType: "perfume" | "attar";
+  variantType: VariantType;
   sizeLabel: string;
   sku: string;
   quantity: number;
@@ -84,7 +86,7 @@ interface PricedCartRow {
 }
 
 function variantLabel(row: Pick<PricedCartRow, "variantType" | "sizeLabel">): string {
-  const type = row.variantType === "attar" ? "Attar" : "Perfume";
+  const type = VARIANT_TYPE_LABEL[row.variantType];
   return `${type} · ${row.sizeLabel}`;
 }
 
