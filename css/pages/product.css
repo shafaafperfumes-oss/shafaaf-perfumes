@@ -10,7 +10,7 @@
 .pdp-gallery { position: sticky; top: calc(var(--header-h) + var(--sp-6)); }
 @media (max-width: 900px) { .pdp-gallery { position: static; } }
 .pdp-gallery__main {
-  position: relative; aspect-ratio: 1/1; border-radius: var(--r-xl); overflow: hidden;
+  position: relative; aspect-ratio: 4/5; border-radius: var(--r-xl); overflow: hidden;
   background: var(--c-champagne); cursor: zoom-in;
 }
 .pdp-gallery__main img, .pdp-gallery__main .placeholder-bottle { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform var(--dur-slow) var(--ease-out); }
