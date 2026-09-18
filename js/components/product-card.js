@@ -5,9 +5,17 @@
  * re-binding listeners.
  */
 
-function shafaafRenderProductCard(product) {
-  var lowest = shafaafGetLowestPrice(product);
-  var highest = shafaafGetHighestPrice(product);
+/**
+ * opts.type ("perfume" | "attar" | "bakhoor") shows the price of that
+ * form only and opens the product with it pre-selected — used by the
+ * shop's type sections. Without it the card covers every form.
+ */
+function shafaafRenderProductCard(product, opts) {
+  opts = opts || {};
+  var type = opts.type || null;
+  var href = "product.html?id=" + product.id + (type ? "&type=" + type : "");
+  var lowest = shafaafGetLowestPrice(product, type);
+  var highest = shafaafGetHighestPrice(product, type);
   var priceLabel = lowest === highest ? shafaafFormatPrice(lowest) : "From " + shafaafFormatPrice(lowest);
   var isWishlisted = typeof ShafaafWishlist !== "undefined" && ShafaafWishlist.has(product.id);
   var badges = "";
@@ -17,7 +25,7 @@ function shafaafRenderProductCard(product) {
   return (
     '<article class="product-card" data-product-id="' + product.id + '">' +
       '<div class="product-card__media">' +
-        '<a href="product.html?id=' + product.id + '" aria-label="View ' + product.name + '">' +
+        '<a href="' + href + '" aria-label="View ' + product.name + '">' +
           shafaafProductMedia(product) +
         '</a>' +
         (badges ? '<div class="product-card__badges">' + badges + '</div>' : '') +
@@ -30,7 +38,7 @@ function shafaafRenderProductCard(product) {
       '</div>' +
       '<div class="product-card__body">' +
         '<span class="product-card__collection">' + product.family + '</span>' +
-        '<h3 class="product-card__name"><a href="product.html?id=' + product.id + '">' + product.name + '</a></h3>' +
+        '<h3 class="product-card__name"><a href="' + href + '">' + product.name + '</a></h3>' +
         '<div class="rating"><span class="rating__stars">' + shafaafStarRow(product.rating) + '</span><span class="rating__count">(' + product.reviewCount + ')</span></div>' +
         '<p class="product-card__notes">' + shafaafTruncate(product.notes.join(", "), 58) + '</p>' +
         '<div class="product-card__footer">' +
@@ -53,7 +61,7 @@ function shafaafRenderProductGrid(products, opts) {
       '</div>'
     );
   }
-  return products.map(shafaafRenderProductCard).join("");
+  return products.map(function (p) { return shafaafRenderProductCard(p, opts); }).join("");
 }
 
 (function shafaafWireProductCards() {

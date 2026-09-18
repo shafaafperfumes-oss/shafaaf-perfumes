@@ -79,6 +79,27 @@
 @keyframes hero-scroll-line { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
 /* ---------- Featured collection tiles ---------- */
+/* Shop by Type — Perfume / Attar / Bakhoor tiles */
+.type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-5); }
+@media (max-width: 860px) { .type-grid { grid-template-columns: 1fr; } }
+.type-tile {
+  display: flex; flex-direction: column; align-items: flex-start; gap: var(--sp-3);
+  padding: var(--sp-8); border-radius: var(--r-lg); background: var(--c-ivory-2); border: 1px solid var(--c-line);
+  color: var(--c-ink);
+  transition: transform var(--dur-normal) var(--ease-out), box-shadow var(--dur-normal) var(--ease-out), border-color var(--dur-normal) var(--ease-out);
+}
+.type-tile:hover { transform: translateY(-4px); box-shadow: var(--shadow-gold); border-color: var(--c-gold-soft); }
+.type-tile__icon {
+  display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px;
+  border-radius: var(--r-full); border: 1px solid var(--c-gold-soft); color: var(--c-gold); background: var(--c-ivory);
+}
+.type-tile__icon svg { width: 26px; height: 26px; }
+.type-tile__name { font-size: var(--fs-display-sm); margin-top: var(--sp-2); }
+.type-tile__desc { color: var(--c-text-muted); font-weight: var(--fw-light); }
+.type-tile__link { display: inline-flex; align-items: center; gap: var(--sp-2); margin-top: auto; padding-top: var(--sp-3); font-size: var(--fs-xs); letter-spacing: var(--ls-wide); text-transform: uppercase; color: var(--c-gold); }
+.type-tile__link svg { width: 16px; height: 16px; }
+.type-tile--soon .type-tile__link { color: var(--c-text-faint); }
+
 .collection-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-5); }
 @media (max-width: 860px) { .collection-grid { grid-template-columns: 1fr; } }
 .collection-tile {

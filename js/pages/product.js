@@ -10,7 +10,10 @@ shafaafOnCatalogReady(function () {
     return;
   }
 
-  var state = { variantIndex: 0, sizeIndex: 0, qty: 1 };
+  // Arriving from a type section (?type=attar) starts on that form.
+  var wantedType = params.get("type");
+  var startIndex = wantedType ? product.variants.findIndex(function (v) { return v.type.toLowerCase() === wantedType; }) : -1;
+  var state = { variantIndex: startIndex === -1 ? 0 : startIndex, sizeIndex: 0, qty: 1 };
 
   function currentSize() {
     return product.variants[state.variantIndex].sizes[state.sizeIndex];

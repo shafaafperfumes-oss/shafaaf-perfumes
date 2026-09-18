@@ -313,17 +313,42 @@ function shafaafGetProductById(id) {
   return SHAFAAF_PRODUCTS.find(function (p) { return p.id === id; }) || null;
 }
 
-function shafaafGetLowestPrice(product) {
+/**
+ * The forms a fragrance is sold in. The shop is organised by these:
+ * each has its own section, menu link and home-page tile. Bakhoor is
+ * listed ahead of its products arriving so the section already exists.
+ */
+var SHAFAAF_PRODUCT_TYPES = [
+  { key: "perfume", label: "Perfume", plural: "Perfumes", tagline: "Spray-on eau de parfum for everyday wear" },
+  { key: "attar", label: "Attar", plural: "Attars", tagline: "Oil-based concentrates that last for hours" },
+  { key: "bakhoor", label: "Bakhoor", plural: "Bakhoor", tagline: "Scented wood chips to perfume your home" }
+];
+
+function shafaafGetProductType(key) {
+  return SHAFAAF_PRODUCT_TYPES.find(function (t) { return t.key === key; }) || null;
+}
+
+/** Variant groups of the given type key, or all of them when no key is given. */
+function shafaafVariantsOfType(product, typeKey) {
+  if (!typeKey) return product.variants;
+  return product.variants.filter(function (v) { return v.type.toLowerCase() === typeKey; });
+}
+
+function shafaafProductHasType(product, typeKey) {
+  return shafaafVariantsOfType(product, typeKey).length > 0;
+}
+
+function shafaafGetLowestPrice(product, typeKey) {
   var min = Infinity;
-  product.variants.forEach(function (v) {
+  shafaafVariantsOfType(product, typeKey).forEach(function (v) {
     v.sizes.forEach(function (s) { if (s.price < min) min = s.price; });
   });
   return min;
 }
 
-function shafaafGetHighestPrice(product) {
+function shafaafGetHighestPrice(product, typeKey) {
   var max = 0;
-  product.variants.forEach(function (v) {
+  shafaafVariantsOfType(product, typeKey).forEach(function (v) {
     v.sizes.forEach(function (s) { if (s.price > max) max = s.price; });
   });
   return max;

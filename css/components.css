@@ -377,12 +377,16 @@
 }
 
 .nav-primary { display: none; align-items: center; gap: var(--sp-8); }
+/* eight links have to share the bar with the logo on narrower desktops */
+@media (max-width: 1279px) { .nav-primary { gap: var(--sp-4); } .nav-link { font-size: var(--fs-xs); } }
+.mobile-menu__nav .mobile-menu__sub { padding-left: var(--sp-6); font-size: var(--fs-lg); color: var(--c-text-muted); }
 .nav-link {
   position: relative;
   font-size: var(--fs-sm);
   letter-spacing: var(--ls-wide);
   text-transform: uppercase;
   color: var(--c-ink);
+  white-space: nowrap;
   padding: var(--sp-2) 0;
   transition: color var(--dur-fast) var(--ease-out);
 }

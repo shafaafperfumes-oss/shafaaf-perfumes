@@ -10,6 +10,16 @@
 .shop-hero__title { font-size: var(--fs-display-md); margin-top: var(--sp-3); }
 .shop-hero__desc { color: var(--c-text-muted); max-width: 60ch; margin-top: var(--sp-3); font-weight: var(--fw-light); }
 
+/* Perfumes / Attars / Bakhoor section pills under the shop title */
+.shop-types { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-top: var(--sp-6); }
+.shop-types__tab {
+  padding: 10px 20px; border-radius: var(--r-full); border: 1px solid var(--c-line);
+  font-size: var(--fs-xs); letter-spacing: var(--ls-wider); text-transform: uppercase; color: var(--c-ink);
+  transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.shop-types__tab:hover { border-color: var(--c-gold); color: var(--c-gold); }
+.shop-types__tab.is-active { background: var(--c-ink); border-color: var(--c-ink); color: var(--c-text-on-dark); }
+
 .shop-layout { display: grid; grid-template-columns: 260px 1fr; gap: var(--sp-10); align-items: flex-start; }
 @media (max-width: 960px) { .shop-layout { grid-template-columns: 1fr; } }
 

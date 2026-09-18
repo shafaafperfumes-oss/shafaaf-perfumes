@@ -25,7 +25,9 @@
       <nav class="nav-primary" aria-label="Primary">
         <a href="index.html" class="nav-link is-active">Home</a>
         <a href="shop.html" class="nav-link">Shop</a>
-        <a href="index.html#collections" class="nav-link">Collections</a>
+        <a href="shop.html?type=perfume" class="nav-link">Perfumes</a>
+        <a href="shop.html?type=attar" class="nav-link">Attars</a>
+        <a href="shop.html?type=bakhoor" class="nav-link">Bakhoor</a>
         <a href="shop.html?filter=bestseller" class="nav-link">Best Sellers</a>
         <a href="about.html" class="nav-link">About</a>
         <a href="contact.html" class="nav-link">Contact</a>
@@ -57,6 +59,38 @@
         </div>
       </div>
       <div class="hero__scroll"><span></span>Scroll</div>
+    </section>
+
+    <!-- ========== SHOP BY TYPE ========== -->
+    <section class="section" id="shop-by-type" style="padding-bottom:0">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Shop by Type</span>
+            <h2 class="section-title">Perfume, Attar or Bakhoor</h2>
+          </div>
+        </div>
+        <div class="type-grid">
+          <a class="type-tile" href="shop.html?type=perfume">
+            <span class="type-tile__icon"><span data-icon="bottle"></span></span>
+            <h3 class="type-tile__name">Perfumes</h3>
+            <p class="type-tile__desc">Spray-on eau de parfum for everyday wear.</p>
+            <span class="type-tile__link">Shop Perfumes <span data-icon="arrowRight"></span></span>
+          </a>
+          <a class="type-tile" href="shop.html?type=attar">
+            <span class="type-tile__icon"><span data-icon="drop"></span></span>
+            <h3 class="type-tile__name">Attars</h3>
+            <p class="type-tile__desc">Oil-based concentrates that last for hours.</p>
+            <span class="type-tile__link">Shop Attars <span data-icon="arrowRight"></span></span>
+          </a>
+          <a class="type-tile type-tile--soon" href="shop.html?type=bakhoor">
+            <span class="type-tile__icon"><span data-icon="incense"></span></span>
+            <h3 class="type-tile__name">Bakhoor</h3>
+            <p class="type-tile__desc">Scented wood chips to perfume your home.</p>
+            <span class="type-tile__link">Coming Soon</span>
+          </a>
+        </div>
+      </div>
     </section>
 
     <!-- ========== FEATURED COLLECTIONS ========== -->
@@ -229,6 +263,9 @@
           <h4>Shop</h4>
           <ul>
             <li><a href="shop.html">All Fragrances</a></li>
+            <li><a href="shop.html?type=perfume">Perfumes</a></li>
+            <li><a href="shop.html?type=attar">Attars</a></li>
+            <li><a href="shop.html?type=bakhoor">Bakhoor</a></li>
             <li><a href="shop.html?filter=bestseller">Best Sellers</a></li>
             <li><a href="shop.html?filter=new">New Arrivals</a></li>
             <li><a href="fragrance-finder.html">Fragrance Finder</a></li>
@@ -281,6 +318,9 @@
       <nav class="mobile-menu__nav">
         <a href="index.html">Home</a>
         <a href="shop.html">Shop</a>
+        <a href="shop.html?type=perfume" class="mobile-menu__sub">Perfumes</a>
+        <a href="shop.html?type=attar" class="mobile-menu__sub">Attars</a>
+        <a href="shop.html?type=bakhoor" class="mobile-menu__sub">Bakhoor</a>
         <a href="index.html#collections">Collections</a>
         <a href="shop.html?filter=bestseller">Best Sellers</a>
         <a href="fragrance-finder.html">Fragrance Finder</a>

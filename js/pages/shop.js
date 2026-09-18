@@ -14,9 +14,12 @@
 
   function parseQuery() {
     var params = new URLSearchParams(window.location.search);
+    var type = params.get("type");
     return {
       quick: params.get("filter") || "all",
-      family: params.get("family") || null
+      family: params.get("family") || null,
+      // Section of the shop: perfume | attar | bakhoor, or null for everything.
+      type: shafaafGetProductType(type) ? type : null
     };
   }
 
@@ -26,6 +29,7 @@
     sizes: [],
     genders: [],
     quick: initial.quick, // all | bestseller | new
+    type: initial.type,
     priceMax: GLOBAL_MAX_PRICE,
     sort: "featured",
     page: 1,
@@ -47,6 +51,7 @@
         return p.name.toLowerCase().indexOf(q) !== -1 || p.notes.some(function (n) { return n.toLowerCase().indexOf(q) !== -1; });
       });
     }
+    if (state.type) list = list.filter(function (p) { return shafaafProductHasType(p, state.type); });
     if (state.quick === "bestseller") list = list.filter(function (p) { return p.bestseller; });
     if (state.quick === "new") list = list.filter(function (p) { return p.isNew; });
     if (state.families.length) list = list.filter(function (p) { return state.families.indexOf(p.family) !== -1; });
@@ -56,11 +61,11 @@
         return p.variants.some(function (v) { return v.sizes.some(function (s) { return state.sizes.indexOf(s.label) !== -1; }); });
       });
     }
-    list = list.filter(function (p) { return shafaafGetHighestPrice(p) <= state.priceMax; });
+    list = list.filter(function (p) { return shafaafGetHighestPrice(p, state.type) <= state.priceMax; });
 
     switch (state.sort) {
-      case "price-asc": list.sort(function (a, b) { return shafaafGetLowestPrice(a) - shafaafGetLowestPrice(b); }); break;
-      case "price-desc": list.sort(function (a, b) { return shafaafGetLowestPrice(b) - shafaafGetLowestPrice(a); }); break;
+      case "price-asc": list.sort(function (a, b) { return shafaafGetLowestPrice(a, state.type) - shafaafGetLowestPrice(b, state.type); }); break;
+      case "price-desc": list.sort(function (a, b) { return shafaafGetLowestPrice(b, state.type) - shafaafGetLowestPrice(a, state.type); }); break;
       case "name-asc": list.sort(function (a, b) { return a.name.localeCompare(b.name); }); break;
       case "newest": list.sort(function (a, b) { return (b.isNew === a.isNew) ? 0 : (b.isNew ? 1 : -1); }); break;
       default: list.sort(function (a, b) { return (b.bestseller === a.bestseller) ? 0 : (b.bestseller ? 1 : -1); });
@@ -141,6 +146,18 @@
     });
   }
 
+  // Perfumes / Attars / Bakhoor pills under the page title. Plain links,
+  // so each section has its own address that can be shared or bookmarked.
+  function renderTypeTabs() {
+    var el = document.getElementById("shop-types");
+    if (!el) return;
+    var tabs = [{ key: null, plural: "All" }].concat(SHAFAAF_PRODUCT_TYPES);
+    el.innerHTML = tabs.map(function (t) {
+      var active = t.key === state.type;
+      return '<a class="shop-types__tab' + (active ? " is-active" : "") + '" href="shop.html' + (t.key ? "?type=" + t.key : "") + '"' + (active ? ' aria-current="page"' : "") + '>' + t.plural + '</a>';
+    }).join("");
+  }
+
   function renderPagination(total) {
     var el = document.getElementById("shop-pagination");
     if (!el) return;
@@ -161,8 +178,20 @@
     var start = (state.page - 1) * PAGE_SIZE;
     var pageItems = filtered.slice(start, start + PAGE_SIZE);
 
-    document.getElementById("shop-grid").innerHTML = shafaafRenderProductGrid(pageItems);
-    document.getElementById("shop-result-count").textContent = total + " fragrance" + (total !== 1 ? "s" : "");
+    var sectionType = shafaafGetProductType(state.type);
+    if (sectionType && !ALL_PRODUCTS.some(function (p) { return shafaafProductHasType(p, state.type); })) {
+      // A section that has no products yet (Bakhoor, until it is stocked).
+      document.getElementById("shop-grid").innerHTML =
+        '<div class="state-block">' +
+          shafaafIcon("incense", "state-block__icon") +
+          '<h3 class="state-block__title">' + sectionType.plural + ' coming soon</h3>' +
+          '<p class="state-block__text">We are preparing our ' + sectionType.label.toLowerCase() + ' range. Message us on WhatsApp to be told the moment it arrives.</p>' +
+          '<a href="shop.html" class="btn btn--outline btn--sm shop-empty-cta">Browse Perfumes &amp; Attars</a>' +
+        '</div>';
+    } else {
+      document.getElementById("shop-grid").innerHTML = shafaafRenderProductGrid(pageItems, { type: state.type });
+    }
+    document.getElementById("shop-result-count").textContent = total + " " + (sectionType ? (total === 1 ? sectionType.label.toLowerCase() : sectionType.plural.toLowerCase()) : "fragrance" + (total !== 1 ? "s" : ""));
 
     var filtersHTML = renderFilterGroupsHTML();
     document.getElementById("filters-desktop").innerHTML = filtersHTML;
@@ -170,8 +199,13 @@
     renderActiveChips();
     renderPagination(total);
 
+    renderTypeTabs();
     var titleMap = { bestseller: "Best Sellers", new: "New Arrivals" };
-    document.getElementById("shop-title").textContent = titleMap[state.quick] || (state.families.length === 1 ? state.families[0] + " Collection" : "All Fragrances");
+    var title = titleMap[state.quick] || (state.families.length === 1 ? state.families[0] + " Collection" : (sectionType ? sectionType.plural : "All Fragrances"));
+    document.getElementById("shop-title").textContent = title;
+    document.title = title + " — Shafaaf Perfumes";
+    var desc = document.getElementById("shop-desc");
+    if (desc && sectionType) desc.textContent = sectionType.tagline + ". Filter by family, price and size to find your signature scent.";
   }
 
   function bindFilterInputs() {
