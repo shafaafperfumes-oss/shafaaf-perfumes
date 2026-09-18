@@ -150,6 +150,7 @@ describeWithAuth("the admin API", () => {
       slug: testSlug,
       name: "Admin Test Fragrance",
       description: "Created by the admin API test suite.",
+      notes: ["Rose", "Oud", "Warm Spicy"],
     });
 
     expect(created.status).toBe(201);
@@ -174,8 +175,17 @@ describeWithAuth("the admin API", () => {
     expect(detail.status).toBe(200);
     expect(detail.body.data.product.variants).toHaveLength(1);
     expect(detail.body.data.product.variants[0].quantity).toBe(4);
-    // A product made through the API has no notes yet; the field is still there for the admin page.
-    expect(detail.body.data.product.notes).toEqual([]);
+    expect(detail.body.data.product.notes).toEqual(["Rose", "Oud", "Warm Spicy"]);
+  });
+
+  it("replaces the notes when the product is edited", async () => {
+    const res = await asAdmin(request(app).patch(`${API_PREFIX}/admin/products/${createdProductId}`)).send({
+      notes: ["Vanilla", "Rose"],
+    });
+    expect(res.status).toBe(200);
+
+    const detail = await asAdmin(request(app).get(`${API_PREFIX}/admin/products/${createdProductId}`));
+    expect(detail.body.data.product.notes).toEqual(["Vanilla", "Rose"]);
   });
 
   it("stores a photo for one form of a product", async () => {

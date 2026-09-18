@@ -177,7 +177,10 @@ async function attachNotesAndVariants(db: Db, rows: ProductRow[]): Promise<Catal
     rating: Number(row.ratingAverage),
     reviewCount: row.reviewCount,
     variants: variantsByProduct.get(row.productId) ?? [],
-  }));
+  }))
+    // A product still being set up from the admin page (no size on sale
+    // yet) has nothing a shopper could buy, so the shop does not list it.
+    .filter((product) => product.variants.length > 0);
 }
 
 /** Every product the shop currently sells, in the site's display order. */

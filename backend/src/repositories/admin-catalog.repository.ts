@@ -11,6 +11,7 @@ import {
   type ProductVariant,
   type VariantType,
 } from "../db/schema/index.js";
+import { slugify } from "../db/catalog-source.js";
 import { writeAuditLog, type AuditContext } from "./audit.repository.js";
 
 /**
@@ -45,6 +46,7 @@ export interface AdminProductSummary {
   isActive: boolean;
   isBestseller: boolean;
   isNew: boolean;
+  heroImageUrl: string | null;
   variantCount: number;
   stockOnHand: number;
   createdAt: Date;
@@ -82,6 +84,7 @@ export async function listAdminProducts(options: {
       isActive: products.isActive,
       isBestseller: products.isBestseller,
       isNew: products.isNew,
+      heroImageUrl: products.heroImageUrl,
       createdAt: products.createdAt,
     })
     .from(products)
@@ -238,6 +241,34 @@ export interface ProductInput {
   isBestseller?: boolean;
   isNew?: boolean;
   sortOrder?: number;
+  /** Fragrance notes in display order ("Rose", "Oud"…); the shop groups them into top/heart/base itself. */
+  notes?: string[];
+}
+
+type Tx = Parameters<Parameters<ReturnType<typeof getDb>["transaction"]>[0]>[0];
+
+/**
+ * Replaces a product's note list. Notes are shared rows keyed by slug
+ * ("warm-spicy"), so a name the shop has not seen before is created and an
+ * existing one is reused — the same rule the seed follows.
+ */
+async function setProductNotes(tx: Tx, productId: string, names: string[]): Promise<void> {
+  const unique = new Map<string, string>();
+  names.map((name) => name.trim()).filter(Boolean).forEach((name) => unique.set(slugify(name), name));
+
+  await tx.delete(productNotes).where(eq(productNotes.productId, productId));
+  if (unique.size === 0) return;
+
+  const saved = await tx
+    .insert(fragranceNotes)
+    .values([...unique.entries()].map(([slug, name]) => ({ slug, name })))
+    .onConflictDoUpdate({ target: fragranceNotes.slug, set: { name: sql`excluded.name` } })
+    .returning({ id: fragranceNotes.id, slug: fragranceNotes.slug });
+  const idBySlug = new Map(saved.map((note) => [note.slug, note.id]));
+
+  await tx.insert(productNotes).values(
+    [...unique.keys()].map((slug, position) => ({ productId, noteId: idBySlug.get(slug)!, position })),
+  );
 }
 
 async function assertCategoryExists(familyId: string): Promise<void> {
@@ -255,13 +286,17 @@ export async function createProduct(actor: AuditContext, input: ProductInput): P
   if (existing) throw new SlugTakenError("Another product already uses that web address (slug).");
   if (input.familyId) await assertCategoryExists(input.familyId);
 
+  const { notes, ...columns } = input;
+
   return db.transaction(async (tx) => {
-    const [product] = await tx.insert(products).values(input).returning();
+    const [product] = await tx.insert(products).values(columns).returning();
     if (!product) throw new Error("Could not create the product.");
+    if (notes) await setProductNotes(tx, product.id, notes);
 
     await writeAuditLog(tx, actor, "product.create", "product", product.id, {
       slug: product.slug,
       name: product.name,
+      notes: notes ?? [],
     });
     return product;
   });
@@ -286,14 +321,17 @@ export async function updateProduct(
   }
   if (changes.familyId) await assertCategoryExists(changes.familyId);
 
+  const { notes, ...columns } = changes;
+
   return db.transaction(async (tx) => {
     const [product] = await tx
       .update(products)
-      .set({ ...changes, updatedAt: new Date() })
+      .set({ ...columns, updatedAt: new Date() })
       .where(eq(products.id, productId))
       .returning();
 
     if (!product) return null;
+    if (notes) await setProductNotes(tx, product.id, notes);
 
     await writeAuditLog(tx, actor, "product.update", "product", product.id, { changes });
     return product;

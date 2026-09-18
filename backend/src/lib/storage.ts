@@ -64,8 +64,9 @@ function authHeaders(): Record<string, string> {
 
 /**
  * Creates the public bucket the first time it is needed and remembers
- * that it exists for the life of the process. Supabase answers 409 when
- * it is already there, which counts as success.
+ * that it exists for the life of the process. "Already there" counts as
+ * success — Supabase reports it as HTTP 400 with code BucketAlreadyExists
+ * (older versions used a plain 409), so both are accepted.
  */
 let bucketReady: Promise<void> | null = null;
 
@@ -93,11 +94,12 @@ async function createBucket(): Promise<void> {
     signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
   });
 
-  if (response.ok || response.status === 409) {
-    if (response.ok) logger.info({ bucket: PRODUCT_IMAGES_BUCKET }, "Created the product images bucket");
+  if (response.ok) {
+    logger.info({ bucket: PRODUCT_IMAGES_BUCKET }, "Created the product images bucket");
     return;
   }
   const detail = await response.text().catch(() => "");
+  if (response.status === 409 || /BucketAlreadyExists/.test(detail)) return;
   logger.error({ status: response.status, detail }, "Could not create the product images bucket");
   throw new StorageError("Could not prepare photo storage.", response.status);
 }

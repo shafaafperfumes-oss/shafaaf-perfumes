@@ -6,6 +6,10 @@
  *   admin.html?view=order&id=…       one order: customer, items, address,
  *                                    history, and the one action it allows
  *   admin.html?view=stock            stock per variant, with adjustments
+ *   admin.html?view=products         the catalogue, with "Add product"
+ *   admin.html?view=product&id=…     one product: details, sizes, photos
+ *                                    (id=new for a new one) — see
+ *                                    admin-products.js
  *
  * The browser does none of the deciding. Every request goes to
  * /api/v1/admin/*, where the backend re-checks that the signed-in account
@@ -77,9 +81,10 @@
   function renderNav() {
     var nav = document.getElementById("admin-nav");
     if (!nav) return;
-    var section = view === "stock" ? "stock" : "orders";
+    var section = view === "stock" ? "stock" : view === "products" || view === "product" ? "products" : "orders";
     nav.innerHTML =
       '<a href="' + href({}) + '"' + (section === "orders" ? ' class="is-active"' : "") + '>Orders</a>' +
+      '<a href="' + href({ view: "products" }) + '"' + (section === "products" ? ' class="is-active"' : "") + '>Products</a>' +
       '<a href="' + href({ view: "stock" }) + '"' + (section === "stock" ? ' class="is-active"' : "") + '>Stock</a>';
   }
 
@@ -496,11 +501,22 @@
       });
   }
 
+  // Shared with admin-products.js, which renders the Products views into
+  // the same page shell.
+  window.ShafaafAdmin = {
+    el: el, escapeHtml: escapeHtml, href: href, setTitle: setTitle,
+    renderLoading: renderLoading, renderMessage: renderMessage, params: params
+  };
+
   // ---- routing ----------------------------------------------------------
 
   function route() {
     renderNav();
-    var load = view === "order" ? loadOrder : view === "stock" ? loadStock : loadOrders;
+    var load = view === "order" ? loadOrder
+      : view === "stock" ? loadStock
+      : view === "products" ? ShafaafAdminProducts.loadList
+      : view === "product" ? ShafaafAdminProducts.loadEditor
+      : loadOrders;
     load().catch(function (err) {
       if (err && err.code === "NOT_SIGNED_IN") { renderSignedOut(); return; }
       if (err && err.status === 403) { renderForbidden(); return; }
@@ -548,6 +564,7 @@
   // caret where it was instead of losing focus on every keystroke.
   document.addEventListener("input", function (e) {
     if (!e.target.matches("[data-admin-search]")) return;
+    if (view !== "stock") return;
     search = e.target.value;
     renderStock();
     var input = el().querySelector("[data-admin-search]");

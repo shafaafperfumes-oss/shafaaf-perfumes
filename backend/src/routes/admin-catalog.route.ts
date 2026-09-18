@@ -51,6 +51,7 @@ const productBodySchema = z
     isBestseller: z.boolean().optional(),
     isNew: z.boolean().optional(),
     sortOrder: z.number().int().min(0).max(32_000).optional(),
+    notes: z.array(z.string().trim().min(1).max(80)).max(40).optional(),
   })
   .strict();
 

@@ -28,6 +28,8 @@ ShafaafApiError.prototype.constructor = ShafaafApiError;
 
 var ShafaafApi = (function () {
   var TIMEOUT_MS = 15000;
+  /** A multi-megabyte photo on a slow connection needs far longer than a JSON call. */
+  var UPLOAD_TIMEOUT_MS = 120000;
 
   function baseUrl() {
     return (window.SHAFAAF_CONFIG && window.SHAFAAF_CONFIG.apiBaseUrl) || "";
@@ -53,15 +55,24 @@ var ShafaafApi = (function () {
 
       var headers = { Accept: "application/json" };
       if (token) headers.Authorization = "Bearer " + token;
-      if (opts.body !== undefined) headers["Content-Type"] = "application/json";
+      // A file goes up as the raw request body with its own type; anything
+      // else is JSON.
+      var body;
+      if (opts.file) {
+        headers["Content-Type"] = opts.file.type;
+        body = opts.file;
+      } else if (opts.body !== undefined) {
+        headers["Content-Type"] = "application/json";
+        body = JSON.stringify(opts.body);
+      }
 
       var controller = typeof AbortController === "function" ? new AbortController() : null;
-      var timer = setTimeout(function () { if (controller) controller.abort(); }, TIMEOUT_MS);
+      var timer = setTimeout(function () { if (controller) controller.abort(); }, opts.file ? UPLOAD_TIMEOUT_MS : TIMEOUT_MS);
 
       return fetch(base + path, {
         method: opts.method || "GET",
         headers: headers,
-        body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
+        body: body,
         signal: controller ? controller.signal : undefined
       })
         .then(function (res) {
@@ -102,6 +113,8 @@ var ShafaafApi = (function () {
     get: function (path, opts) { return request(path, Object.assign({}, opts, { method: "GET" })); },
     post: function (path, body, opts) { return request(path, Object.assign({}, opts, { method: "POST", body: body })); },
     patch: function (path, body, opts) { return request(path, Object.assign({}, opts, { method: "PATCH", body: body })); },
+    /** Sends a File/Blob as the request body (used by the admin photo upload). */
+    upload: function (path, file, opts) { return request(path, Object.assign({}, opts, { method: "POST", file: file })); },
     del: function (path, opts) { return request(path, Object.assign({}, opts, { method: "DELETE" })); }
   };
 })();
