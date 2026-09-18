@@ -178,6 +178,36 @@ describeWithAuth("the admin API", () => {
     expect(detail.body.data.product.notes).toEqual([]);
   });
 
+  it("stores a photo for one form of a product", async () => {
+    const res = await asAdmin(request(app).patch(`${API_PREFIX}/admin/variants/${createdVariantId}`)).send({
+      imageUrl: "https://example.com/admin-test-perfume.webp",
+    });
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.variant.imageUrl).toBe("https://example.com/admin-test-perfume.webp");
+
+    const detail = await asAdmin(request(app).get(`${API_PREFIX}/admin/products/${createdProductId}`));
+    expect(detail.body.data.product.variants[0].imageUrl).toBe("https://example.com/admin-test-perfume.webp");
+  });
+
+  it("refuses an upload that is not an image", async () => {
+    const res = await asAdmin(request(app).post(`${API_PREFIX}/admin/uploads/product-image?folder=${testSlug}`))
+      .set("Content-Type", "text/plain")
+      .send("not a picture");
+
+    expect(res.status).toBe(415);
+  });
+
+  it("refuses an upload from a customer account", async () => {
+    const res = await request(app)
+      .post(`${API_PREFIX}/admin/uploads/product-image`)
+      .set("Authorization", `Bearer ${customer.accessToken}`)
+      .set("Content-Type", "image/png")
+      .send(Buffer.from([0x89, 0x50, 0x4e, 0x47]));
+
+    expect(res.status).toBe(403);
+  });
+
   it("refuses a second product with the same web address", async () => {
     const res = await asAdmin(request(app).post(`${API_PREFIX}/admin/products`)).send({
       slug: testSlug,

@@ -23,6 +23,10 @@ import {
  *
  * `excluded.<column>` below is Postgres' name for the row that could not be
  * inserted because of a conflict, i.e. "use the new value".
+ *
+ * Photos are the one exception to "use the new value": a photo the owner
+ * uploaded from the admin page (stored in Supabase Storage) must survive a
+ * re-seed, so an existing photo is kept and the seed only fills in blanks.
  */
 
 const DEFAULT_STARTING_STOCK = 25;
@@ -96,8 +100,8 @@ async function seedProduct(
         familyId: sql`excluded.family_id`,
         gender: sql`excluded.gender`,
         description: sql`excluded.description`,
-        heroImageUrl: sql`excluded.hero_image_url`,
-        heroImageAlt: sql`excluded.hero_image_alt`,
+        heroImageUrl: sql`coalesce(${products.heroImageUrl}, excluded.hero_image_url)`,
+        heroImageAlt: sql`coalesce(${products.heroImageAlt}, excluded.hero_image_alt)`,
         isBestseller: sql`excluded.is_bestseller`,
         isNew: sql`excluded.is_new`,
         ratingAverage: sql`excluded.rating_average`,
@@ -190,7 +194,7 @@ async function seedVariants(
         sizeMl: sql`excluded.size_ml`,
         pricePaise: sql`excluded.price_paise`,
         compareAtPricePaise: sql`excluded.compare_at_price_paise`,
-        imageUrl: sql`excluded.image_url`,
+        imageUrl: sql`coalesce(${productVariants.imageUrl}, excluded.image_url)`,
         position: sql`excluded.position`,
         isActive: sql`true`,
         updatedAt: sql`now()`,

@@ -3,6 +3,12 @@ import { eq, sql } from "drizzle-orm";
 import { env } from "../src/config/env.js";
 import { closeDatabase, getDb } from "../src/db/client.js";
 import { products, productVariants, inventory } from "../src/db/schema/index.js";
+import { buildCatalogRows } from "../src/db/catalog-source.js";
+
+// The seed source is the floor, not the exact count: the owner can add
+// products from the admin page, and those must not fail this test.
+const seeded = buildCatalogRows();
+const seededSkus = seeded.flatMap((product) => product.variants.map((variant) => variant.sku));
 
 /**
  * Real-database checks. They run only when `DATABASE_URL` is set in
@@ -22,14 +28,16 @@ describeWithDatabase("the seeded catalog in Postgres", () => {
     expect(result.length).toBeGreaterThan(0);
   });
 
-  it("holds all 14 fragrances", async () => {
+  it("holds every seeded fragrance", async () => {
     const rows = await getDb().select({ slug: products.slug }).from(products);
-    expect(rows).toHaveLength(14);
+    const slugs = new Set(rows.map((row) => row.slug));
+    for (const product of seeded) expect(slugs.has(product.slug), product.slug).toBe(true);
   });
 
-  it("holds all 56 variants", async () => {
+  it("holds every seeded variant", async () => {
     const rows = await getDb().select({ sku: productVariants.sku }).from(productVariants);
-    expect(rows).toHaveLength(56);
+    const skus = new Set(rows.map((row) => row.sku));
+    for (const sku of seededSkus) expect(skus.has(sku), sku).toBe(true);
   });
 
   it("stores prices in whole paise", async () => {
@@ -68,11 +76,10 @@ describeWithDatabase("the seeded catalog in Postgres", () => {
   });
 
   it("gives every variant a stock row", async () => {
-    const [{ count }] = await getDb()
-      .select({ count: sql<number>`count(*)::int` })
-      .from(inventory);
+    const [{ variants }] = await getDb().select({ variants: sql<number>`count(*)::int` }).from(productVariants);
+    const [{ stockRows }] = await getDb().select({ stockRows: sql<number>`count(*)::int` }).from(inventory);
 
-    expect(count).toBe(56);
+    expect(stockRows).toBe(variants);
   });
 
   it("refuses to let stock go negative", async () => {

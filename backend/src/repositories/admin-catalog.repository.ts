@@ -140,6 +140,8 @@ export interface AdminVariantDetail {
   sizeMl: number;
   pricePaise: number;
   compareAtPricePaise: number | null;
+  /** Photo of this form (perfume bottle vs attar vial); null falls back to the hero. */
+  imageUrl: string | null;
   isActive: boolean;
   position: number;
   quantity: number;
@@ -201,6 +203,7 @@ export async function getAdminProduct(productId: string): Promise<AdminProductDe
       sizeMl: productVariants.sizeMl,
       pricePaise: productVariants.pricePaise,
       compareAtPricePaise: productVariants.compareAtPricePaise,
+      imageUrl: productVariants.imageUrl,
       isActive: productVariants.isActive,
       position: productVariants.position,
       quantity: inventory.quantity,
@@ -304,6 +307,7 @@ export interface VariantInput {
   sizeMl: number;
   pricePaise: number;
   compareAtPricePaise?: number | null;
+  imageUrl?: string | null;
   position?: number;
   /** Stock to start the new variant with; its inventory row is created either way. */
   quantity?: number;
@@ -352,6 +356,7 @@ export interface VariantChanges {
   sizeLabel?: string;
   pricePaise?: number;
   compareAtPricePaise?: number | null;
+  imageUrl?: string | null;
   isActive?: boolean;
   position?: number;
 }

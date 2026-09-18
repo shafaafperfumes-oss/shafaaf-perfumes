@@ -50,10 +50,10 @@ const envSchema = z.object({
 
   /**
    * The service-role key. This bypasses every database access rule —
-   * SERVER ONLY, never sent to a browser, never logged. Only used for
-   * account-management calls Supabase does not expose any other way
-   * (kept unused until a phase actually needs it; declared now so the
-   * variable has one documented home from the start).
+   * SERVER ONLY, never sent to a browser, never logged. Used for the one
+   * thing the database connection cannot do: writing product photos to
+   * Supabase Storage (see src/lib/storage.ts). Without it the API boots
+   * and the admin upload route reports itself as unavailable.
    */
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
 
@@ -125,6 +125,7 @@ export const env = {
   hasPayments: Boolean(raw.RAZORPAY_KEY_ID && raw.RAZORPAY_KEY_SECRET),
   hasPaymentWebhook: Boolean(raw.RAZORPAY_WEBHOOK_SECRET),
   hasEmail: Boolean(raw.RESEND_API_KEY),
+  hasStorage: Boolean(raw.SUPABASE_URL && raw.SUPABASE_SERVICE_ROLE_KEY),
   hasOrderAlerts: Boolean(raw.RESEND_API_KEY && raw.ORDER_ALERT_EMAIL),
   /**
    * The public website, used only to build links in emails: the first

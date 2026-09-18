@@ -67,6 +67,7 @@ const variantBodySchema = z
     // paise-only rule exists to prevent.
     pricePaise: z.number().int().positive(),
     compareAtPricePaise: z.number().int().positive().nullish(),
+    imageUrl: z.string().max(2000).nullish(),
     position: z.number().int().min(0).max(32_000).optional(),
     quantity: z.number().int().min(0).optional(),
   })
@@ -77,6 +78,7 @@ const variantChangesSchema = z
     sizeLabel: z.string().min(1).max(24).optional(),
     pricePaise: z.number().int().positive().optional(),
     compareAtPricePaise: z.number().int().positive().nullish(),
+    imageUrl: z.string().max(2000).nullish(),
     isActive: z.boolean().optional(),
     position: z.number().int().min(0).max(32_000).optional(),
   })

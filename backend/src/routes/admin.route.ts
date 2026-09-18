@@ -6,6 +6,7 @@ import { sendSuccess } from "../utils/respond.js";
 import { adminCatalogRouter } from "./admin-catalog.route.js";
 import { adminAuditLogsRouter, adminCustomersRouter } from "./admin-customers.route.js";
 import { adminOrdersRouter } from "./admin-orders.route.js";
+import { adminUploadsRouter } from "./admin-uploads.route.js";
 
 /**
  * THE ADMIN DOOR
@@ -40,3 +41,4 @@ adminRouter.use("/", adminCatalogRouter);
 adminRouter.use("/orders", adminOrdersRouter);
 adminRouter.use("/customers", adminCustomersRouter);
 adminRouter.use("/audit-logs", adminAuditLogsRouter);
+adminRouter.use("/uploads", adminUploadsRouter);

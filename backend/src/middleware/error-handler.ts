@@ -27,6 +27,12 @@ function toApiError(error: unknown): ApiError {
     return ApiError.badRequest("Request body is not valid JSON.");
   }
 
+  // body-parser (behind express.json / express.raw) rejects an oversized
+  // body with a typed error; say so rather than answering a generic 500.
+  if (typeof error === "object" && error !== null && (error as { type?: string }).type === "entity.too.large") {
+    return new ApiError(413, "PAYLOAD_TOO_LARGE", "That file is too large for this server.");
+  }
+
   return ApiError.internal();
 }
 

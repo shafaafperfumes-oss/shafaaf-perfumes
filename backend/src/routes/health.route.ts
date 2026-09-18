@@ -42,6 +42,7 @@ healthRouter.get("/ready", async (_req, res) => {
   checks.paymentWebhook = env.hasPaymentWebhook ? "ok" : "not-configured";
   // Same idea for email: is RESEND_API_KEY + ORDER_ALERT_EMAIL set?
   checks.orderAlerts = env.hasOrderAlerts ? "ok" : "not-configured";
+  checks.uploads = env.hasStorage ? "ok" : "not-configured";
 
   const ready = Object.values(checks).every((status) => status !== "unavailable");
 
