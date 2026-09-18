@@ -39,7 +39,7 @@ function shafaafRenderProductCard(product, opts) {
       '<div class="product-card__body">' +
         '<span class="product-card__collection">' + product.family + '</span>' +
         '<h3 class="product-card__name"><a href="' + href + '">' + product.name + '</a></h3>' +
-        '<div class="rating"><span class="rating__stars">' + shafaafStarRow(product.rating) + '</span><span class="rating__count">(' + product.reviewCount + ')</span></div>' +
+        (product.reviewCount ? '<div class="rating"><span class="rating__stars">' + shafaafStarRow(product.rating) + '</span><span class="rating__count">(' + product.reviewCount + ')</span></div>' : "") +
         '<p class="product-card__notes">' + shafaafTruncate(product.notes.join(", "), 58) + '</p>' +
         '<div class="product-card__footer">' +
           '<span class="price"><span class="price__current">' + priceLabel + '</span></span>' +

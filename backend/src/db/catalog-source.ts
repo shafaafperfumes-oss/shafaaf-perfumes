@@ -39,7 +39,7 @@ const productSchema = z.object({
   name: z.string().min(1),
   family: z.string().min(1),
   gender: z.string().min(1),
-  notes: z.array(z.string().min(1)).min(1),
+  notes: z.array(z.string().min(1)),
   description: z.string(),
   image: z.string().nullable(),
   imageAlt: z.string().nullable(),

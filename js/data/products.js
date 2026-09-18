@@ -288,6 +288,95 @@ const SHAFAAF_PRODUCTS = [
       { type: "Perfume", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
       { type: "Attar", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
     ]
+  },
+
+  // ---- Bakhoor (scented wood chips for the home). For these the "ml"
+  // number is grams — the size label carries the unit customers see.
+  // Notes are listed only where the owner has supplied them.
+  {
+    id: "amber-oud-bakhoor",
+    name: "Amber Oud",
+    family: "Oud",
+    gender: "Unisex",
+    notes: ["Warm Spicy", "Sweet"],
+    description: "Warm, sweetly spiced bakhoor built on oud and amber — burn a chip to fill the room with a rich, resinous glow.",
+    image: null,
+    imageAlt: null,
+    bestseller: false,
+    isNew: true,
+    rating: 0,
+    reviewCount: 0,
+    variants: [
+      { type: "Bakhoor", sizes: [{ label: "40g", ml: 40, price: 499 }] }
+    ]
+  },
+  {
+    id: "al-kaaf-bakhoor",
+    name: "Al Kaaf",
+    family: "Woody",
+    gender: "Unisex",
+    notes: [],
+    description: "Traditional bakhoor for the home: a few chips on the burner scent a whole room with a slow, smoky warmth.",
+    image: null,
+    imageAlt: null,
+    bestseller: false,
+    isNew: true,
+    rating: 0,
+    reviewCount: 0,
+    variants: [
+      { type: "Bakhoor", sizes: [{ label: "40g", ml: 40, price: 499 }] }
+    ]
+  },
+  {
+    id: "al-noor-bakhoor",
+    name: "Al Noor",
+    family: "Woody",
+    gender: "Unisex",
+    notes: [],
+    description: "A soft, luminous bakhoor for everyday burning — gentle on the air, unmistakably oriental.",
+    image: null,
+    imageAlt: null,
+    bestseller: false,
+    isNew: true,
+    rating: 0,
+    reviewCount: 0,
+    variants: [
+      { type: "Bakhoor", sizes: [{ label: "40g", ml: 40, price: 499 }] }
+    ]
+  },
+  {
+    id: "amir-al-oud-bakhoor",
+    name: "Amir Al Oud",
+    family: "Oud",
+    gender: "Unisex",
+    notes: [],
+    description: "Oud-forward bakhoor with a regal, long-lasting smoke — for evenings, gatherings and guests.",
+    image: null,
+    imageAlt: null,
+    bestseller: false,
+    isNew: true,
+    rating: 0,
+    reviewCount: 0,
+    variants: [
+      { type: "Bakhoor", sizes: [{ label: "40g", ml: 40, price: 499 }] }
+    ]
+  },
+  {
+    id: "khamrah-bakhoor",
+    name: "Khamrah",
+    family: "Woody",
+    gender: "Unisex",
+    notes: [],
+    description: "Bakhoor in the spirit of our Khamrah fragrance: warm, sweet and inviting when it burns.",
+    image: null,
+    imageAlt: null,
+    bestseller: false,
+    isNew: true,
+    rating: 0,
+    reviewCount: 0,
+    variants: [
+      { type: "Bakhoor", sizes: [{ label: "40g", ml: 40, price: 499 }] }
+    ]
   }
 ];
 

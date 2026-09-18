@@ -10,7 +10,7 @@
   var PAGE_SIZE = 9;
   var GLOBAL_MIN_PRICE = Math.min.apply(null, ALL_PRODUCTS.map(shafaafGetLowestPrice));
   var GLOBAL_MAX_PRICE = Math.max.apply(null, ALL_PRODUCTS.map(shafaafGetHighestPrice));
-  var ALL_SIZES = ["30ml", "50ml", "6ml", "12ml"];
+  var ALL_SIZES = ["30ml", "50ml", "6ml", "12ml", "40g"];
 
   function parseQuery() {
     var params = new URLSearchParams(window.location.search);

@@ -59,8 +59,10 @@ shafaafOnCatalogReady(function () {
         '<span class="pdp-info__collection">' + product.family + ' · ' + product.gender + '</span>' +
         '<h1 class="pdp-info__name">' + product.name + '</h1>' +
         '<div class="pdp-info__meta">' +
-          '<span class="rating"><span class="rating__stars">' + shafaafStarRow(product.rating) + '</span><span class="rating__count">' + product.rating.toFixed(1) + '</span></span>' +
-          '<a href="#reviews">' + product.reviewCount + ' reviews</a>' +
+          (product.reviewCount
+            ? '<span class="rating"><span class="rating__stars">' + shafaafStarRow(product.rating) + '</span><span class="rating__count">' + product.rating.toFixed(1) + '</span></span>' +
+              '<a href="#reviews">' + product.reviewCount + ' reviews</a>'
+            : '<span class="badge badge--soft">' + product.variants[state.variantIndex].type + '</span>') +
           (product.bestseller ? '<span class="badge badge--bestseller">Bestseller</span>' : "") +
           (product.isNew ? '<span class="badge badge--new">New</span>' : "") +
         '</div>' +
@@ -123,6 +125,9 @@ shafaafOnCatalogReady(function () {
   }
 
   function renderNotesViz() {
+    var viz = document.getElementById("notes-viz");
+    // No notes listed yet (new bakhoor): hide the whole composition section.
+    if (!product.notes.length) { var sec = viz.closest("section"); if (sec) sec.hidden = true; return; }
     var groups = shafaafGroupNotes(product.notes);
     var cols = [
       { key: "top", label: "Top Notes", icon: "sparkle" },
@@ -152,6 +157,11 @@ shafaafOnCatalogReady(function () {
 
   function renderReviews() {
     var reviews = shafaafGetProductReviews(product);
+    if (!product.reviewCount) {
+      document.getElementById("review-summary").innerHTML = "";
+      document.getElementById("review-list").innerHTML = '<p class="section-sub">No reviews yet — be the first to share your experience.</p>';
+      return;
+    }
     document.getElementById("review-summary").innerHTML =
       '<span class="review-summary__score">' + product.rating.toFixed(1) + '</span>' +
       '<div><div class="rating__stars">' + shafaafStarRow(product.rating) + '</div><p style="color:var(--c-text-faint);font-size:var(--fs-sm);margin-top:4px">Based on ' + product.reviewCount + ' reviews</p></div>';

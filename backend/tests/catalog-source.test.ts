@@ -18,8 +18,9 @@ const source = loadSourceProducts();
 const rows = buildCatalogRows(source);
 
 describe("the website catalog is readable", () => {
-  it("finds all 14 fragrances", () => {
-    expect(source).toHaveLength(14);
+  it("finds all 14 fragrances and the 5 bakhoor", () => {
+    expect(source).toHaveLength(19);
+    expect(source.filter((p) => p.variants.some((v) => v.type === "Bakhoor"))).toHaveLength(5);
   });
 
   it("gives every fragrance a unique url slug", () => {
@@ -27,10 +28,12 @@ describe("the website catalog is readable", () => {
     expect(new Set(slugs).size).toBe(slugs.length);
   });
 
-  it("keeps every fragrance's notes", () => {
+  it("keeps every product's notes (bakhoor may have none yet)", () => {
     rows.forEach((row) => {
-      expect(row.notes.length).toBeGreaterThan(0);
-      expect(row.notes.length).toBe(source.find((p) => p.id === row.slug)!.notes.length);
+      const product = source.find((p) => p.id === row.slug)!;
+      const isBakhoor = product.variants.some((v) => v.type === "Bakhoor");
+      if (!isBakhoor) expect(row.notes.length).toBeGreaterThan(0);
+      expect(row.notes.length).toBe(product.notes.length);
     });
   });
 });
@@ -69,9 +72,10 @@ describe("prices convert to paise without losing a single paisa", () => {
 });
 
 describe("variants and stock keeping units", () => {
-  it("creates 56 sellable variants in total", () => {
+  it("creates 61 sellable variants in total", () => {
+    // 14 fragrances x 4 sizes + 5 bakhoor x 1 size
     const total = rows.reduce((sum, row) => sum + row.variants.length, 0);
-    expect(total).toBe(56);
+    expect(total).toBe(61);
   });
 
   it("gives every variant a unique sku", () => {
@@ -83,12 +87,19 @@ describe("variants and stock keeping units", () => {
     expect(buildSku("shanaya-gold", "perfume", 30)).toBe("SHF-SHANAYA-GOLD-PERFUME-30");
   });
 
-  it("only uses the two variant types the shop sells", () => {
+  it("only uses the three variant types the shop sells", () => {
     rows.forEach((row) => {
       row.variants.forEach((variant) => {
-        expect(["perfume", "attar"]).toContain(variant.variantType);
+        expect(["perfume", "attar", "bakhoor"]).toContain(variant.variantType);
       });
     });
+  });
+
+  it("stores bakhoor sizes as grams under the size label", () => {
+    const amberOud = rows.find((row) => row.slug === "amber-oud-bakhoor")!;
+    expect(amberOud.variants).toEqual([
+      expect.objectContaining({ variantType: "bakhoor", sizeLabel: "40g", sizeMl: 40, pricePaise: 49_900 }),
+    ]);
   });
 });
 

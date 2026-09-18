@@ -45,6 +45,8 @@ var SHAFAAF_TESTIMONIALS = [
  * always shows the same placeholder reviews on reload.
  */
 function shafaafGetProductReviews(product) {
+  // A product nobody has reviewed yet (new bakhoor) shows none.
+  if (!product.reviewCount) return [];
   var pool = [
     { name: "Fatima S.", text: "Better projection and longevity than I expected. The scent settles into something really elegant after an hour." },
     { name: "Ali H.", text: "Bought this as a gift and ended up ordering one for myself. The notes are true to the description." },
