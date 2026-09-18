@@ -32,6 +32,8 @@ export interface CatalogSize {
   /** Whole rupees, e.g. 599 — never paise. This is the one place the stored
    *  integer paise value is converted back for anything outside the database. */
   price: number;
+  /** Regular price in whole rupees when `price` is an offer, else null. */
+  compareAt: number | null;
 }
 
 export interface CatalogVariant {
@@ -122,6 +124,7 @@ async function attachNotesAndVariants(db: Db, rows: ProductRow[]): Promise<Catal
         sizeLabel: productVariants.sizeLabel,
         sizeMl: productVariants.sizeMl,
         pricePaise: productVariants.pricePaise,
+        compareAtPricePaise: productVariants.compareAtPricePaise,
         position: productVariants.position,
       })
       .from(productVariants)
@@ -151,6 +154,7 @@ async function attachNotesAndVariants(db: Db, rows: ProductRow[]): Promise<Catal
       ml: variant.sizeMl,
       // Paise -> rupees, the one conversion point for anything leaving the DB.
       price: variant.pricePaise / 100,
+      compareAt: variant.compareAtPricePaise === null ? null : variant.compareAtPricePaise / 100,
     });
     variantsByProduct.set(variant.productId, list);
   });

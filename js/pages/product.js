@@ -65,8 +65,9 @@ shafaafOnCatalogReady(function () {
             : '<span class="badge badge--soft">' + product.variants[state.variantIndex].type + '</span>') +
           (product.bestseller ? '<span class="badge badge--bestseller">Bestseller</span>' : "") +
           (product.isNew ? '<span class="badge badge--new">New</span>' : "") +
+          (product.variants.some(function (v) { return v.sizes.some(function (s) { return s.compareAt && s.compareAt > s.price; }); }) ? '<span class="badge badge--sale">Offer</span>' : "") +
         '</div>' +
-        '<div class="pdp-info__price price price--lg"><span class="price__current" id="pdp-price"></span></div>' +
+        '<div class="pdp-info__price price price--lg" id="pdp-price"></div>' +
         '<p class="pdp-info__desc">' + product.description + '</p>' +
 
         '<div class="pdp-field">' +
@@ -116,7 +117,7 @@ shafaafOnCatalogReady(function () {
 
   function updatePriceDisplay() {
     var size = currentSize();
-    document.getElementById("pdp-price").textContent = shafaafFormatPrice(size.price);
+    document.getElementById("pdp-price").innerHTML = shafaafPriceHTML(size);
     var bar = document.getElementById("sticky-buybar");
     if (bar) {
       document.getElementById("buybar-name").textContent = product.name + " — " + product.variants[state.variantIndex].type + ", " + size.label;

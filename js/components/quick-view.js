@@ -29,7 +29,7 @@
           (p.reviewCount ? '<div class="rating" style="margin-top:10px"><span class="rating__stars">' + shafaafStarRow(p.rating) + '</span><span class="rating__count">' + p.rating.toFixed(1) + ' (' + p.reviewCount + ' reviews)</span></div>' : "") +
           '<p class="section-sub" style="margin-top:14px">' + p.description + '</p>' +
           '<p class="product-card__notes" style="margin-top:10px;font-size:var(--fs-sm)"><strong style="color:var(--c-text);font-style:normal">Notes:</strong> ' + p.notes.join(", ") + '</p>' +
-          '<div class="qv-price price price--lg" style="margin-top:18px"><span class="price__current" id="qv-price">' + shafaafFormatPrice(size.price) + '</span></div>' +
+          '<div class="qv-price price price--lg" style="margin-top:18px">' + shafaafPriceHTML(size) + '</div>' +
           '<div class="field" style="margin-top:18px"><span class="field__label">Type</span>' +
             '<div class="option-pill-group" id="qv-variants">' +
               p.variants.map(function (v, i) {

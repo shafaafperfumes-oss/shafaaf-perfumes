@@ -14,6 +14,7 @@
  * @property {string} label   e.g. "30ml"
  * @property {number} ml      numeric volume for sorting/filtering
  * @property {number} price   price in Indian Rupees (INR)
+ * @property {number} [compareAt] the regular price when `price` is an offer — shown struck through
  *
  * @typedef {Object} ProductVariant
  * @property {'Perfume'|'Attar'} type
@@ -292,7 +293,8 @@ const SHAFAAF_PRODUCTS = [
 
   // ---- Bakhoor (scented wood chips for the home). For these the "ml"
   // number is grams — the size label carries the unit customers see.
-  // Notes are listed only where the owner has supplied them.
+  // Notes are the owner's: Amber Oud from the list, Khamrah and Amir Al Oud
+  // as their attar namesakes. Al Kaaf and Al Noor have none yet.
   {
     id: "amber-oud-bakhoor",
     name: "Amber Oud",
@@ -349,7 +351,7 @@ const SHAFAAF_PRODUCTS = [
     name: "Amir Al Oud",
     family: "Oud",
     gender: "Unisex",
-    notes: [],
+    notes: ["Woody", "Vanilla", "Sweet", "Oud", "Powdery"],
     description: "Oud-forward bakhoor with a regal, long-lasting smoke — for evenings, gatherings and guests.",
     image: null,
     imageAlt: null,
@@ -358,15 +360,15 @@ const SHAFAAF_PRODUCTS = [
     rating: 0,
     reviewCount: 0,
     variants: [
-      { type: "Bakhoor", sizes: [{ label: "40g", ml: 40, price: 499 }] }
+      { type: "Bakhoor", sizes: [{ label: "40g", ml: 40, price: 399, compareAt: 499 }] }
     ]
   },
   {
     id: "khamrah-bakhoor",
     name: "Khamrah",
-    family: "Woody",
+    family: "Spicy",
     gender: "Unisex",
-    notes: [],
+    notes: ["Sweet", "Warm Spicy", "Vanilla", "Amber", "Cinnamon", "Woody", "Fresh Spicy", "Fruity"],
     description: "Bakhoor in the spirit of our Khamrah fragrance: warm, sweet and inviting when it burns.",
     image: null,
     imageAlt: null,
@@ -427,6 +429,25 @@ function shafaafProductHasType(product, typeKey) {
   return shafaafVariantsOfType(product, typeKey).length > 0;
 }
 
+/** The cheapest size of the given type (or overall) — what a card's "From" price shows. */
+function shafaafGetLowestSize(product, typeKey) {
+  var best = null;
+  shafaafVariantsOfType(product, typeKey).forEach(function (v) {
+    v.sizes.forEach(function (s) { if (!best || s.price < best.price) best = s; });
+  });
+  return best;
+}
+
+/** Price markup with the regular price struck through when a size is on offer. */
+function shafaafPriceHTML(size, qty) {
+  qty = qty || 1;
+  var html = '<span class="price__current">' + shafaafFormatPrice(size.price * qty) + '</span>';
+  if (size.compareAt && size.compareAt > size.price) {
+    html += ' <span class="price__compare">' + shafaafFormatPrice(size.compareAt * qty) + '</span>';
+  }
+  return html;
+}
+
 function shafaafGetLowestPrice(product, typeKey) {
   var min = Infinity;
   shafaafVariantsOfType(product, typeKey).forEach(function (v) {
@@ -447,6 +468,13 @@ function shafaafGetFamilies() {
   var set = {};
   SHAFAAF_PRODUCTS.forEach(function (p) { set[p.family] = true; });
   return Object.keys(set).sort();
+}
+
+/** Products with at least one size on offer (a struck-through regular price). */
+function shafaafGetOffers() {
+  return SHAFAAF_PRODUCTS.filter(function (p) {
+    return p.variants.some(function (v) { return v.sizes.some(function (s) { return s.compareAt && s.compareAt > s.price; }); });
+  });
 }
 
 function shafaafGetBestsellers() {

@@ -29,6 +29,15 @@
     shafaafHydrateIcons(el);
   }
 
+  function renderOffers() {
+    var section = document.getElementById("offers");
+    var el = document.getElementById("offers-grid");
+    if (!section || !el) return;
+    var offers = shafaafGetOffers();
+    section.hidden = offers.length === 0;
+    el.innerHTML = shafaafRenderProductGrid(offers.slice(0, 4));
+  }
+
   function renderBestsellers() {
     var el = document.getElementById("bestsellers-grid");
     if (!el) return;
@@ -94,6 +103,7 @@
   shafaafOnCatalogReady(function () {
     renderCollections();
     renderBestsellers();
+    renderOffers();
     renderStoryMedia();
     renderSpotlight();
     renderReviews();

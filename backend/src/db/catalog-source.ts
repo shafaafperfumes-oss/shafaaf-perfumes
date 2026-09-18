@@ -27,6 +27,11 @@ const sizeSchema = z.object({
   label: z.string().min(1),
   ml: z.number().int().positive(),
   price: z.number().positive(),
+  /** Regular price when `price` is an offer; must be higher than `price`. */
+  compareAt: z.number().positive().optional(),
+}).refine((size) => size.compareAt === undefined || size.compareAt > size.price, {
+  message: "compareAt must be higher than price",
+  path: ["compareAt"],
 });
 
 const variantSchema = z.object({
@@ -126,6 +131,7 @@ export interface CatalogVariantRow {
   sizeLabel: string;
   sizeMl: number;
   pricePaise: number;
+  compareAtPricePaise: number | null;
   position: number;
 }
 
@@ -162,6 +168,7 @@ export function buildCatalogRows(products = loadSourceProducts()): CatalogProduc
           sizeLabel: size.label,
           sizeMl: size.ml,
           pricePaise: rupeesToPaise(size.price),
+          compareAtPricePaise: size.compareAt === undefined ? null : rupeesToPaise(size.compareAt),
           position: variants.length,
         });
       });

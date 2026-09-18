@@ -16,11 +16,16 @@ function shafaafRenderProductCard(product, opts) {
   var href = "product.html?id=" + product.id + (type ? "&type=" + type : "");
   var lowest = shafaafGetLowestPrice(product, type);
   var highest = shafaafGetHighestPrice(product, type);
-  var priceLabel = lowest === highest ? shafaafFormatPrice(lowest) : "From " + shafaafFormatPrice(lowest);
+  var lowestSize = shafaafGetLowestSize(product, type);
+  var onOffer = lowestSize && lowestSize.compareAt && lowestSize.compareAt > lowestSize.price;
+  var priceHTML = (lowest === highest ? "" : '<span class="price__from">From</span> ') +
+    '<span class="price__current">' + shafaafFormatPrice(lowest) + '</span>' +
+    (onOffer ? ' <span class="price__compare">' + shafaafFormatPrice(lowestSize.compareAt) + '</span>' : "");
   var isWishlisted = typeof ShafaafWishlist !== "undefined" && ShafaafWishlist.has(product.id);
   var badges = "";
   if (product.bestseller) badges += '<span class="badge badge--bestseller">Bestseller</span>';
   if (product.isNew) badges += '<span class="badge badge--new">New</span>';
+  if (onOffer) badges += '<span class="badge badge--sale">Offer</span>';
 
   return (
     '<article class="product-card" data-product-id="' + product.id + '">' +
@@ -42,7 +47,7 @@ function shafaafRenderProductCard(product, opts) {
         (product.reviewCount ? '<div class="rating"><span class="rating__stars">' + shafaafStarRow(product.rating) + '</span><span class="rating__count">(' + product.reviewCount + ')</span></div>' : "") +
         '<p class="product-card__notes">' + shafaafTruncate(product.notes.join(", "), 58) + '</p>' +
         '<div class="product-card__footer">' +
-          '<span class="price"><span class="price__current">' + priceLabel + '</span></span>' +
+          '<span class="price">' + priceHTML + '</span>' +
           '<button type="button" class="btn btn--icon btn--metal" data-quick-view="' + product.id + '" aria-label="Add ' + product.name + ' to cart">' + shafaafIcon("bag") + '</button>' +
         '</div>' +
       '</div>' +

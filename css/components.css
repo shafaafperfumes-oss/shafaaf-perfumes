@@ -230,6 +230,7 @@
   font-weight: var(--fw-semibold);
   color: var(--c-espresso);
 }
+.price__from { font-size: var(--fs-sm); color: var(--c-text-muted); }
 .price__compare {
   font-size: var(--fs-sm);
   color: var(--c-text-faint);

@@ -54,6 +54,7 @@
     if (state.type) list = list.filter(function (p) { return shafaafProductHasType(p, state.type); });
     if (state.quick === "bestseller") list = list.filter(function (p) { return p.bestseller; });
     if (state.quick === "new") list = list.filter(function (p) { return p.isNew; });
+    if (state.quick === "offer") list = list.filter(function (p) { return shafaafGetOffers().indexOf(p) !== -1; });
     if (state.families.length) list = list.filter(function (p) { return state.families.indexOf(p.family) !== -1; });
     if (state.genders.length) list = list.filter(function (p) { return state.genders.indexOf(p.gender) !== -1; });
     if (state.sizes.length) {
@@ -136,7 +137,8 @@
     state.sizes.forEach(function (s) { chips.push({ label: s, clear: function () { toggleInArray(state.sizes, s); } }); });
     state.genders.forEach(function (g) { chips.push({ label: g, clear: function () { toggleInArray(state.genders, g); } }); });
     if (state.priceMax < GLOBAL_MAX_PRICE) chips.push({ label: "Up to " + shafaafFormatPrice(state.priceMax), clear: function () { state.priceMax = GLOBAL_MAX_PRICE; } });
-    if (state.quick !== "all") chips.push({ label: state.quick === "bestseller" ? "Bestsellers" : "New Arrivals", clear: function () { state.quick = "all"; } });
+    var quickLabels = { bestseller: "Bestsellers", new: "New Arrivals", offer: "Current Offers" };
+    if (state.quick !== "all") chips.push({ label: quickLabels[state.quick] || state.quick, clear: function () { state.quick = "all"; } });
     if (!chips.length) { el.innerHTML = ""; return; }
     el.innerHTML = chips.map(function (c, i) {
       return '<span class="active-filter-chip" data-chip-index="' + i + '">' + c.label + '<button type="button" aria-label="Remove filter">' + ShafaafIcons.close + '</button></span>';
@@ -200,7 +202,7 @@
     renderPagination(total);
 
     renderTypeTabs();
-    var titleMap = { bestseller: "Best Sellers", new: "New Arrivals" };
+    var titleMap = { bestseller: "Best Sellers", new: "New Arrivals", offer: "Current Offers" };
     var title = titleMap[state.quick] || (state.families.length === 1 ? state.families[0] + " Collection" : (sectionType ? sectionType.plural : "All Fragrances"));
     document.getElementById("shop-title").textContent = title;
     document.title = title + " — Shafaaf Perfumes";
