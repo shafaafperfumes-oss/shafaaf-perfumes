@@ -120,14 +120,14 @@ const SHAFAAF_PRODUCTS = [
     notes: ["Musky", "Sweet", "Powdery"],
     description: "A clean, confident musk — softly sweet and powdery, designed to sit close to the skin as an everyday signature.",
     image: "images/musk-rijali-super.webp",
-    imageAlt: null,
+    imageAlt: "images/musk-rijali-super-attar.webp",
     bestseller: false,
     isNew: false,
     rating: 4.6,
     reviewCount: 74,
     variants: [
       { type: "Perfume", image: "images/musk-rijali-super.webp", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
-      { type: "Attar", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
+      { type: "Attar", image: "images/musk-rijali-super-attar.webp", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
     ]
   },
   {
@@ -263,7 +263,7 @@ const SHAFAAF_PRODUCTS = [
     gender: "Unisex",
     notes: ["Warm Spicy", "Woody", "Leather", "Sweet", "Musky", "Coffee", "Amber", "Rose", "Patchouli", "Oud"],
     description: "A commanding oud composition — leather and patchouli under a dark coffee accord, finished with rose and warm amber.",
-    image: null,
+    image: "images/oud-magestic-attar.webp",
     imageAlt: null,
     bestseller: false,
     isNew: true,
@@ -271,7 +271,7 @@ const SHAFAAF_PRODUCTS = [
     reviewCount: 39,
     variants: [
       { type: "Perfume", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
-      { type: "Attar", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
+      { type: "Attar", image: "images/oud-magestic-attar.webp", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
     ]
   },
   {
@@ -304,14 +304,14 @@ const SHAFAAF_PRODUCTS = [
     gender: "Unisex",
     notes: ["Warm Spicy", "Sweet"],
     description: "Golden amber melting into smoky oud, laced with sweet warm spice. Place a single chip on the burner and within minutes the room glows with a rich, resinous warmth that lingers on curtains and clothes long after the smoke has faded. For slow evenings, honoured guests and moments worth remembering.",
-    image: null,
+    image: "images/amber-oud-bakhoor.webp",
     imageAlt: null,
     bestseller: false,
     isNew: true,
     rating: 0,
     reviewCount: 0,
     variants: [
-      { type: "Bakhoor", sizes: [{ label: "40g", ml: 40, price: 499 }] }
+      { type: "Bakhoor", image: "images/amber-oud-bakhoor.webp", sizes: [{ label: "40g", ml: 40, price: 499 }] }
     ]
   },
   {
@@ -321,14 +321,14 @@ const SHAFAAF_PRODUCTS = [
     gender: "Unisex",
     notes: [],
     description: "A classic bakhoor in the old Arabian tradition: deep, smooth and unhurried. Its slow, smoky warmth settles gently into every corner of the home, turning an ordinary evening into something serene. One chip is enough to scent an entire room.",
-    image: null,
+    image: "images/al-kaaf-bakhoor.webp",
     imageAlt: null,
     bestseller: false,
     isNew: true,
     rating: 0,
     reviewCount: 0,
     variants: [
-      { type: "Bakhoor", sizes: [{ label: "40g", ml: 40, price: 499 }] }
+      { type: "Bakhoor", image: "images/al-kaaf-bakhoor.webp", sizes: [{ label: "40g", ml: 40, price: 499 }] }
     ]
   },
   {
@@ -355,14 +355,14 @@ const SHAFAAF_PRODUCTS = [
     gender: "Unisex",
     notes: ["Woody", "Vanilla", "Sweet", "Oud", "Powdery"],
     description: "The prince of oud. Smoky agarwood wrapped in vanilla, sweet powder and soft woods, regal, long-lasting and unmistakably luxurious. Burn it for celebrations, Fridays and the evenings when your home should smell like an occasion.",
-    image: null,
+    image: "images/amir-al-oud-bakhoor.webp",
     imageAlt: null,
     bestseller: false,
     isNew: true,
     rating: 0,
     reviewCount: 0,
     variants: [
-      { type: "Bakhoor", sizes: [{ label: "40g", ml: 40, price: 399, compareAt: 499 }] }
+      { type: "Bakhoor", image: "images/amir-al-oud-bakhoor.webp", sizes: [{ label: "40g", ml: 40, price: 399, compareAt: 499 }] }
     ]
   },
   {
@@ -372,14 +372,14 @@ const SHAFAAF_PRODUCTS = [
     gender: "Unisex",
     notes: ["Sweet", "Warm Spicy", "Vanilla", "Amber", "Cinnamon", "Woody", "Fresh Spicy", "Fruity"],
     description: "All the warmth of our best-loved Khamrah fragrance, made for the home. Sweet amber and vanilla, a whisper of cinnamon and warm spice, and a woody base that smoulders for hours. Rich, inviting and impossible to ignore.",
-    image: null,
+    image: "images/khamrah-bakhoor.webp",
     imageAlt: null,
     bestseller: false,
     isNew: true,
     rating: 0,
     reviewCount: 0,
     variants: [
-      { type: "Bakhoor", sizes: [{ label: "40g", ml: 40, price: 499 }] }
+      { type: "Bakhoor", image: "images/khamrah-bakhoor.webp", sizes: [{ label: "40g", ml: 40, price: 499 }] }
     ]
   }
 ];
