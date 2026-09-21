@@ -18,8 +18,27 @@
     {
       "name": "backend-api",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "backend"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "backend"
+      ],
       "port": 4000
+    },
+    {
+      "name": "cloudflare-worker",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "wrangler",
+        "dev",
+        "--port",
+        "8787",
+        "--local",
+        "--persist-to",
+        "../.shafaaf-wrangler-state"
+      ],
+      "port": 8787
     }
   ]
 }

@@ -11,3 +11,6 @@ wrangler.jsonc
 CLAUDE.md
 README.md
 worker.js
+images/_originals/
+.wrangler/
+node_modules/

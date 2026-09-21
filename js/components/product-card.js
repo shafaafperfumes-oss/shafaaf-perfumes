@@ -48,7 +48,7 @@ function shafaafRenderProductCard(product, opts) {
         '<p class="product-card__notes">' + shafaafTruncate(product.notes.join(", "), 58) + '</p>' +
         '<div class="product-card__footer">' +
           '<span class="price">' + priceHTML + '</span>' +
-          '<button type="button" class="btn btn--icon btn--metal" data-quick-view="' + product.id + '" aria-label="Add ' + product.name + ' to cart">' + shafaafIcon("bag") + '</button>' +
+          '<button type="button" class="btn btn--icon btn--metal" data-quick-view="' + product.id + '" aria-label="Choose a size of ' + product.name + '">' + shafaafIcon("bag") + '</button>' +
         '</div>' +
       '</div>' +
     '</article>'

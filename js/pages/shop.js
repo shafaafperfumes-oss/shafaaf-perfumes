@@ -193,7 +193,7 @@
     } else {
       document.getElementById("shop-grid").innerHTML = shafaafRenderProductGrid(pageItems, { type: state.type });
     }
-    document.getElementById("shop-result-count").textContent = total + " " + (sectionType ? (total === 1 ? sectionType.label.toLowerCase() : sectionType.plural.toLowerCase()) : "fragrance" + (total !== 1 ? "s" : ""));
+    document.getElementById("shop-result-count").textContent = total + " " + (sectionType ? (total === 1 ? sectionType.label.toLowerCase() : sectionType.plural.toLowerCase()) : "product" + (total !== 1 ? "s" : ""));
 
     var filtersHTML = renderFilterGroupsHTML();
     document.getElementById("filters-desktop").innerHTML = filtersHTML;
