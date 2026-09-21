@@ -113,6 +113,20 @@
       "when": 1789742604235,
       "tag": "0015_variant_image",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1789998936542,
+      "tag": "0016_inspired_fragrances",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1789998937542,
+      "tag": "0017_inspired_row_level_security",
+      "breakpoints": true
     }
   ]
 }

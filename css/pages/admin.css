@@ -163,3 +163,23 @@
   .admin-size__label { width: 72px; }
   .admin-size__price { width: 84px; }
 }
+
+/* ---- Fragrances (inspired / custom list) ---- */
+.admin-help { margin-top: var(--sp-4); font-size: var(--fs-sm); color: var(--c-text-muted); max-width: 70ch; }
+.admin-h2 { font-family: var(--font-display); font-size: var(--fs-xl); margin-top: var(--sp-10); }
+.admin-link { background: none; border: 0; padding: 0; font: inherit; color: var(--c-text); text-decoration: underline; text-decoration-color: var(--c-line-strong); text-underline-offset: 3px; cursor: pointer; }
+.admin-link:hover { text-decoration-color: var(--c-gold); }
+.admin-switch { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: var(--fs-sm); }
+.admin-switch input { width: 18px; height: 18px; accent-color: var(--c-espresso); }
+.input--sm { padding: 6px 10px; font-size: var(--fs-sm); }
+.admin-price { width: 110px; text-align: right; }
+.admin-inspired__form { display: grid; grid-template-columns: 1.4fr 1fr auto auto auto; gap: var(--sp-2); align-items: center; }
+.admin-inspired__editor td { background: var(--c-ivory-2); }
+.admin-inspired__grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-10); }
+.admin-table--queries td:first-child { word-break: break-word; }
+.admin-table .order-status { font-size: 10px; }
+@media (max-width: 860px) {
+  .admin-inspired__grid { grid-template-columns: 1fr; }
+  .admin-inspired__form { grid-template-columns: 1fr 1fr; }
+  .admin-inspired__form select { grid-column: 1 / -1; }
+}

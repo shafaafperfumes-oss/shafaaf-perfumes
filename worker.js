@@ -21,7 +21,7 @@
  */
 
 // Public pages, as their clean URLs (Cloudflare turns /shop.html into /shop).
-const STATIC_PAGES = ["/", "/shop", "/about", "/contact", "/fragrance-finder"];
+const STATIC_PAGES = ["/", "/shop", "/custom", "/about", "/contact", "/fragrance-finder"];
 
 // Signed-in / personal pages: never useful in search results.
 const PRIVATE_PAGES = ["/admin", "/cart", "/checkout", "/orders", "/wishlist"];

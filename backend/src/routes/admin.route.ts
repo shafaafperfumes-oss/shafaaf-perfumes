@@ -5,6 +5,7 @@ import { ApiError } from "../utils/api-error.js";
 import { sendSuccess } from "../utils/respond.js";
 import { adminCatalogRouter } from "./admin-catalog.route.js";
 import { adminAuditLogsRouter, adminCustomersRouter } from "./admin-customers.route.js";
+import { adminInspiredRouter } from "./admin-inspired.route.js";
 import { adminOrdersRouter } from "./admin-orders.route.js";
 import { adminUploadsRouter } from "./admin-uploads.route.js";
 
@@ -42,3 +43,4 @@ adminRouter.use("/orders", adminOrdersRouter);
 adminRouter.use("/customers", adminCustomersRouter);
 adminRouter.use("/audit-logs", adminAuditLogsRouter);
 adminRouter.use("/uploads", adminUploadsRouter);
+adminRouter.use("/inspired", adminInspiredRouter);

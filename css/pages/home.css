@@ -212,3 +212,16 @@
 }
 .newsletter-band input::placeholder { color: var(--c-text-on-dark-muted); }
 @media (max-width: 480px) { .newsletter-band form { flex-direction: column; } }
+
+/* ---- Custom & inspired teaser ---- */
+.custom-band { background: var(--c-espresso); color: var(--c-ivory); padding: var(--sp-20) 0; }
+.custom-band__inner { display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--sp-12); align-items: center; }
+.custom-band .eyebrow { color: var(--c-gold); }
+.custom-band__title { font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem); color: var(--c-ivory); margin: var(--sp-3) 0 var(--sp-4); }
+.custom-band__text { color: rgba(250, 247, 242, 0.78); font-weight: var(--fw-light); line-height: var(--lh-relaxed); max-width: 52ch; }
+.custom-band__form { display: flex; gap: var(--sp-3); }
+.custom-band__form .input { flex: 1; min-width: 0; }
+@media (max-width: 860px) {
+  .custom-band__inner { grid-template-columns: 1fr; gap: var(--sp-8); }
+  .custom-band__form { flex-direction: column; }
+}

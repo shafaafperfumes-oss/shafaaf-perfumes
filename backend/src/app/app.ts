@@ -11,6 +11,7 @@ import { cartRouter } from "../routes/cart.route.js";
 import { catalogRouter } from "../routes/catalog.route.js";
 import { checkoutRouter } from "../routes/checkout.route.js";
 import { healthRouter } from "../routes/health.route.js";
+import { inspiredRouter } from "../routes/inspired.route.js";
 import { meRouter } from "../routes/me.route.js";
 import { ordersRouter } from "../routes/orders.route.js";
 import { webhooksRouter } from "../routes/webhooks.route.js";
@@ -62,6 +63,7 @@ export function createApp(): Express {
   app.use(API_PREFIX, generalLimiter);
   app.use(API_PREFIX, healthRouter);
   app.use(API_PREFIX, catalogRouter);
+  app.use(`${API_PREFIX}/inspired`, inspiredRouter);
   // Signed-in routes ride on the general limiter above: a shopper nudging
   // quantities in their cart makes a request per tap, which the strict
   // budget (20 per 15 min) would exhaust in minutes. Only checkout, which
