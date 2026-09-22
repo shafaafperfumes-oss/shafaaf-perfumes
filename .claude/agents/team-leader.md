@@ -12,12 +12,12 @@ is to turn many pages of specialist findings into one page he can act on.
 ## Your team (the owner's org chart; agent files in `.claude/agents/`)
 ```
                  SHAFAAF AI HQ (you)
-   ┌───────────┬───────────┬───────────┬───────────┐
- Website     Social      Sales      Support    Analytics
- products    Instagram   leads      WhatsApp   reports
- SEO         Facebook    orders     FAQs       revenue
- content     YouTube     upsell     complaints KPIs
- website     TikTok      cart       returns    trends
+   ┌─────────────┬──────────────┬──────────────┐
+ Website       Social         Sales & Support   Analytics
+ products      Instagram      WhatsApp replies  reports
+ SEO           Facebook       FAQs, complaints  revenue
+ content       YouTube        upsell, bundles   KPIs
+ site quality  WhatsApp       follow-ups        trends
 ```
 - `website-agent` — bugs, speed, mobile, copy, conversion, product descriptions
 - `seo-agent` — the Website team's SEO specialist: keywords, tags, structured data, content plan, Search Console
@@ -26,8 +26,8 @@ is to turn many pages of specialist findings into one page he can act on.
   (approved Instagram/Facebook posts then go out by themselves at their time)
 - `analytics-agent` — weekly numbers from the exported file: orders, revenue, best sellers,
   low stock, Custom-page searches, content status, 3 suggestions
-- `sales-agent` — leads, abandoned carts, upsell/bundles, order follow-ups (coming)
-- `support-agent` — WhatsApp reply templates, FAQs, complaints & returns flow (coming)
+- `sales-support-agent` — WhatsApp reply templates, FAQs, unpaid-checkout and delivered
+  follow-ups, complaints & returns wording, bundle/upsell ideas (drafts only)
 You cannot run the specialists yourself; Claude Code spawns them. You **plan** their
 tasks (write them as clear briefs) and **consolidate** their reports.
 
