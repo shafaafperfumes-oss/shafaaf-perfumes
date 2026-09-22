@@ -1,4 +1,4 @@
-import { index, pgTable, text, timestamp, uniqueIndex, uuid, varchar } from "drizzle-orm/pg-core";
+import { index, integer, pgTable, text, timestamp, uniqueIndex, uuid, varchar } from "drizzle-orm/pg-core";
 
 /**
  * SOCIAL CONTENT — DRAFTS THAT WAIT FOR THE OWNER
@@ -55,6 +55,14 @@ export const contentPosts = pgTable(
     publishedAt: timestamp("published_at", { withTimezone: true }),
     /** The platform's own id / permalink once published. */
     externalRef: varchar("external_ref", { length: 300 }),
+    /**
+     * The auto-poster's bookkeeping: how many times it tried, when, and
+     * what Meta said the last time it failed (shown on the admin card).
+     * Reset when the owner moves the post back to draft and re-approves.
+     */
+    publishAttempts: integer("publish_attempts").notNull().default(0),
+    lastAttemptAt: timestamp("last_attempt_at", { withTimezone: true }),
+    lastError: text("last_error"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },

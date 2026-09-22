@@ -141,6 +141,13 @@
       "when": 1790008209681,
       "tag": "0019_content_row_level_security",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1790056579379,
+      "tag": "0020_content_publish_tracking",
+      "breakpoints": true
     }
   ]
 }

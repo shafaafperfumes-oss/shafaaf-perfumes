@@ -150,4 +150,47 @@ describeWithAuth("the owner's content drafts", () => {
     const again = await asAdmin(request(app).get(`${API_PREFIX}/admin/content/${row!.id}`));
     expect(again.status).toBe(404);
   });
+  it("reports whether auto-posting is set up, without ever returning a token", async () => {
+    const res = await asAdmin(request(app).get(`${API_PREFIX}/admin/content/meta-status`));
+    expect(res.status).toBe(200);
+    expect(typeof res.body.data.configured).toBe("boolean");
+    expect(JSON.stringify(res.body)).not.toMatch(/access_token|EAA/);
+  });
+
+  it("will not publish a draft, nor a post that must stay manual", async () => {
+    const draft = await asAdmin(request(app).post(`${API_PREFIX}/admin/content`)).send({
+      platform: "facebook",
+      title: `${stamp} publish-draft`,
+      caption: "not yet",
+    });
+    const res = await asAdmin(request(app).post(`${API_PREFIX}/admin/content/${draft.body.data.post.id}/publish`));
+    expect(res.status).toBe(409);
+    expect(res.body.error.message).toMatch(/Approve/);
+
+    const yt = await asAdmin(request(app).post(`${API_PREFIX}/admin/content`)).send({
+      platform: "youtube",
+      title: `${stamp} publish-yt`,
+      caption: "shots",
+    });
+    await asAdmin(request(app).patch(`${API_PREFIX}/admin/content/${yt.body.data.post.id}`)).send({ status: "approved" });
+    const manual = await asAdmin(request(app).post(`${API_PREFIX}/admin/content/${yt.body.data.post.id}/publish`));
+    expect(manual.status).toBe(409);
+    expect(manual.body.error.message).toMatch(/YouTube/);
+    const [row] = await getDb().select().from(contentPosts).where(eq(contentPosts.id, yt.body.data.post.id));
+    expect(row?.status).toBe("approved");
+  });
+
+  it("re-approving a post gives the scheduler fresh attempts", async () => {
+    const made = await asAdmin(request(app).post(`${API_PREFIX}/admin/content`)).send({
+      platform: "facebook",
+      title: `${stamp} retry`,
+      caption: "again",
+    });
+    const id = made.body.data.post.id;
+    await getDb().update(contentPosts).set({ status: "approved", publishAttempts: 3, lastError: "Meta said no" }).where(eq(contentPosts.id, id));
+    const back = await asAdmin(request(app).patch(`${API_PREFIX}/admin/content/${id}`)).send({ status: "draft" });
+    expect(back.status).toBe(200);
+    expect(back.body.data.post.publishAttempts).toBe(0);
+    expect(back.body.data.post.lastError).toBeNull();
+  });
 });

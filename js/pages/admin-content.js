@@ -6,11 +6,15 @@
  *     drafts (caption, hashtags, which photo); they land here as "draft"
  *   - the owner reads each one, fixes the words if needed, and presses
  *     Approve or Reject (with a note the agent reads next round)
- *   - "Copy" puts caption + hashtags on the clipboard for posting by hand;
- *     the auto-poster (a later step) only ever takes approved posts
+ *   - approved Instagram / Facebook photo posts go out by themselves at
+ *     their "Post on" time (the server's content publisher), or at once
+ *     with "Publish now"; the card shows the link, or why the last try failed
+ *   - YouTube, WhatsApp, reels and stories stay manual: "Copy caption"
+ *     puts caption + hashtags on the clipboard for posting by hand
  *   - the owner can also write a post from scratch with "New post"
  *
- * Nothing on this screen is public and nothing here posts anywhere.
+ * The page never sees a Meta token; "Check connection" only asks the
+ * server which Page / Instagram account it is set up for.
  */
 var ShafaafAdminContent = (function () {
   var A = null;
@@ -33,6 +37,7 @@ var ShafaafAdminContent = (function () {
   var composing = false;   // the "New post" form is open
   var busy = false;
   var notice = null;
+  var meta = null;          // /admin/content/meta-status result, once asked
 
   function helpers() { return A || (A = window.ShafaafAdmin); }
   function esc(text) { return helpers().escapeHtml(text); }
@@ -61,7 +66,25 @@ var ShafaafAdminContent = (function () {
       var wanted = p.get("status");
       if (wanted !== null && TABS.some(function (t) { return t.key === wanted; })) filter = wanted;
     }
-    return reload();
+    return reload().then(function () {
+      if (meta) return;
+      return checkMeta(false);
+    });
+  }
+
+  // Asks the server whether Meta auto-posting is set up. Never sees a token.
+  function checkMeta(announce) {
+    return ShafaafApi.get("/admin/content/meta-status", { auth: true })
+      .then(function (res) {
+        meta = res;
+        if (announce) notice = { type: meta.configured ? "success" : "error", text: meta.configured ? "Meta connection OK." : "Meta is not set up on the server yet." };
+        render();
+      })
+      .catch(function (err) {
+        meta = { configured: false, error: true };
+        if (announce) fail(err, "Could not check the Meta connection.");
+        else render();
+      });
   }
 
   function reload() {
@@ -92,6 +115,45 @@ var ShafaafAdminContent = (function () {
       return '<button type="button" class="admin-tab' + (filter === t.key ? ' is-active' : '') + '" data-content-tab="' + t.key + '">' +
         esc(t.label) + ' <span class="admin-tab__count">' + n + '</span></button>';
     }).join("") + '</nav>';
+  }
+
+  // Which posts the server can put out by itself: Instagram / Facebook photo
+  // posts only. Everything else is "copy the caption and post it yourself".
+  function manualReason(post) {
+    if (post.platform === "youtube") return "YouTube: posted by hand (the caption is the video plan).";
+    if (post.platform === "whatsapp") return "WhatsApp Status: posted by hand.";
+    if (post.kind !== "post") return cap(post.kind) + "s are posted by hand.";
+    if (post.platform === "instagram" && !post.imageUrl) return "Instagram needs a photo before it can auto-post.";
+    return null;
+  }
+
+  function autoHtml(post) {
+    if (post.status === "published") {
+      return post.externalRef && /^https?:/.test(post.externalRef)
+        ? '<a class="admin-card__meta admin-content__product" href="' + esc(post.externalRef) + '" target="_blank" rel="noopener">View post ↗</a>'
+        : '';
+    }
+    var reason = manualReason(post);
+    if (reason) return '<span class="admin-card__meta admin-content__manual">' + esc(reason) + '</span>';
+    var on = meta && meta.configured;
+    var line = post.status !== "approved"
+      ? "Auto-posts once approved" + (post.scheduledFor ? "" : " (set a time)")
+      : !on ? "Auto-post is off — copy the caption, or set up Meta"
+      : post.scheduledFor ? "Will auto-post at the planned time"
+      : "Approved: press Publish now, or set a time";
+    var err = post.lastError
+      ? '<span class="admin-card__meta admin-content__error">Last try failed (' + post.publishAttempts + (post.publishAttempts >= 3 ? ', stopped' : '') + '): ' + esc(post.lastError) + '</span>'
+      : '';
+    return '<span class="admin-card__meta admin-content__auto">' + esc(line) + '</span>' + err;
+  }
+
+  function metaHtml() {
+    var text, cls = "";
+    if (!meta) text = "Auto-post: not checked yet.";
+    else if (!meta.configured) { text = "Auto-post: off. Approved posts wait for you to copy them. Setup guide: backend/docs/META-SETUP.md"; cls = " admin-content__meta--off"; }
+    else text = "Auto-post: on — Facebook Page \"" + meta.page.name + "\"" + (meta.instagram ? ", Instagram @" + meta.instagram.username : ", no Instagram account linked");
+    return '<p class="admin-content__meta' + cls + '">' + esc(text) +
+      ' <button type="button" class="admin-link" data-content-check>' + (meta ? "Check again" : "Check connection") + '</button></p>';
   }
 
   function imageHtml(post) {
@@ -136,6 +198,7 @@ var ShafaafAdminContent = (function () {
           (post.scheduledFor ? '<span class="admin-card__meta">Planned: ' + esc(whenHtml(post.scheduledFor)) + '</span>' : '') +
           (post.publishedAt ? '<span class="admin-card__meta">Posted: ' + esc(whenHtml(post.publishedAt)) + '</span>' : '') +
           (post.productSlug ? '<a class="admin-card__meta admin-content__product" href="product.html?id=' + esc(post.productSlug) + '" target="_blank" rel="noopener">View product ↗</a>' : '') +
+          autoHtml(post) +
         '</div>' +
       '</div>' +
       '<form class="admin-content__form" data-content-form="' + esc(post.id) + '">' +
@@ -151,6 +214,7 @@ var ShafaafAdminContent = (function () {
           '<button type="submit" class="btn btn--outline btn--sm">Save</button>' +
           (post.status !== "approved" && !locked ? '<button type="button" class="btn btn--primary btn--sm" data-content-status="approved">Approve</button>' : '') +
           (post.status !== "rejected" && !locked ? '<button type="button" class="btn btn--outline btn--sm" data-content-status="rejected">Reject</button>' : '') +
+          (post.status === "approved" && !manualReason(post) ? '<button type="button" class="btn btn--primary btn--sm" data-content-publish>Publish now</button>' : '') +
           (post.status === "approved" || post.status === "rejected" ? '<button type="button" class="btn btn--outline btn--sm" data-content-status="draft">Back to draft</button>' : '') +
           '<button type="button" class="btn btn--outline btn--sm" data-content-copy>Copy caption</button>' +
           (!locked ? '<button type="button" class="admin-link admin-content__delete" data-content-delete>Delete</button>' : '') +
@@ -202,7 +266,8 @@ var ShafaafAdminContent = (function () {
 
   function render() {
     el().innerHTML =
-      '<p class="admin-help">Posts the AI has drafted for Instagram, Facebook, YouTube and WhatsApp. Read, fix the words if you like, then Approve or Reject. Nothing goes out without your Approve — for now, use Copy caption and post it yourself.</p>' +
+      '<p class="admin-help">Posts the AI has drafted for Instagram, Facebook, YouTube and WhatsApp. Read, fix the words if you like, then Approve or Reject. Nothing goes out without your Approve. Approved Instagram and Facebook photo posts go out by themselves at their "Post on" time (or press Publish now); everything else you copy and post yourself.</p>' +
+      metaHtml() +
       noticeHtml() +
       '<div class="admin-toolbar">' + tabsHtml() +
         '<div class="admin-toolbar__end"><span class="admin-count">' + total + ' shown</span>' +
@@ -296,6 +361,7 @@ var ShafaafAdminContent = (function () {
       reload().catch(function (err) { fail(err, "Could not load those posts."); });
       return;
     }
+    if (e.target.closest("[data-content-check]")) { checkMeta(true); return; }
     if (e.target.closest("[data-content-add]")) { composing = true; render(); el().querySelector('[data-content-form="new"] [name="title"]').focus(); return; }
     if (e.target.closest("[data-content-cancel]")) { composing = false; render(); return; }
     var pager = e.target.closest("[data-content-page]");
@@ -321,6 +387,17 @@ var ShafaafAdminContent = (function () {
         body.ownerNote = why.trim() || null;
       }
       patch(id, body, next === "approved" ? "Approved — it can go out now." : next === "rejected" ? "Rejected." : "Back in drafts.");
+      return;
+    }
+    if (e.target.closest("[data-content-publish]") && !busy) {
+      var target = posts.filter(function (p) { return p.id === id; })[0];
+      var where = target ? cap(target.platform) : "the page";
+      if (!window.confirm("Publish this post on " + where + " right now? It will be public immediately.")) return;
+      busy = true;
+      ShafaafApi.post("/admin/content/" + id + "/publish", {}, { auth: true })
+        .then(function () { notice = { type: "success", text: "Published on " + where + "." }; return reload(); })
+        // Reload first so the card shows the recorded error, then say what happened.
+        .catch(function (err) { return reload().then(function () { fail(err, "Could not publish that post."); }, function () { fail(err, "Could not publish that post."); }); });
       return;
     }
     if (e.target.closest("[data-content-copy]")) {

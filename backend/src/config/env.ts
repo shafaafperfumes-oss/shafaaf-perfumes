@@ -93,6 +93,36 @@ const envSchema = z.object({
   RESEND_API_KEY: z.string().min(1).optional(),
   EMAIL_FROM: z.string().min(1).default("Shafaaf Perfumes <onboarding@resend.dev>"),
   ORDER_ALERT_EMAIL: z.string().email().optional(),
+
+  /**
+   * Meta (Facebook Page + Instagram) auto-posting — see docs/META-SETUP.md.
+   * Optional like everything above: without a token the API boots, the
+   * admin Content tab still works, and approved posts simply wait for the
+   * owner to copy them by hand.
+   *
+   * META_PAGE_ACCESS_TOKEN — SERVER ONLY. A long-lived Page token; posts
+   *                          to the Page and to the Instagram account
+   *                          linked to it. Never logged, never sent to a
+   *                          browser.
+   * META_PAGE_ID           — not a secret; the Facebook Page's numeric id.
+   * META_IG_USER_ID        — not a secret; the Instagram account's id.
+   *                          Optional: looked up from the Page when blank.
+   * META_GRAPH_VERSION     — Graph API version, e.g. v21.0.
+   * CONTENT_PUBLISHER_INTERVAL_MS — how often the server looks for approved
+   *                          posts whose time has come. 0 turns the
+   *                          scheduler off (the "Publish now" button
+   *                          still works).
+   * SITE_PUBLIC_URL        — where the site's photos can be fetched from
+   *                          publicly (Meta downloads them by URL). Defaults
+   *                          to the first non-local CORS origin, so it
+   *                          follows the domain automatically.
+   */
+  META_PAGE_ACCESS_TOKEN: z.string().min(1).optional(),
+  META_PAGE_ID: z.string().regex(/^\d+$/).optional(),
+  META_IG_USER_ID: z.string().regex(/^\d+$/).optional(),
+  META_GRAPH_VERSION: z.string().regex(/^v\d+\.\d+$/).default("v21.0"),
+  CONTENT_PUBLISHER_INTERVAL_MS: z.coerce.number().int().min(0).default(5 * 60_000),
+  SITE_PUBLIC_URL: z.string().url().optional(),
 });
 
 // A variable left blank (`RESEND_API_KEY=` in .env, or an empty Railway
@@ -113,6 +143,15 @@ if (!parsed.success) {
 
 const raw = parsed.data;
 
+/**
+ * The public website: the first non-localhost origin the API is allowed
+ * to serve. Null when only local origins are configured.
+ */
+const siteUrl =
+  raw.CORS_ALLOWED_ORIGINS.split(",")
+    .map((origin) => origin.trim())
+    .find((origin) => origin && !/^https?:\/\/(localhost|127\.0\.0\.1)(:|$)/.test(origin)) ?? null;
+
 export const env = {
   ...raw,
   isProduction: raw.NODE_ENV === "production",
@@ -127,15 +166,15 @@ export const env = {
   hasEmail: Boolean(raw.RESEND_API_KEY),
   hasStorage: Boolean(raw.SUPABASE_URL && raw.SUPABASE_SERVICE_ROLE_KEY),
   hasOrderAlerts: Boolean(raw.RESEND_API_KEY && raw.ORDER_ALERT_EMAIL),
+  hasMeta: Boolean(raw.META_PAGE_ACCESS_TOKEN && raw.META_PAGE_ID),
+  /** Used to build links in emails; null means emails carry no links. */
+  siteUrl,
   /**
-   * The public website, used only to build links in emails: the first
-   * non-localhost origin the API is allowed to serve. Null when only
-   * local origins are configured, in which case emails carry no links.
+   * Where a site-relative photo path ("images/x.webp") can be fetched
+   * from publicly, no trailing slash — Meta downloads post photos by URL.
+   * Null until a public origin is known.
    */
-  siteUrl:
-    raw.CORS_ALLOWED_ORIGINS.split(",")
-      .map((origin) => origin.trim())
-      .find((origin) => origin && !/^https?:\/\/(localhost|127\.0\.0\.1)(:|$)/.test(origin)) ?? null,
+  publicSiteUrl: (raw.SITE_PUBLIC_URL ?? siteUrl)?.replace(/\/$/, "") ?? null,
 } as const;
 
 export type Env = typeof env;

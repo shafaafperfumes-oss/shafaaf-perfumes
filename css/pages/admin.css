@@ -202,6 +202,12 @@
 .admin-content__facts .order-status { align-self: flex-start; font-size: 10px; }
 .admin-content__platform { font-weight: var(--fw-medium); font-size: var(--fs-sm); }
 .admin-content__product { color: var(--c-text); text-decoration: underline; text-underline-offset: 3px; }
+.admin-content__auto { color: var(--c-success); }
+.admin-content__manual { color: var(--c-text-muted); }
+.admin-content__error { color: var(--c-error); word-break: break-word; }
+.admin-content__meta { margin: var(--sp-3) 0 0; font-size: var(--fs-sm); color: var(--c-success); }
+.admin-content__meta--off { color: var(--c-text-muted); }
+.admin-content__meta .admin-link { margin-left: 6px; }
 .admin-content__form { display: flex; flex-direction: column; gap: var(--sp-3); min-width: 0; }
 .admin-content__title { font-weight: var(--fw-medium); }
 .admin-content__note { margin: 0; padding: var(--sp-2) var(--sp-3); border-left: 3px solid var(--c-gold); background: var(--c-champagne); font-size: var(--fs-sm); color: var(--c-text-muted); }

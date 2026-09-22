@@ -12,11 +12,18 @@ import { auditLogs, profiles } from "../db/schema/index.js";
  * deletes one of these rows.
  */
 
-/** Who is making a change, captured from the verified request — never from the body. */
+/**
+ * Who is making a change, captured from the verified request — never from
+ * the body. `actorId` is null only for the server acting on its own
+ * (the content scheduler posting at the time the owner set).
+ */
 export interface AuditContext {
-  actorId: string;
+  actorId: string | null;
   ipAddress: string | null;
 }
+
+/** The server itself, for scheduled work nobody clicked a button for. */
+export const SYSTEM_ACTOR: AuditContext = { actorId: null, ipAddress: null };
 
 export async function writeAuditLog(
   tx: Database | Tx,

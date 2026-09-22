@@ -10,6 +10,8 @@ import {
   listContent,
   updateContentPost,
 } from "../repositories/content.repository.js";
+import { isMetaConfigured, MetaApiError, MetaNotConfiguredError, metaClient } from "../lib/meta.js";
+import { autoPostBlocker, publishPost, PublishError } from "../services/content-publisher.js";
 import { ApiError } from "../utils/api-error.js";
 import { sendSuccess } from "../utils/respond.js";
 import { assertAdminDatabaseReady, auditContext, pageQuerySchema } from "./admin-shared.js";
@@ -57,8 +59,30 @@ const listQuerySchema = pageQuerySchema.extend({
 function mapError(error: unknown): unknown {
   if (error instanceof ContentNotFoundError) return ApiError.notFound(error.message);
   if (error instanceof ContentStateError) return ApiError.conflict(error.message);
+  if (error instanceof MetaNotConfiguredError) return ApiError.serviceUnavailable(error.message);
+  // Meta said no (or the photo could not be fetched): the reason is already
+  // on the post row; tell the admin the same words.
+  if (error instanceof MetaApiError || error instanceof PublishError) return ApiError.conflict(error.message);
   return error;
 }
+
+/**
+ * Whether auto-posting is switched on and, if so, which Page and Instagram
+ * account the token reaches — the admin's "Check connection" button.
+ * Never returns the token itself.
+ */
+adminContentRouter.get("/meta-status", async (_req, res, next) => {
+  try {
+    if (!isMetaConfigured()) {
+      sendSuccess(res, { configured: false, page: null, instagram: null });
+      return;
+    }
+    const who = await metaClient.whoAmI();
+    sendSuccess(res, { configured: true, ...who });
+  } catch (error) {
+    next(mapError(error));
+  }
+});
 
 adminContentRouter.get("/", async (req, res, next) => {
   try {
@@ -97,6 +121,24 @@ adminContentRouter.patch("/:id", async (req, res, next) => {
     const id = z.string().uuid().parse(req.params.id);
     const post = await updateContentPost(auditContext(req), id, changesSchema.parse(req.body));
     sendSuccess(res, { post });
+  } catch (error) {
+    next(mapError(error));
+  }
+});
+
+/** "Publish now": puts an approved post on Instagram / Facebook this minute instead of at its scheduled time. */
+adminContentRouter.post("/:id/publish", async (req, res, next) => {
+  try {
+    assertAdminDatabaseReady();
+    const post = await getContentPost(z.string().uuid().parse(req.params.id));
+    if (post.status !== "approved") throw new ContentStateError("Approve the post first, then publish it.");
+    const blocker = autoPostBlocker(post);
+    if (blocker) throw new ContentStateError(blocker);
+    if (!isMetaConfigured()) {
+      throw new MetaNotConfiguredError("Auto-posting is not set up yet (META_PAGE_ACCESS_TOKEN). See docs/META-SETUP.md.");
+    }
+    const published = await publishPost(post, auditContext(req));
+    sendSuccess(res, { post: published });
   } catch (error) {
     next(mapError(error));
   }

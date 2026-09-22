@@ -1,6 +1,7 @@
 import { createApp } from "./app.js";
 import { env } from "../config/env.js";
 import { closeDatabase, pingDatabase } from "../db/client.js";
+import { startContentPublisher } from "../services/content-publisher.js";
 import { logger } from "../utils/logger.js";
 
 const app = createApp();
@@ -12,12 +13,17 @@ const server = app.listen(env.PORT, () => {
   void pingDatabase();
 });
 
+// Approved social posts go out at their "Post on" time — see
+// services/content-publisher.ts. Off unless Meta is configured.
+const stopContentPublisher = startContentPublisher();
+
 /**
  * Graceful shutdown: stop accepting new connections and let in-flight
  * requests finish, so a deploy never cuts off a customer mid-checkout.
  */
 function shutdown(signal: string): void {
   logger.info(`${signal} received, shutting down`);
+  stopContentPublisher();
 
   const forceExit = setTimeout(() => {
     logger.error("Shutdown timed out, forcing exit");

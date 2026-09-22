@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, sql } from "drizzle-orm";
+import { and, asc, desc, eq, lt, lte, sql } from "drizzle-orm";
 import { getDb } from "../db/client.js";
 import {
   type ContentKind,
@@ -126,6 +126,9 @@ export async function updateContentPost(actor: AuditContext, id: string, changes
         ...(changes.ownerNote !== undefined ? { ownerNote: changes.ownerNote } : {}),
         ...(changes.scheduledFor !== undefined ? { scheduledFor: changes.scheduledFor } : {}),
         ...(changes.status !== undefined ? { status: changes.status } : {}),
+        // A fresh decision gets fresh attempts: moving a failed post back to
+        // draft and approving it again lets the scheduler try once more.
+        ...(changes.status !== undefined && changes.status !== current.status ? { publishAttempts: 0, lastError: null } : {}),
         updatedAt: new Date(),
       })
       .where(eq(contentPosts.id, id))
@@ -179,4 +182,87 @@ export async function importAgentDrafts(rows: Array<ContentPostInput & { agentKe
       .returning({ id: contentPosts.id })
   ).length;
   return { inserted, skipped: rows.length - inserted };
+}
+
+/* ------------------------------------------------------------------ */
+/* The publisher's side: only these functions may ever set `published`. */
+/* ------------------------------------------------------------------ */
+
+/** How many failed attempts before the scheduler stops retrying a post and leaves it for the owner. */
+export const MAX_PUBLISH_ATTEMPTS = 3;
+
+/**
+ * Approved posts whose time has come and that have not failed too often,
+ * soonest first. The scheduler works through these a few at a time.
+ */
+export async function listDuePosts(now: Date, limit = 5): Promise<ContentPost[]> {
+  return getDb()
+    .select()
+    .from(contentPosts)
+    .where(
+      and(
+        eq(contentPosts.status, "approved"),
+        lte(contentPosts.scheduledFor, now),
+        lt(contentPosts.publishAttempts, MAX_PUBLISH_ATTEMPTS),
+      ),
+    )
+    .orderBy(asc(contentPosts.scheduledFor))
+    .limit(limit);
+}
+
+/**
+ * Marks a post published — the only path to that status. Guarded on
+ * `status = approved` so two runs racing on the same post can only win
+ * once: the loser sees no row and reports a state error.
+ */
+export async function markPublished(
+  actor: AuditContext,
+  id: string,
+  result: { externalRef: string | null; publishedAt: Date },
+): Promise<ContentPost> {
+  return getDb().transaction(async (tx) => {
+    const [row] = await tx
+      .update(contentPosts)
+      .set({
+        status: "published",
+        publishedAt: result.publishedAt,
+        externalRef: result.externalRef,
+        lastError: null,
+        lastAttemptAt: result.publishedAt,
+        publishAttempts: sql`${contentPosts.publishAttempts} + 1`,
+        updatedAt: new Date(),
+      })
+      .where(and(eq(contentPosts.id, id), eq(contentPosts.status, "approved")))
+      .returning();
+    if (!row) throw new ContentStateError("Only an approved post can be published.");
+    await writeAuditLog(tx, actor, "content.published", "content_post", id, {
+      platform: row.platform,
+      externalRef: row.externalRef,
+      by: actor.actorId ? "admin" : "scheduler",
+    });
+    return row;
+  });
+}
+
+/** Records a failed attempt and what went wrong, for the admin card and the retry limit. */
+export async function markPublishFailed(actor: AuditContext, id: string, error: string): Promise<ContentPost | null> {
+  return getDb().transaction(async (tx) => {
+    const [row] = await tx
+      .update(contentPosts)
+      .set({
+        lastError: error.slice(0, 1000),
+        lastAttemptAt: new Date(),
+        publishAttempts: sql`${contentPosts.publishAttempts} + 1`,
+        updatedAt: new Date(),
+      })
+      .where(and(eq(contentPosts.id, id), eq(contentPosts.status, "approved")))
+      .returning();
+    if (!row) return null;
+    await writeAuditLog(tx, actor, "content.publish_failed", "content_post", id, {
+      platform: row.platform,
+      attempt: row.publishAttempts,
+      error: row.lastError,
+    });
+    return row;
+  });
 }
