@@ -36,3 +36,40 @@
   border-radius: var(--r-md); background: var(--c-offwhite); resize: vertical;
 }
 .contact-form textarea:focus { border-color: var(--c-gold); outline: none; box-shadow: 0 0 0 3px rgba(173,138,84,0.18); }
+
+/* Shipping & Returns — one question per row, answer beside it on a wide
+   screen and beneath it on a phone. The tinted band separates delivery
+   from returns without another heading level. */
+.policy-band { background: var(--c-ivory-2); }
+.policy { max-width: var(--container-narrow); margin: 0 auto; }
+.policy .section-title { margin-bottom: var(--sp-8); }
+.policy-list { margin: 0; }
+.policy-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: var(--sp-6);
+  padding-block: var(--sp-6);
+  border-bottom: 1px solid var(--c-line);
+}
+.policy-row:last-child { border-bottom: 0; }
+.policy-row dt {
+  font-family: var(--font-body);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+}
+.policy-row dd {
+  margin: 0;
+  color: var(--c-text-muted);
+  font-weight: var(--fw-light);
+  line-height: var(--lh-relaxed);
+}
+.policy-row dd strong { color: var(--c-text); font-weight: var(--fw-semibold); }
+.policy-note {
+  color: var(--c-text-muted);
+  font-weight: var(--fw-light);
+  line-height: var(--lh-relaxed);
+  margin-top: var(--sp-4);
+}
+@media (max-width: 760px) {
+  .policy-row { grid-template-columns: 1fr; gap: var(--sp-2); padding-block: var(--sp-5); }
+}

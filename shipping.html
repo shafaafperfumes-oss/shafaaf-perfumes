@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="page-title">Fragrance — Shafaaf Perfumes</title>
-  <meta name="description" id="page-desc" content="Discover premium fragrances from Shafaaf Perfumes.">
+  <title>Shipping &amp; Returns — Shafaaf Perfumes</title>
+  <meta name="description" content="How Shafaaf Perfumes ships: free delivery across India, Kashmir in 2–3 days, Cash on Delivery on WhatsApp, and returns within 7 days on sealed items.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -13,7 +13,8 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/pages/product.css">
+  <link rel="stylesheet" href="css/pages/home.css">
+  <link rel="stylesheet" href="css/pages/static.css">
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -23,7 +24,7 @@
       <a href="index.html" class="logo"><img class="logo__mark" src="images/logo-mark.webp" alt="" width="538" height="640">SHAFAAF <span>PERFUMES</span></a>
       <nav class="nav-primary" aria-label="Primary">
         <a href="index.html" class="nav-link">Home</a>
-        <a href="shop.html" class="nav-link is-active">Shop</a>
+        <a href="shop.html" class="nav-link">Shop</a>
         <a href="shop.html?type=perfume" class="nav-link">Perfumes</a>
         <a href="shop.html?type=attar" class="nav-link">Attars</a>
         <a href="shop.html?type=bakhoor" class="nav-link">Bakhoor</a>
@@ -43,51 +44,106 @@
   </header>
 
   <main id="main">
-    <div class="pdp">
+    <section class="page-hero">
       <div class="container">
-        <nav class="breadcrumbs" id="pdp-breadcrumbs" aria-label="Breadcrumb"></nav>
-
-        <div class="pdp-layout" id="pdp-layout"><!-- gallery + info injected by product.js --></div>
-
-        <section class="section" style="padding-inline:0">
-          <div class="section-head">
-            <div><span class="eyebrow">Fragrance Notes</span><h2 class="section-title" style="font-size:var(--fs-display-sm)">The Composition</h2></div>
-          </div>
-          <div class="notes-viz" id="notes-viz"></div>
-        </section>
-
-        <section class="section" style="padding-inline:0">
-          <div class="section-head">
-            <div><span class="eyebrow">Good to Know</span><h2 class="section-title" style="font-size:var(--fs-display-sm)">Shipping, Returns &amp; FAQ</h2></div>
-          </div>
-          <div id="pdp-accordion"></div>
-        </section>
-
-        <section class="section" style="padding-inline:0" id="reviews">
-          <div class="section-head">
-            <div><span class="eyebrow">Customer Reviews</span><h2 class="section-title" style="font-size:var(--fs-display-sm)">What Buyers Say</h2></div>
-          </div>
-          <div class="review-summary" id="review-summary"></div>
-          <div class="review-list" id="review-list"></div>
-        </section>
-
-        <section class="related-section" id="related-section">
-          <div class="section-head">
-            <div><span class="eyebrow">Complete The Ritual</span><h2 class="section-title" style="font-size:var(--fs-display-sm)">You May Also Like</h2></div>
-          </div>
-          <div class="grid-products" id="related-grid"></div>
-        </section>
+        <span class="eyebrow">Orders &amp; Delivery</span>
+        <h1 class="page-hero__title">Shipping &amp; Returns</h1>
+        <p class="page-hero__sub">Free delivery everywhere in India, an honest timeline, and a simple return window. Anything unclear — message us on WhatsApp and a real person replies.</p>
       </div>
-    </div>
-  </main>
+    </section>
 
-  <div class="sticky-buybar" id="sticky-buybar">
-    <div class="sticky-buybar__info">
-      <div class="sticky-buybar__name" id="buybar-name"></div>
-      <div class="sticky-buybar__price price__current" id="buybar-price"></div>
-    </div>
-    <button type="button" class="btn btn--metal" id="buybar-add">Add to Cart</button>
-  </div>
+    <section class="section">
+      <div class="container">
+        <div class="values-grid">
+          <div class="value-card">
+            <div class="value-card__icon"><span data-icon="truck"></span></div>
+            <h3 class="why-card__title">Free shipping, always</h3>
+            <p class="why-card__text">Every order ships free across India — no minimum, no hidden charge at checkout.</p>
+          </div>
+          <div class="value-card">
+            <div class="value-card__icon"><span data-icon="check"></span></div>
+            <h3 class="why-card__title">Tracked parcels</h3>
+            <p class="why-card__text">We ship with Delhivery and Rehber Post, and send you the tracking number as soon as the parcel leaves us.</p>
+          </div>
+          <div class="value-card">
+            <div class="value-card__icon"><span data-icon="returnArrow"></span></div>
+            <h3 class="why-card__title">7-day returns</h3>
+            <p class="why-card__text">Changed your mind? Sealed, unopened items can come back within 7 days of delivery.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section policy-band">
+      <div class="container">
+        <div class="policy">
+          <h2 class="section-title">Delivery</h2>
+          <dl class="policy-list">
+            <div class="policy-row">
+              <dt>How long it takes</dt>
+              <dd><strong>Kashmir: 2–3 days.</strong> Rest of India: 5–7 days. Counted from the day the parcel is handed to the courier, and a public holiday or bad weather can add a day.</dd>
+            </div>
+            <div class="policy-row">
+              <dt>What it costs</dt>
+              <dd>Nothing. Shipping is free on every order, anywhere in India.</dd>
+            </div>
+            <div class="policy-row">
+              <dt>Who carries it</dt>
+              <dd>Delhivery or Rehber Post, whichever reaches your area faster. You get the tracking number on WhatsApp once it ships.</dd>
+            </div>
+            <div class="policy-row">
+              <dt>Cash on Delivery</dt>
+              <dd>Available, with <strong>₹80</strong> added to the order. Our website takes UPI and cards only, so for COD simply tell us what you want on <a href="https://wa.me/919796906804" target="_blank" rel="noopener">WhatsApp</a> and we will place the order for you.</dd>
+            </div>
+            <div class="policy-row">
+              <dt>Gift wrapping</dt>
+              <dd>Yes, on request. The charge depends on the bottle and the wrap you pick — ask us on WhatsApp and we will confirm the exact amount before you pay.</dd>
+            </div>
+            <div class="policy-row">
+              <dt>Ordering 10 or more</dt>
+              <dd>Ten pieces or more get an extra <strong>10% off</strong>. Message us with the list and we will send the total.</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="policy">
+          <h2 class="section-title">Returns &amp; problems</h2>
+          <dl class="policy-list">
+            <div class="policy-row">
+              <dt>Returning an order</dt>
+              <dd>Within <strong>7 days</strong> of delivery, as long as the item is <strong>sealed and unopened</strong>. A fragrance that has been opened or used cannot be taken back — it is a personal-care product and we cannot resell it.</dd>
+            </div>
+            <div class="policy-row">
+              <dt>Wrong item delivered</dt>
+              <dd>Our mistake, our fix: send a photo and your order number and we ship the correct item to you.</dd>
+            </div>
+            <div class="policy-row">
+              <dt>Something arrived broken</dt>
+              <dd>Send a photo or short video <strong>within 24 hours</strong> of delivery, before the packaging is thrown away. We raise the claim with the courier and do everything we can to put it right.</dd>
+            </div>
+            <div class="policy-row">
+              <dt>How to start</dt>
+              <dd>Message us on <a href="https://wa.me/919796906804" target="_blank" rel="noopener">WhatsApp</a> with your order number. No forms, no waiting on a ticket.</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section class="section policy-band">
+      <div class="container">
+        <div class="policy">
+          <h2 class="section-title">A note on our fragrances</h2>
+          <p class="policy-note">Many of our oils are <strong>inspired by</strong> well-known international fragrances — made in our own blend, never sold as the original brand. They smell close, not identical, and the difference is part of how we keep the price honest. If a scent is not what you hoped for, tell us and we will help you find a closer match from our range.</p>
+          <p class="policy-note">Questions before you order? <a href="contact.html">Contact us</a> or message <a href="https://wa.me/919796906804" target="_blank" rel="noopener">+91 97969 06804</a>. Our shop is at Magarmal Bagh Road, opposite Masjid Abubakr, Srinagar 190009.</p>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <footer class="site-footer">
     <div class="container footer-top">
@@ -220,7 +276,6 @@
   <script src="js/lib/overlay-manager.js"></script>
   <script src="js/lib/cart.js"></script>
   <script src="js/lib/wishlist.js"></script>
-  <script src="js/lib/note-families.js"></script>
   <script src="js/components/toast.js"></script>
   <script src="js/components/whatsapp-button.js"></script>
   <script src="js/components/placeholder-art.js"></script>
@@ -230,8 +285,6 @@
   <script src="js/components/cart-drawer.js"></script>
   <script src="js/components/search-overlay.js"></script>
   <script src="js/components/quick-view.js"></script>
-  <script src="js/components/accordion.js"></script>
   <script src="js/main.js"></script>
-  <script src="js/pages/product.js"></script>
 </body>
 </html>
