@@ -111,7 +111,7 @@ Railway → your backend service → **Variables** → add:
 | `META_PAGE_ACCESS_TOKEN` | the extended Page token | **Yes** |
 | `META_PAGE_ID` | the Page id number | no |
 | `META_IG_USER_ID` | the Instagram id number (optional) | no |
-| `SITE_PUBLIC_URL` | where photos are served, e.g. `https://shafaaf-perfumes.shafaafperfumes.workers.dev` (later your domain). Optional — the server already uses the first public address from `CORS_ALLOWED_ORIGINS`. | no |
+| `SITE_PUBLIC_URL` | where photos are served: `https://shafaafperfumes.com`. Optional — the server already uses the first public address from `CORS_ALLOWED_ORIGINS`. | no |
 | `CONTENT_PUBLISHER_INTERVAL_MS` | how often to look for due posts; default 300000 (5 min). `0` turns the timer off; *Publish now* still works. | no |
 
 Railway redeploys by itself (2–3 minutes).

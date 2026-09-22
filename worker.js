@@ -16,8 +16,10 @@
  *                  itself only fills those in with JavaScript, which link
  *                  previews never run.
  *
- * Everything uses whatever address the site was reached on, so nothing
- * here changes when the shop moves from workers.dev to its own domain.
+ * Everything uses whatever address the site was reached on. Since the shop
+ * has its own domain, the old workers.dev address and www are redirected
+ * to it (CANONICAL_HOST in wrangler.jsonc), so every link and search
+ * result points at one address.
  */
 
 // Public pages, as their clean URLs (Cloudflare turns /shop.html into /shop).
@@ -33,6 +35,9 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    const redirect = canonicalRedirect(url, env.CANONICAL_HOST);
+    if (redirect) return redirect;
+
     if (url.pathname === "/sitemap.xml") return sitemap(url.origin, env);
     if (url.pathname === "/robots.txt") return robots(url.origin);
 
@@ -44,6 +49,23 @@ export default {
     return decorateHtml(response, url, product);
   },
 };
+
+/**
+ * One address for the whole shop: "www." and the old workers.dev address
+ * send the visitor (and Google) to the real domain, keeping the path and
+ * query. Local previews (localhost) and an empty CANONICAL_HOST are left
+ * alone.
+ */
+function canonicalRedirect(url, canonicalHost) {
+  if (!canonicalHost || url.hostname === canonicalHost) return null;
+  const isAlias = url.hostname === `www.${canonicalHost}` || url.hostname.endsWith(".workers.dev");
+  if (!isAlias) return null;
+  const target = new URL(url);
+  target.protocol = "https:";
+  target.hostname = canonicalHost;
+  target.port = "";
+  return Response.redirect(target.toString(), 301);
+}
 
 /** "/shop.html", "/shop/" and "/shop" are the same page; "/index.html" is "/". */
 function cleanPath(pathname) {

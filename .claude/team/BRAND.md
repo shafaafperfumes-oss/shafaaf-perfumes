@@ -8,9 +8,8 @@ if something is missing, say so in your report — never invent it.
   fragrances at honest prices. Owner: Bilal Ahmad (non-technical; reads Hinglish).
 - Based in Kashmir (J&K), India. Ships free nationwide. Pays via Razorpay (UPI/cards).
 - WhatsApp: +91 97969 06804 (wa.me/919796906804). Email: shafaafperfumes@gmail.com.
-- Live site: https://shafaaf-perfumes.shafaafperfumes.workers.dev (temporary
-  address — the real domain is coming; do not build anything that hard-codes
-  the workers.dev address without saying so).
+- Live site: https://shafaafperfumes.com (own domain since 2026-09-22; www and the
+  old shafaaf-perfumes.shafaafperfumes.workers.dev address redirect to it).
 
 ## What is sold (19 products)
 - **14 fragrances**, each in two forms:

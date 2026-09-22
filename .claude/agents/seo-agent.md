@@ -31,8 +31,8 @@ approval, no secrets, no invented numbers, Hinglish summary at the end).
 - Read the actual files; quote the exact line you want changed and the proposed
   replacement, so it can be applied verbatim after approval.
 - Prioritise: 🔴 fix now / 🟡 this month / 🟢 later. Each item: what, why, expected impact.
-- The site is on a temporary workers.dev address — note anything that must be redone
-  once the real domain arrives.
+- The site moved from a workers.dev address to shafaafperfumes.com on 2026-09-22 — flag any
+  page, tag or listing that still shows the old address.
 - Never run `git commit`, never edit HTML/JS files unless the task explicitly says the
   owner approved that exact change.
 

@@ -16,9 +16,20 @@
     "not_found_handling": "none",
     "run_worker_first": true
   },
+  // The shop's own address. Cloudflare creates the DNS records and the
+  // certificate for these itself; the www and workers.dev addresses are
+  // redirected to the first one by worker.js.
+  "routes": [
+    { "pattern": "shafaafperfumes.com", "custom_domain": true },
+    { "pattern": "www.shafaafperfumes.com", "custom_domain": true }
+  ],
   "vars": {
     // Where worker.js reads the product list from (not a secret — the
     // same address every visitor's browser calls; see js/config.js).
-    "API_BASE_URL": "https://shafaaf-perfumes-production.up.railway.app/api/v1"
+    "API_BASE_URL": "https://shafaaf-perfumes-production.up.railway.app/api/v1",
+    // The one address search engines and customers should see. Every
+    // other address the site answers on (www, the old workers.dev one)
+    // is redirected here. Leave empty to serve on any address.
+    "CANONICAL_HOST": "shafaafperfumes.com"
   }
 }

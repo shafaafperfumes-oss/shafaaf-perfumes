@@ -85,8 +85,7 @@ The website is served by Cloudflare (Workers static assets) straight from
 this repository: every push to `main` redeploys it within a minute.
 `wrangler.jsonc` says "serve this folder as a static site" and
 `.assetsignore` keeps the backend source, scripts and notes out of the
-upload. Live at `https://shafaaf-perfumes.shafaafperfumes.workers.dev`
-until the shop's own domain is attached. `.html` links are redirected
+upload. Live at `https://shafaafperfumes.com` (the old `shafaaf-perfumes.shafaafperfumes.workers.dev` address redirects there). `.html` links are redirected
 to clean URLs (`/shop.html` → `/shop`), query strings kept.
 
 `worker.js` is the one bit of code that runs on Cloudflare: it answers
