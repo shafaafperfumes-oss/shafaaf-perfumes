@@ -23,6 +23,10 @@
     { "pattern": "shafaafperfumes.com", "custom_domain": true },
     { "pattern": "www.shafaafperfumes.com", "custom_domain": true }
   ],
+  // Keep the old shafaaf-perfumes.shafaafperfumes.workers.dev address alive
+  // (Cloudflare switches it off once routes exist) so links shared before the
+  // domain arrived still work — worker.js redirects them to the domain.
+  "workers_dev": true,
   "vars": {
     // Where worker.js reads the product list from (not a secret — the
     // same address every visitor's browser calls; see js/config.js).
