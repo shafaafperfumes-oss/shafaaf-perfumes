@@ -127,6 +127,20 @@
       "when": 1789998937542,
       "tag": "0017_inspired_row_level_security",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1790008208681,
+      "tag": "0018_content_posts",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1790008209681,
+      "tag": "0019_content_row_level_security",
+      "breakpoints": true
     }
   ]
 }

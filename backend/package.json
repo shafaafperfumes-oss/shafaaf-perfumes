@@ -19,7 +19,8 @@
     "db:migrate:prod": "node dist/db/migrate.js",
     "db:seed": "tsx src/db/seed.ts",
     "db:studio": "drizzle-kit studio",
-    "db:import:inspired": "tsx src/db/import-inspired.ts"
+    "db:import:inspired": "tsx src/db/import-inspired.ts",
+    "content:import": "tsx src/db/import-content.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",

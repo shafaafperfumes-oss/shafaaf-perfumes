@@ -13,6 +13,8 @@
  *   admin.html?view=fragrances       the inspired / custom fragrance list
  *                                    behind the Custom page — see
  *                                    admin-inspired.js
+ *   admin.html?view=content          social post drafts to approve or
+ *                                    reject — see admin-content.js
  *
  * The browser does none of the deciding. Every request goes to
  * /api/v1/admin/*, where the backend re-checks that the signed-in account
@@ -84,12 +86,13 @@
   function renderNav() {
     var nav = document.getElementById("admin-nav");
     if (!nav) return;
-    var section = view === "stock" ? "stock" : view === "products" || view === "product" ? "products" : view === "fragrances" ? "fragrances" : "orders";
+    var section = view === "stock" ? "stock" : view === "products" || view === "product" ? "products" : view === "fragrances" ? "fragrances" : view === "content" ? "content" : "orders";
     nav.innerHTML =
       '<a href="' + href({}) + '"' + (section === "orders" ? ' class="is-active"' : "") + '>Orders</a>' +
       '<a href="' + href({ view: "products" }) + '"' + (section === "products" ? ' class="is-active"' : "") + '>Products</a>' +
       '<a href="' + href({ view: "stock" }) + '"' + (section === "stock" ? ' class="is-active"' : "") + '>Stock</a>' +
-      '<a href="' + href({ view: "fragrances" }) + '"' + (section === "fragrances" ? ' class="is-active"' : "") + '>Fragrances</a>';
+      '<a href="' + href({ view: "fragrances" }) + '"' + (section === "fragrances" ? ' class="is-active"' : "") + '>Fragrances</a>' +
+      '<a href="' + href({ view: "content" }) + '"' + (section === "content" ? ' class="is-active"' : "") + '>Content</a>';
   }
 
   // ---- states -----------------------------------------------------------
@@ -521,6 +524,7 @@
       : view === "products" ? ShafaafAdminProducts.loadList
       : view === "product" ? ShafaafAdminProducts.loadEditor
       : view === "fragrances" ? ShafaafAdminInspired.load
+      : view === "content" ? ShafaafAdminContent.load
       : loadOrders;
     load().catch(function (err) {
       if (err && err.code === "NOT_SIGNED_IN") { renderSignedOut(); return; }
