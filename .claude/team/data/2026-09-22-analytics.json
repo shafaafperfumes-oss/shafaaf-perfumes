@@ -1,0 +1,143 @@
+{
+  "generatedAt": "2026-09-22T06:33:59.828Z",
+  "windows": {
+    "thisWeek": {
+      "from": "2026-09-15T06:33:59.828Z",
+      "to": "2026-09-22T06:33:59.828Z"
+    },
+    "lastWeek": {
+      "from": "2026-09-08T06:33:59.828Z",
+      "to": "2026-09-15T06:33:59.828Z"
+    },
+    "last30Days": {
+      "from": "2026-08-23T06:33:59.828Z",
+      "to": "2026-09-22T06:33:59.828Z"
+    }
+  },
+  "orders": {
+    "thisWeek": {
+      "placed": 2,
+      "pendingPayment": 1,
+      "paid": 1,
+      "shipped": 0,
+      "delivered": 0,
+      "cancelled": 0,
+      "revenueRupees": 599,
+      "averageOrderRupees": 599
+    },
+    "lastWeek": {
+      "placed": 0,
+      "pendingPayment": 0,
+      "paid": 0,
+      "shipped": 0,
+      "delivered": 0,
+      "cancelled": 0,
+      "revenueRupees": 0,
+      "averageOrderRupees": 0
+    },
+    "last30Days": {
+      "placed": 2,
+      "pendingPayment": 1,
+      "paid": 1,
+      "shipped": 0,
+      "delivered": 0,
+      "cancelled": 0,
+      "revenueRupees": 599,
+      "averageOrderRupees": 599
+    }
+  },
+  "bestSellers": {
+    "thisWeek": [
+      {
+        "product": "Shanaya Gold",
+        "variant": "Perfume · 30ml",
+        "units": 1,
+        "revenueRupees": 599
+      }
+    ],
+    "last30Days": [
+      {
+        "product": "Shanaya Gold",
+        "variant": "Perfume · 30ml",
+        "units": 1,
+        "revenueRupees": 599
+      }
+    ]
+  },
+  "stock": {
+    "totalVariants": 61,
+    "outOfStock": [],
+    "lowStock": []
+  },
+  "customers": {
+    "newThisWeek": 10,
+    "newLastWeek": 0,
+    "total": 10
+  },
+  "carts": {
+    "openLast7Days": 0,
+    "unitsInThem": 0
+  },
+  "wishlist": {
+    "top": []
+  },
+  "customPage": {
+    "searchesThisWeek": 7,
+    "searchesLastWeek": 0,
+    "topQueries": [
+      {
+        "query": "dior",
+        "searches": 4,
+        "matches": 8
+      },
+      {
+        "query": "100ml",
+        "searches": 1,
+        "matches": 0
+      },
+      {
+        "query": "aventus",
+        "searches": 1,
+        "matches": 3
+      },
+      {
+        "query": "sauage",
+        "searches": 1,
+        "matches": 0
+      }
+    ],
+    "noMatchQueries": [
+      {
+        "query": "100ml",
+        "searches": 1
+      },
+      {
+        "query": "sauage",
+        "searches": 1
+      }
+    ],
+    "listedFragrances": 185,
+    "availableFragrances": 185
+  },
+  "content": {
+    "byStatus": {
+      "draft": 10,
+      "approved": 0,
+      "rejected": 0,
+      "published": 0
+    },
+    "publishedThisWeek": 0,
+    "approvedWaitingForTime": 0,
+    "failed": [],
+    "rejectedLast30Days": []
+  },
+  "catalog": {
+    "activeProducts": 19,
+    "productsWithoutPhoto": [
+      "al-noor-bakhoor",
+      "dubai-oud",
+      "silver-scent",
+      "summer-oud"
+    ]
+  }
+}
