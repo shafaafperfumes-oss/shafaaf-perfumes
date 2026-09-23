@@ -115,8 +115,8 @@
   --container-max: 1360px;
   --container-narrow: 860px;
   --gutter: clamp(1.25rem, 4vw, 3rem);
-  --header-h: 84px;
-  --header-h-scrolled: 68px;
+  --header-h: 100px;
+  --header-h-scrolled: 78px;
 
   /* ---------- Breakpoints (reference only, used in media queries) ---------- */
   /* xs: 0-479, sm: 480-767, md: 768-1023, lg: 1024-1279, xl: 1280-1535, 2xl: 1536+ */
@@ -134,7 +134,7 @@
 
 @media (max-width: 767px) {
   :root {
-    --header-h: 64px;
+    --header-h: 76px;
     --header-h-scrolled: 56px;
   }
 }
