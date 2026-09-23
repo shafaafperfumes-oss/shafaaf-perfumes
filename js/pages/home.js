@@ -88,18 +88,6 @@
     }).join("");
   }
 
-  function renderHeroBottle() {
-    var el = document.getElementById("hero-bottle");
-    if (!el) return;
-    var p = shafaafGetProductById("oud-magestic");
-    el.innerHTML = shafaafPlaceholderBottle(p);
-    el.style.background = "none";
-    // The placeholder ships with its own tinted panel, which reads as a stray
-    // square against the hero gradient — the bottle should float here.
-    var art = el.querySelector(".placeholder-bottle");
-    if (art) art.style.background = "none";
-  }
-
   shafaafOnCatalogReady(function () {
     renderCollections();
     renderBestsellers();
@@ -107,6 +95,5 @@
     renderStoryMedia();
     renderSpotlight();
     renderReviews();
-    renderHeroBottle();
   });
 })();

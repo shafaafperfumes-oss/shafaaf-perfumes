@@ -350,13 +350,15 @@
 .header-inner {
   width: 100%;
   display: flex; align-items: center; justify-content: space-between;
-  gap: var(--sp-6);
+  gap: var(--sp-4);
 }
 
 .logo {
+  /* Never shrink: the wordmark is `nowrap`, so a squeezed box does not
+     squeeze the letters — they spill out and land on the first nav link. */
   display: inline-flex; align-items: center; gap: var(--sp-3);
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: var(--fw-bold);
   letter-spacing: var(--ls-wide);
   color: var(--c-ink);
@@ -371,15 +373,25 @@
 .site-header.is-solid .logo__mark { height: 38px; }
 .footer-brand .logo__mark { height: 56px; }
 .drawer__header .logo__mark { height: 30px; }
+/* On a phone the wordmark shares the bar with four icons. It is `nowrap`,
+   so it must be small enough to fit outright — a shrunken box would just
+   let the letters spill onto the search icon. */
 @media (max-width: 640px) {
-  .logo { font-size: 1.05rem; letter-spacing: var(--ls-tight); gap: var(--sp-2); }
-  .site-header .logo__mark { height: 34px; }
-  .site-header.is-solid .logo__mark { height: 30px; }
+  .logo { font-size: 0.85rem; letter-spacing: var(--ls-tight); gap: var(--sp-2); }
+  .header-inner { gap: var(--sp-2); }
+  .site-header .logo__mark { height: 30px; }
+  .site-header.is-solid .logo__mark { height: 28px; }
 }
 
-.nav-primary { display: none; align-items: center; gap: var(--sp-8); }
-/* eight links have to share the bar with the logo on narrower desktops */
-@media (max-width: 1279px) { .nav-primary { gap: var(--sp-4); } .nav-link { font-size: var(--fs-xs); } }
+/* Eight links share the bar with the wordmark and four icons, so the gap
+   gives way as the window narrows instead of the logo being squeezed. */
+.nav-primary { display: none; align-items: center; gap: clamp(var(--sp-3), 1.3vw, var(--sp-6)); }
+/* On a laptop the links themselves also tighten; below the breakpoint the
+   whole bar is replaced by the menu button anyway. */
+@media (max-width: 1439px) {
+  .nav-primary { gap: var(--sp-4); }
+  .nav-link { font-size: var(--fs-xs); }
+}
 .mobile-menu__nav .mobile-menu__sub { padding-left: var(--sp-6); font-size: var(--fs-lg); color: var(--c-text-muted); }
 .nav-link {
   position: relative;
@@ -406,11 +418,19 @@
   .nav-utility .icon-btn { width: 38px; height: 38px; }
 }
 
-@media (min-width: 1024px) {
+/* The full bar needs room for the wordmark, eight links and four icons.
+   Below this it does not fit — the icons used to be pushed off the right
+   edge — so the menu button takes over instead. */
+@media (min-width: 1360px) {
   .nav-primary { display: flex; }
   .nav-toggle { display: none; }
+  /* Only where the nav bar is present: the wordmark is `nowrap`, so a
+     squeezed box does not squeeze the letters — they spilled out and
+     landed on the first link. Below this there is no bar to collide with,
+     and the logo may shrink as it always did. */
+  .logo { flex: 0 0 auto; }
 }
-@media (max-width: 1023px) {
+@media (max-width: 1359px) {
   .nav-toggle { display: inline-flex; }
 }
 
