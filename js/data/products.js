@@ -155,15 +155,15 @@ const SHAFAAF_PRODUCTS = [
     gender: "Unisex",
     notes: ["Woody", "Warm Spicy", "Amber", "Powdery", "Patchouli"],
     description: "A classic Gulf-inspired woody composition — patchouli and amber wrapped in warm spice, grounded and unmistakably confident.",
-    image: "images/dubai-oud.webp",
+    image: "images/dubai-oud-perfume.webp",
     imageAlt: null,
     bestseller: false,
     isNew: false,
     rating: 4.7,
     reviewCount: 96,
     variants: [
-      { type: "Perfume", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
-      { type: "Attar", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
+      { type: "Perfume", image: "images/dubai-oud-perfume.webp", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
+      { type: "Attar", image: "images/dubai-oud.webp", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
     ]
   },
   {
@@ -173,15 +173,15 @@ const SHAFAAF_PRODUCTS = [
     gender: "Unisex",
     notes: ["Floral", "Citrus", "Fresh", "Rose", "Fruity", "Woody"],
     description: "Bright citrus and rose over a soft woody base — a warm-weather composition that stays fresh from morning to evening.",
-    image: "images/summer-oud.webp",
+    image: "images/summer-oud-perfume.webp",
     imageAlt: null,
     bestseller: false,
     isNew: true,
     rating: 4.6,
     reviewCount: 33,
     variants: [
-      { type: "Perfume", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
-      { type: "Attar", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
+      { type: "Perfume", image: "images/summer-oud-perfume.webp", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
+      { type: "Attar", image: "images/summer-oud.webp", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
     ]
   },
   {
@@ -191,15 +191,15 @@ const SHAFAAF_PRODUCTS = [
     gender: "Unisex",
     notes: ["Fruity", "Sweet", "Musky", "Powdery", "Fresh", "Tropical"],
     description: "A tropical-fruit accord softened with musk and powder — effortless, sweet, and instantly likeable.",
-    image: "images/silver-scent.webp",
+    image: "images/silver-scent-perfume.webp",
     imageAlt: null,
     bestseller: false,
     isNew: false,
     rating: 4.5,
     reviewCount: 29,
     variants: [
-      { type: "Perfume", sizes: [{ label: "30ml", ml: 30, price: 499 }, { label: "50ml", ml: 50, price: 699 }] },
-      { type: "Attar", sizes: [{ label: "6ml", ml: 6, price: 299 }, { label: "12ml", ml: 12, price: 599 }] }
+      { type: "Perfume", image: "images/silver-scent-perfume.webp", sizes: [{ label: "30ml", ml: 30, price: 499 }, { label: "50ml", ml: 50, price: 699 }] },
+      { type: "Attar", image: "images/silver-scent.webp", sizes: [{ label: "6ml", ml: 6, price: 299 }, { label: "12ml", ml: 12, price: 599 }] }
     ]
   },
   {
