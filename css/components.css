@@ -358,7 +358,7 @@
      squeeze the letters — they spill out and land on the first nav link. */
   display: inline-flex; align-items: center; gap: var(--sp-3);
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   font-weight: var(--fw-bold);
   letter-spacing: var(--ls-wide);
   color: var(--c-ink);
@@ -366,21 +366,21 @@
 }
 .logo span { color: var(--c-gold); }
 /* gold calligraphy mark beside the wordmark; shrinks with the header */
-.logo__mark { flex: 0 0 auto; height: 76px; width: auto; filter: drop-shadow(0 2px 4px rgba(26, 22, 17, 0.18)); transition: filter var(--dur-normal) var(--ease-out), height var(--dur-normal) var(--ease-out); }
+.logo__mark { flex: 0 0 auto; height: 62px; width: auto; filter: drop-shadow(0 2px 4px rgba(26, 22, 17, 0.18)); transition: filter var(--dur-normal) var(--ease-out), height var(--dur-normal) var(--ease-out); }
 /* on the dark hero the mark gets a soft gold glow */
 .site-header.is-transparent .logo__mark,
 .footer-brand .logo__mark { filter: drop-shadow(0 0 10px rgba(201, 162, 74, 0.45)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35)); }
-.site-header.is-solid .logo__mark { height: 62px; }
-.footer-brand .logo__mark { height: 104px; }
-.drawer__header .logo__mark { height: 52px; }
+.site-header.is-solid .logo__mark { height: 52px; }
+.footer-brand .logo__mark { height: 74px; }
+.drawer__header .logo__mark { height: 44px; }
 /* On a phone the wordmark shares the bar with four icons. It is `nowrap`,
    so it must be small enough to fit outright — a shrunken box would just
    let the letters spill onto the search icon. */
 @media (max-width: 640px) {
-  .logo { font-size: 0.85rem; letter-spacing: var(--ls-tight); gap: var(--sp-2); }
+  .logo { font-size: 0.74rem; letter-spacing: var(--ls-tight); gap: var(--sp-1); }
   .header-inner { gap: var(--sp-2); }
-  .site-header .logo__mark { height: 58px; }
-  .site-header.is-solid .logo__mark { height: 50px; }
+  .site-header .logo__mark { height: 36px; }
+  .site-header.is-solid .logo__mark { height: 34px; }
 }
 
 /* Eight links share the bar with the wordmark and four icons, so the gap
@@ -421,7 +421,7 @@
 /* The shop's name lives inside the logo picture now rather than being set
    as text beside it, which freed enough of the bar for the links to
    appear a good deal sooner. Below this the menu button takes over. */
-@media (min-width: 1160px) {
+@media (min-width: 1380px) {
   .nav-primary { display: flex; }
   .nav-toggle { display: none; }
   /* The logo is a picture and cannot be squeezed into its neighbours the
@@ -429,7 +429,7 @@
      from crowding it. */
   .logo { flex: 0 0 auto; }
 }
-@media (max-width: 1159px) {
+@media (max-width: 1379px) {
   .nav-toggle { display: inline-flex; }
 }
 
