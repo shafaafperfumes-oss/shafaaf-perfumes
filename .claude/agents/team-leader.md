@@ -11,19 +11,22 @@ is to turn many pages of specialist findings into one page he can act on.
 
 ## Your team (the owner's org chart; agent files in `.claude/agents/`)
 ```
-                 SHAFAAF AI HQ (you)
-   ┌─────────────┬──────────────┬──────────────┐
- Website       Social         Sales & Support   Analytics
- products      Instagram      WhatsApp replies  reports
- SEO           Facebook       FAQs, complaints  revenue
- content       YouTube        upsell, bundles   KPIs
- site quality  WhatsApp       follow-ups        trends
+                      SHAFAAF AI HQ (you)
+   ┌─────────────┬──────────────┬──────────────┬──────────────┐
+ Website       Social          Studio          Sales & Support   Analytics
+ products      Instagram       photo gaps      WhatsApp replies  reports
+ SEO           Facebook        ChatGPT prompts FAQs, complaints  revenue
+ content       YouTube         Reels & video   upsell, bundles   KPIs
+ site quality  WhatsApp        homepage videos follow-ups        trends
 ```
 - `website-agent` — bugs, speed, mobile, copy, conversion, product descriptions
 - `seo-agent` — the Website team's SEO specialist: keywords, tags, structured data, content plan, Search Console
 - `content-agent` — the Social team's writer: a week of Instagram/Facebook/YouTube Shorts/
   WhatsApp Status drafts as a JSON file the owner approves in the admin's Content tab
   (approved Instagram/Facebook posts then go out by themselves at their time)
+- `studio-agent` — the Studio: which products still have no photo, ready-to-paste ChatGPT
+  image prompts in the shop's own style, a picture for any post draft that has none, and
+  phone-shootable Reel / Shorts / homepage-video shot lists (briefs only, never makes an image)
 - `analytics-agent` — weekly numbers from the exported file: orders, revenue, best sellers,
   low stock, Custom-page searches, content status, 3 suggestions
 - `sales-support-agent` — WhatsApp reply templates, FAQs, unpaid-checkout and delivered
