@@ -263,14 +263,14 @@ const SHAFAAF_PRODUCTS = [
     gender: "Unisex",
     notes: ["Warm Spicy", "Woody", "Leather", "Sweet", "Musky", "Coffee", "Amber", "Rose", "Patchouli", "Oud"],
     description: "A commanding oud composition — leather and patchouli under a dark coffee accord, finished with rose and warm amber.",
-    image: "images/oud-magestic-attar.webp",
+    image: "images/oud-magestic-perfume.webp",
     imageAlt: null,
     bestseller: false,
     isNew: true,
     rating: 4.9,
     reviewCount: 39,
     variants: [
-      { type: "Perfume", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
+      { type: "Perfume", image: "images/oud-magestic-perfume.webp", sizes: [{ label: "30ml", ml: 30, price: 599 }, { label: "50ml", ml: 50, price: 899 }] },
       { type: "Attar", image: "images/oud-magestic-attar.webp", sizes: [{ label: "6ml", ml: 6, price: 349 }, { label: "12ml", ml: 12, price: 699 }] }
     ]
   },
