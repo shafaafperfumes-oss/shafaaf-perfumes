@@ -135,6 +135,7 @@ function decorateHtml(response, url, product) {
             `<meta name="twitter:description" content="${escapeAttr(description)}">`,
             `<meta name="twitter:image" content="${escapeAttr(shareImage)}">`,
           ];
+          tags.push(`<script type="application/ld+json">${businessJsonLd(origin)}</script>`);
           if (product) tags.push(`<script type="application/ld+json">${productJsonLd(product, canonical, origin)}</script>`);
           end.before("\n  " + tags.join("\n  ") + "\n", { html: true });
         });
@@ -173,6 +174,50 @@ function allPrices(product) {
     }
   }
   return prices;
+}
+
+/**
+ * Who this shop is, on every page.
+ *
+ * This is what lets Google tie the website to the business rather than
+ * treating it as an unattributed set of pages: the name, the one phone
+ * number, the town. It is also the signal that pairs the site with the
+ * Google Business Profile, which is the listing that actually answers a
+ * "perfume shop near me" search.
+ *
+ * Deliberately `Store` with an `areaServed`, not a `LocalBusiness` with a
+ * street address: the shop ships from Srinagar across India and has no
+ * walk-in counter to send anyone to. Claiming a street address that a
+ * customer could turn up at would be a lie, and Google checks. If a real
+ * address is ever published, add `address` here and keep it character-for-
+ * character identical to the Business Profile — mismatched addresses are
+ * one of the few things that actively hurt local ranking.
+ */
+function businessJsonLd(origin) {
+  return JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Store",
+    name: "Shafaaf Perfumes",
+    alternateName: "Shafaaf Perfumes — The Fragrance of Kashmir",
+    description:
+      "Attar, perfume and bakhoor from Srinagar, Kashmir. Internationally inspired fragrances at honest prices, shipped free across India.",
+    url: origin + "/",
+    logo: origin + "/images/logo-mark.png",
+    image: origin + "/images/logo-full.webp",
+    telephone: "+91 97969 06804",
+    email: "shafaafperfumes@gmail.com",
+    priceRange: "₹299–₹899",
+    currenciesAccepted: "INR",
+    paymentAccepted: "UPI, Cash on Delivery, Card",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Srinagar",
+      addressRegion: "Jammu and Kashmir",
+      addressCountry: "IN",
+    },
+    areaServed: { "@type": "Country", name: "India" },
+    sameAs: ["https://www.instagram.com/shafaafperfumes"],
+  }).replace(/</g, "\\u003c");
 }
 
 /** Google's product rich-result data: name, image, price range, availability. */
