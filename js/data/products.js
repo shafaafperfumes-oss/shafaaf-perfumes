@@ -338,14 +338,14 @@ const SHAFAAF_PRODUCTS = [
     gender: "Unisex",
     notes: [],
     description: "Al Noor means ‘the light’, and this bakhoor lives up to its name: soft, luminous and clean, with none of the heaviness. Burn it in the daytime, before guests arrive, or to freshen a room ahead of prayer and rest, and let a gentle, glowing fragrance fill the air.",
-    image: null,
+    image: "images/al-noor-bakhoor.webp",
     imageAlt: null,
     bestseller: false,
     isNew: true,
     rating: 0,
     reviewCount: 0,
     variants: [
-      { type: "Bakhoor", sizes: [{ label: "40g", ml: 40, price: 499 }] }
+      { type: "Bakhoor", image: "images/al-noor-bakhoor.webp", sizes: [{ label: "40g", ml: 40, price: 499 }] }
     ]
   },
   {
