@@ -117,6 +117,34 @@ const envSchema = z.object({
    *                          to the first non-local CORS origin, so it
    *                          follows the domain automatically.
    */
+  /**
+   * Paying the shop directly, with no gateway in between.
+   *
+   * UPI_VPA        — not a secret; the shop's own UPI id, e.g.
+   *                  "shafaaf@okaxis". Blank turns the UPI option off
+   *                  everywhere, so the shop never shows an id it cannot
+   *                  be paid at. Nothing here can move money by itself:
+   *                  the customer pays in their own UPI app and the owner
+   *                  confirms the transfer in the admin once he sees it.
+   * UPI_PAYEE_NAME — the name the customer's UPI app should show.
+   * COD_ENABLED    — cash on delivery, on by default. No account of any
+   *                  kind is needed for it.
+   * COD_MAX_PAISE  — refuse cash on delivery above this order value, so a
+   *                  very large parcel is never sent out unpaid.
+   *                  Default 500000 paise = Rs 5,000.
+   */
+  UPI_VPA: z
+    .string()
+    .trim()
+    .regex(/^[A-Za-z0-9._-]{2,64}@[A-Za-z]{2,32}$/, "UPI_VPA must look like name@bank")
+    .optional(),
+  UPI_PAYEE_NAME: z.string().trim().min(1).max(60).default("Shafaaf Perfumes"),
+  COD_ENABLED: z
+    .enum(["true", "false"])
+    .default("true")
+    .transform((value) => value === "true"),
+  COD_MAX_PAISE: z.coerce.number().int().positive().default(500_000),
+
   META_PAGE_ACCESS_TOKEN: z.string().min(1).optional(),
   META_PAGE_ID: z.string().regex(/^\d+$/).optional(),
   META_IG_USER_ID: z.string().regex(/^\d+$/).optional(),
@@ -167,6 +195,8 @@ export const env = {
   hasStorage: Boolean(raw.SUPABASE_URL && raw.SUPABASE_SERVICE_ROLE_KEY),
   hasOrderAlerts: Boolean(raw.RESEND_API_KEY && raw.ORDER_ALERT_EMAIL),
   hasMeta: Boolean(raw.META_PAGE_ACCESS_TOKEN && raw.META_PAGE_ID),
+  /** The shop's UPI details, or null when no UPI id has been published. */
+  upi: raw.UPI_VPA ? { vpa: raw.UPI_VPA, payeeName: raw.UPI_PAYEE_NAME } : null,
   /** Used to build links in emails; null means emails carry no links. */
   siteUrl,
   /**

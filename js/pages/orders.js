@@ -26,6 +26,8 @@
   var params = new URLSearchParams(window.location.search);
   var orderId = params.get("id");
   var justPaid = params.get("paid") === "1";
+  var upi = null;                    // the shop's UPI details, when this order is awaiting a transfer
+  var WHATSAPP = "919796906804";     // same number as the floating button
   var order = null;
   var busy = false;
   var notice = null;
@@ -45,6 +47,9 @@
     return d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) +
       ", " + d.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" });
   }
+
+  /** Only the two methods worth naming in a list; "online" needs no explaining. */
+  var METHOD_LABEL = { upi: "UPI transfer", cod: "Cash on delivery" };
 
   function statusBadge(status) {
     var info = STATUS[status] || { label: status, tone: "pending" };
@@ -109,7 +114,8 @@
             '<a class="order-row" href="orders.html?id=' + encodeURIComponent(o.id) + '">' +
               '<span class="order-row__main">' +
                 '<span class="order-row__number">' + escapeHtml(o.orderNumber) + '</span>' +
-                '<span class="order-row__date">' + escapeHtml(formatDate(o.createdAt)) + '</span>' +
+                '<span class="order-row__date">' + escapeHtml(formatDate(o.createdAt)) +
+                  (METHOD_LABEL[o.paymentMethod] ? ' · ' + escapeHtml(METHOD_LABEL[o.paymentMethod]) : "") + '</span>' +
               '</span>' +
               '<span class="order-row__items">' + o.itemCount + (o.itemCount === 1 ? " item" : " items") + '</span>' +
               statusBadge(o.status) +
@@ -131,6 +137,84 @@
       [a.city, a.state].filter(Boolean).join(", ") + " " + (a.postalCode || ""),
       a.phone
     ].filter(Boolean).map(function (line, i) { return i === 0 ? line : escapeHtml(line); }).join("<br>");
+  }
+
+  /** Copies the shop's UPI id, so it need not be typed from a small screen. */
+  function copyUpiId(button) {
+    if (!upi) return;
+    var done = function () {
+      var was = button.textContent;
+      button.textContent = "Copied";
+      window.setTimeout(function () { button.textContent = was; }, 1500);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(upi.vpa).then(done, function () {});
+      return;
+    }
+    var field = document.createElement("textarea");
+    field.value = upi.vpa;
+    field.setAttribute("readonly", "readonly");
+    field.style.position = "fixed";
+    field.style.opacity = "0";
+    document.body.appendChild(field);
+    field.select();
+    try { document.execCommand("copy"); done(); } catch (e) { /* nothing to do */ }
+    document.body.removeChild(field);
+  }
+
+  function whatsappLink(text) {
+    return "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(text);
+  }
+
+  /**
+   * Cash on delivery. There is nothing to pay and nothing to wait for —
+   * the one useful thing here is a way to reach us, so the order can be
+   * confirmed by message before the parcel is packed.
+   */
+  function renderCodPanel() {
+    var message = "Hello Shafaaf Perfumes, I have placed order " + order.orderNumber +
+      " for " + shafaafFormatPrice(order.total) + " (cash on delivery). Please confirm.";
+    return (
+      '<div class="order-pay">' +
+        '<p class="form-notice form-notice--success" role="status">' + shafaafIcon("check") +
+          ' Order placed. Nothing to pay now — keep ' + escapeHtml(shafaafFormatPrice(order.total)) +
+          ' ready for the courier.</p>' +
+        '<p class="cart-summary__note">Send us a message so we can confirm your order and pack it today.</p>' +
+        '<a class="btn btn--primary btn--block" href="' + whatsappLink(message) + '" target="_blank" rel="noopener">' +
+          'Confirm on WhatsApp</a>' +
+      '</div>'
+    );
+  }
+
+  /**
+   * A direct UPI transfer. On a phone the link opens the shopper's own
+   * payment app with everything filled in; on a laptop no app will answer
+   * it, so the id and amount are shown as text to type by hand.
+   */
+  function renderUpiPanel() {
+    if (!upi) {
+      return '<div class="form-notice form-notice--error" role="status">' +
+        'We could not load our UPI details just now. Please message us on WhatsApp and we will help.</div>';
+    }
+    var message = "Hello Shafaaf Perfumes, I have sent " + shafaafFormatPrice(order.total) +
+      " by UPI for order " + order.orderNumber + ". Here is the screenshot.";
+    return (
+      '<div class="order-pay order-upi">' +
+        '<p class="cart-summary__note">Send <strong>' + escapeHtml(upi.amount) + '</strong> to the UPI id below from any payment app. ' +
+          'Your order is confirmed as soon as we see it.</p>' +
+        '<dl class="order-upi__details">' +
+          '<dt>UPI id</dt><dd><code data-upi-id>' + escapeHtml(upi.vpa) + '</code></dd>' +
+          '<dt>Name</dt><dd>' + escapeHtml(upi.payeeName) + '</dd>' +
+          '<dt>Amount</dt><dd>' + escapeHtml(shafaafFormatPrice(order.total)) + '</dd>' +
+          '<dt>Reference</dt><dd>' + escapeHtml(upi.note) + '</dd>' +
+        '</dl>' +
+        '<button type="button" class="btn btn--outline btn--block" data-upi-copy>Copy UPI id</button>' +
+        '<a class="btn btn--primary btn--block order-upi__pay" href="' + escapeHtml(upi.link) + '">Open my payment app</a>' +
+        '<p class="cart-summary__note">On a laptop the button above will not open anything — type the id into your phone instead.</p>' +
+        '<a class="link-underline" href="' + whatsappLink(message) + '" target="_blank" rel="noopener">' +
+          'Send us the payment screenshot on WhatsApp</a>' +
+      '</div>'
+    );
   }
 
   function renderPaymentPanel() {
@@ -156,6 +240,8 @@
     }
     // Only an order still awaiting payment gets a Pay now button.
     if (order.status !== "pending_payment") return "";
+    if (order.paymentMethod === "cod") return renderCodPanel();
+    if (order.paymentMethod === "upi") return renderUpiPanel();
     var text = justPaid
       ? "We have not heard back from Razorpay yet. If you completed the payment, it can take a minute to show here — refresh this page in a moment. If not, you can pay now."
       : "This order is waiting for payment. Nothing has been charged yet.";
@@ -224,6 +310,7 @@
   function fetchOrder() {
     return ShafaafApi.get("/orders/" + encodeURIComponent(orderId), { auth: true }).then(function (data) {
       order = data.order;
+      upi = data.upi || null;
       return order;
     });
   }
@@ -323,7 +410,8 @@
   document.addEventListener("click", function (e) {
     if (e.target.closest("[data-orders-signin]")) { ShafaafAccountModal.open("signin"); return; }
     if (e.target.closest("[data-orders-retry]")) { init(); return; }
-    if (e.target.closest("[data-order-pay]")) { payNow(); }
+    if (e.target.closest("[data-order-pay]")) { payNow(); return; }
+    if (e.target.closest("[data-upi-copy]")) { copyUpiId(e.target.closest("[data-upi-copy]")); }
   });
 
   document.addEventListener("shafaaf:auth:change", function () {

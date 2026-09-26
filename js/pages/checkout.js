@@ -20,6 +20,32 @@
   var formNotice = null;            // shown inside the address form
   var draft = {};                   // what the shopper typed in the address form
   var userId = null;                // whose checkout is on screen
+  var method = null;                // how the shopper chose to pay; set from the quote
+
+  // The backend decides which of these the shop can actually offer today
+  // (`quote.paymentOptions`); this only says how to describe each one.
+  var METHODS = {
+    online: {
+      title: "Pay online",
+      blurb: "Card, UPI, net banking or wallet, in Razorpay's secure window.",
+      button: "Place order & pay"
+    },
+    upi: {
+      title: "Pay by UPI",
+      blurb: "Send the amount to our UPI id from any payment app. We confirm your order once it arrives.",
+      button: "Place order & get UPI details"
+    },
+    cod: {
+      title: "Cash on delivery",
+      blurb: "Pay the courier in cash when your parcel arrives. We confirm the order on WhatsApp first.",
+      button: "Place order"
+    }
+  };
+
+  function methodsOffered() {
+    var offered = (quote && quote.paymentOptions) || [];
+    return offered.filter(function (key) { return METHODS[key]; });
+  }
 
   function el() { return document.getElementById("checkout-content"); }
 
@@ -168,6 +194,56 @@
     );
   }
 
+  /**
+   * How to pay. Only the ways the backend said it can honour today are
+   * drawn, and when there is just one there is nothing to choose — the
+   * shopper sees it stated rather than a radio button they cannot change.
+   */
+  function renderPaymentChoice() {
+    var offered = methodsOffered();
+    if (offered.length === 0) return "";
+    if (offered.length === 1) {
+      return (
+        '<div class="checkout-pay checkout-pay--single">' +
+          '<span class="checkout-pay__title">' + escapeHtml(METHODS[offered[0]].title) + '</span>' +
+          '<span class="checkout-pay__blurb">' + escapeHtml(METHODS[offered[0]].blurb) + '</span>' +
+        '</div>'
+      );
+    }
+    return (
+      '<fieldset class="checkout-pay">' +
+        '<legend class="checkout-pay__legend">How would you like to pay?</legend>' +
+        offered.map(function (key) {
+          return (
+            '<label class="checkout-pay__option' + (method === key ? " is-selected" : "") + '">' +
+              '<input type="radio" name="payment-method" value="' + key + '" data-payment-method' +
+                (method === key ? " checked" : "") + (busy ? " disabled" : "") + '>' +
+              '<span class="checkout-pay__text">' +
+                '<span class="checkout-pay__title">' + escapeHtml(METHODS[key].title) + '</span>' +
+                '<span class="checkout-pay__blurb">' + escapeHtml(METHODS[key].blurb) + '</span>' +
+              '</span>' +
+            '</label>'
+          );
+        }).join("") +
+      '</fieldset>'
+    );
+  }
+
+  /** The reassurance under the button, in the words of the chosen method. */
+  function renderPaymentNote() {
+    if (method === "cod") {
+      return '<p class="cart-summary__note">' + shafaafIcon("shield") +
+        ' Nothing to pay now. Keep ' + escapeHtml(shafaafFormatPrice(quote.total)) +
+        ' ready for the courier.</p>';
+    }
+    if (method === "upi") {
+      return '<p class="cart-summary__note">' + shafaafIcon("shield") +
+        ' You will see our UPI id on the next screen. Your order is confirmed once we see the transfer.</p>';
+    }
+    return '<p class="cart-summary__note">' + shafaafIcon("shield") +
+      ' Payment opens in a secure window — cards, UPI, net banking and wallets. Your card details never touch our site.</p>';
+  }
+
   function renderSummaryColumn() {
     var canPlace = Boolean(selectedAddressId) && !busy;
     return (
@@ -180,12 +256,13 @@
         '<div class="cart-summary__row"><span>Shipping</span><span>' + (quote.shipping ? shafaafFormatPrice(quote.shipping) : "Free") + '</span></div>' +
         (quote.tax ? '<div class="cart-summary__row"><span>Tax</span><span>' + shafaafFormatPrice(quote.tax) + '</span></div>' : "") +
         '<div class="cart-summary__row cart-summary__row--total"><span>Total</span><span>' + shafaafFormatPrice(quote.total) + '</span></div>' +
+        renderPaymentChoice() +
         noticeHtml() +
         '<button type="button" class="btn btn--primary btn--block checkout-place" data-place-order' + (canPlace ? "" : " disabled") + '>' +
-          (busy ? "Placing your order…" : "Place order & pay") +
+          (busy ? "Placing your order…" : (METHODS[method] ? METHODS[method].button : "Place order")) +
         '</button>' +
         (selectedAddressId ? "" : '<p class="cart-summary__note">Choose or add a delivery address to continue.</p>') +
-        '<p class="cart-summary__note">' + shafaafIcon("shield") + ' Payment opens in Razorpay\'s secure window — cards, UPI, net banking and wallets. Your card details never touch our site.</p>' +
+        renderPaymentNote() +
         '<a href="cart.html" class="link-underline checkout-back">Edit your bag</a>' +
       '</aside>'
     );
@@ -219,7 +296,7 @@
           ShafaafApi.get("/me/addresses", { auth: true }),
           // An empty account cart is a 400 from the backend, not a failure.
           ShafaafApi.post("/checkout/quote", undefined, { auth: true }).catch(function (err) {
-            if (err && err.status === 400) return { items: [], itemCount: 0, subtotal: 0, discount: 0, shipping: 0, tax: 0, total: 0 };
+            if (err && err.status === 400) return { items: [], itemCount: 0, subtotal: 0, discount: 0, shipping: 0, tax: 0, total: 0, paymentOptions: [] };
             throw err;
           }),
           ShafaafApi.get("/me", { auth: true }).catch(function () { return null; })
@@ -229,6 +306,10 @@
         addresses = results[0].addresses || [];
         quote = results[1];
         profile = results[2] ? results[2].profile : null;
+        // Keep what the shopper already chose unless the reprice withdrew
+        // it (a basket that grew past the cash-on-delivery limit, say).
+        var offered = methodsOffered();
+        if (offered.indexOf(method) === -1) method = offered[0] || null;
         pickDefaultAddress();
         showForm = false;
         if (!draft.recipientName && profile && profile.fullName) draft.recipientName = profile.fullName;
@@ -322,7 +403,7 @@
     notice = null;
     render();
     var placed = null;
-    ShafaafApi.post("/checkout/place", { addressId: selectedAddressId }, { auth: true })
+    ShafaafApi.post("/checkout/place", { addressId: selectedAddressId, paymentMethod: method || "online" }, { auth: true })
       .then(function (data) {
         placed = data;
         // The order is placed and the account cart is now empty on the
@@ -330,6 +411,9 @@
         ShafaafCart.refresh();
         var address = addresses.find(function (a) { return a.id === selectedAddressId; });
         var user = ShafaafAuth.getUser();
+        // Cash on delivery and a UPI transfer never open a payment window:
+        // the order page is where the shopper is told what happens next.
+        if (method === "cod" || method === "upi") return { status: "no-gateway" };
         if (!data.payment) return { status: "unavailable" };
         return ShafaafPayment.open(data.payment, {
           orderNumber: data.order.orderNumber,
@@ -388,6 +472,11 @@
   document.addEventListener("change", function (e) {
     if (e.target.name === "addressId") {
       selectedAddressId = e.target.value;
+      render();
+      return;
+    }
+    if (e.target.name === "payment-method") {
+      method = e.target.value;
       render();
     }
   });

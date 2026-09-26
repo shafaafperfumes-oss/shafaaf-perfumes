@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { isDatabaseConfigured } from "../db/client.js";
 import { requireAuth } from "../middleware/auth.js";
+import { upiPaymentFor } from "../lib/upi.js";
 import { getOrderDetail, listOrders } from "../repositories/order.repository.js";
 import {
   OrderNotFoundError,
@@ -43,7 +44,12 @@ ordersRouter.get("/:id", async (req, res, next) => {
     if (!order) {
       throw ApiError.notFound("No order matches that id.");
     }
-    sendSuccess(res, { order });
+    // A UPI order still waiting for its transfer is shown the shop's UPI
+    // id and a pay link every time it is opened, so the customer can come
+    // back to it later — from a laptop, or after closing the tab.
+    const upi =
+      order.paymentMethod === "upi" && order.status === "pending_payment" ? upiPaymentFor(order) : null;
+    sendSuccess(res, { order, upi });
   } catch (error) {
     next(error);
   }

@@ -33,6 +33,8 @@
     cancelled: { label: "Cancelled", tone: "cancelled" }
   };
   var STATUS_ORDER = ["pending_payment", "paid", "shipped", "delivered", "cancelled"];
+  /** Worth flagging at a glance; a gateway order is the ordinary case and needs no label. */
+  var METHOD = { upi: "UPI", cod: "COD" };
   var PER_PAGE = 20;
 
   var params = new URLSearchParams(window.location.search);
@@ -175,7 +177,8 @@
                 '<a class="order-row" href="' + href({ view: "order", id: o.id }) + '">' +
                   '<span class="order-row__main">' +
                     '<span class="order-row__number">' + escapeHtml(o.orderNumber) + '</span>' +
-                    '<span class="order-row__date">' + escapeHtml(formatDate(o.createdAt)) + '</span>' +
+                    '<span class="order-row__date">' + escapeHtml(formatDate(o.createdAt)) +
+                      (METHOD[o.paymentMethod] ? ' · ' + METHOD[o.paymentMethod] : "") + '</span>' +
                   '</span>' +
                   '<span class="order-row__customer">' + escapeHtml(o.customerName || "Customer") + '</span>' +
                   '<span class="order-row__items">' + o.itemCount + (o.itemCount === 1 ? " item" : " items") + '</span>' +
@@ -232,7 +235,24 @@
   /** The one thing the backend will accept for this order right now, if any. */
   function renderActions() {
     var body = "";
-    if (order.status === "pending_payment") {
+    if (order.status === "pending_payment" && order.paymentMethod === "cod") {
+      // Cash arrives at the door, so this parcel ships before it is paid.
+      body =
+        '<p class="admin-actions__hint">Cash on delivery — nothing to collect yet. Confirm with the customer, then pack and ship it. The courier collects ' + escapeHtml(shafaafFormatPrice(order.total)) + '.</p>' +
+        '<div class="field"><label class="field__label" for="admin-note">Courier and tracking number (optional)</label>' +
+        '<input class="input" id="admin-note" maxlength="300" placeholder="e.g. Delhivery, tracking 1234567890"></div>' +
+        '<button type="button" class="btn btn--primary btn--block" data-admin-status="shipped"' + (busy ? " disabled" : "") + '>' + (busy ? "Working…" : "Mark as shipped") + '</button>' +
+        '<button type="button" class="btn btn--outline btn--danger btn--block" data-admin-status="cancelled"' + (busy ? " disabled" : "") + '>' + (busy ? "Working…" : "Cancel order") + '</button>';
+    } else if (order.status === "pending_payment" && order.paymentMethod === "upi") {
+      // Only the owner can say a transfer arrived — he is the one looking
+      // at his own bank app. Mark it paid once he has, not before.
+      body =
+        '<p class="admin-actions__hint">Waiting for a UPI transfer of ' + escapeHtml(shafaafFormatPrice(order.total)) + '. Check your bank app first — mark it paid only once you can see the money. Cancelling releases the stock this order is holding.</p>' +
+        '<div class="field"><label class="field__label" for="admin-note">UPI reference (optional, shown to the customer)</label>' +
+        '<input class="input" id="admin-note" maxlength="300" placeholder="e.g. UPI ref 412345678901"></div>' +
+        '<button type="button" class="btn btn--primary btn--block" data-admin-status="paid"' + (busy ? " disabled" : "") + '>' + (busy ? "Working…" : "I have received the money") + '</button>' +
+        '<button type="button" class="btn btn--outline btn--danger btn--block" data-admin-status="cancelled"' + (busy ? " disabled" : "") + '>' + (busy ? "Working…" : "Cancel order") + '</button>';
+    } else if (order.status === "pending_payment") {
       body =
         '<p class="admin-actions__hint">Waiting for the customer to pay. Nothing has been charged. Cancelling releases the stock this order is holding.</p>' +
         '<div class="field"><label class="field__label" for="admin-note">Reason (optional, shown to the customer)</label>' +
@@ -248,6 +268,10 @@
       body =
         '<p class="admin-actions__hint">On its way. Once the customer has it, mark it delivered.</p>' +
         '<button type="button" class="btn btn--primary btn--block" data-admin-status="delivered"' + (busy ? " disabled" : "") + '>' + (busy ? "Working…" : "Mark as delivered") + '</button>';
+    } else if (order.status === "delivered" && order.paymentMethod === "cod") {
+      body =
+        '<p class="admin-actions__hint">Delivered. Once the courier has handed over the ' + escapeHtml(shafaafFormatPrice(order.total)) + ', record it here so your sales figures are right.</p>' +
+        '<button type="button" class="btn btn--primary btn--block" data-admin-status="paid"' + (busy ? " disabled" : "") + '>' + (busy ? "Working…" : "Cash collected") + '</button>';
     } else if (order.status === "delivered") {
       body = '<p class="admin-actions__hint">Delivered. Nothing more to do.</p>';
     } else {
@@ -261,7 +285,8 @@
     el().innerHTML =
       '<a class="admin-back" href="' + href({}) + '">' + shafaafIcon("chevronLeft") + ' All orders</a>' +
       '<div class="order-detail__head">' +
-        '<p class="order-detail__date">Placed ' + escapeHtml(formatDate(order.createdAt)) + '</p>' +
+        '<p class="order-detail__date">Placed ' + escapeHtml(formatDate(order.createdAt)) +
+          (order.paymentMethod === "cod" ? " · Cash on delivery" : order.paymentMethod === "upi" ? " · UPI transfer" : "") + '</p>' +
         statusBadge(order.status) +
       '</div>' +
       '<div class="checkout-layout">' +
@@ -314,6 +339,7 @@
     var noteEl = document.getElementById("admin-note");
     var note = noteEl ? noteEl.value.trim() : "";
     if (status === "cancelled" && !window.confirm("Cancel order " + order.orderNumber + "? Its reserved stock will be released.")) return;
+    if (status === "paid" && !window.confirm("Confirm you have received " + shafaafFormatPrice(order.total) + " for order " + order.orderNumber + "? The customer will be told their payment arrived.")) return;
 
     busy = true;
     notice = null;

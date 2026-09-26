@@ -33,6 +33,16 @@ import { productVariants } from "./catalog.js";
  * that would need a real refund first.
  */
 
+/**
+ * How the customer pays. `online` is the card/UPI gateway, where the
+ * verified webhook is the only thing that may mark an order paid. `upi`
+ * is a direct transfer to the shop's own UPI id, which the owner checks in
+ * his bank app and confirms in the admin. `cod` is cash handed over at
+ * the door, so the money arrives only once the parcel is delivered — a
+ * cod order is therefore shipped straight from `pending_payment`.
+ */
+export const paymentMethodEnum = pgEnum("payment_method", ["online", "upi", "cod"]);
+
 export const orderStatusEnum = pgEnum("order_status", [
   "pending_payment",
   "paid",
@@ -55,6 +65,7 @@ export const orders = pgTable(
       .notNull()
       .references(() => profiles.id, { onDelete: "restrict" }),
     status: orderStatusEnum("status").notNull().default("pending_payment"),
+    paymentMethod: paymentMethodEnum("payment_method").notNull().default("online"),
     currency: varchar("currency", { length: 3 }).notNull().default("INR"),
     subtotalPaise: integer("subtotal_paise").notNull(),
     discountPaise: integer("discount_paise").notNull().default(0),

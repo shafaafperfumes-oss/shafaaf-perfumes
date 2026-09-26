@@ -70,10 +70,38 @@ export function adminOrderLink(orderId: string): string | null {
 }
 
 /**
+ * How the order was paid, in the words the alert uses. A gateway order
+ * is only ever alerted once the money is in, so it can say so plainly;
+ * the other two are alerted the moment they are placed, when nothing has
+ * been received yet and the owner still has something to do.
+ */
+const PAYMENT_LINE: Record<string, { how: string; headline: string; totalLabel: string; todo: string | null }> = {
+  online: {
+    how: "Paid via Razorpay",
+    headline: "New paid order",
+    totalLabel: "Total paid",
+    todo: null,
+  },
+  upi: {
+    how: "Waiting for a UPI transfer",
+    headline: "New UPI order",
+    totalLabel: "Total to collect",
+    todo: "Check your bank app. Once the transfer is there, open the order and press “I have received the money”.",
+  },
+  cod: {
+    how: "Cash on delivery",
+    headline: "New cash-on-delivery order",
+    totalLabel: "Cash to collect on delivery",
+    todo: "Nothing to collect yet. Confirm with the customer, then pack and ship it.",
+  },
+};
+
+/**
  * Pure: turns an order into the alert's subject and bodies. Kept free of
  * I/O so the wording can be tested without a database or Resend.
  */
 export function buildOrderPaidAlert(order: AdminOrderDetail): { subject: string; text: string; html: string } {
+  const pay = PAYMENT_LINE[order.paymentMethod] ?? PAYMENT_LINE.online!;
   const total = rupees.format(order.total);
   const placedAt = whenInIndia.format(order.createdAt);
   const customer = order.customerName || "Customer";
@@ -85,8 +113,8 @@ export function buildOrderPaidAlert(order: AdminOrderDetail): { subject: string;
   );
 
   const text = [
-    `New paid order ${order.orderNumber}`,
-    `Placed ${placedAt} · Paid via Razorpay`,
+    `${pay.headline} ${order.orderNumber}`,
+    `Placed ${placedAt} · ${pay.how}`,
     "",
     `Customer: ${customer}${order.customerPhone ? ` · ${order.customerPhone}` : ""}`,
     "",
@@ -97,7 +125,8 @@ export function buildOrderPaidAlert(order: AdminOrderDetail): { subject: string;
     ...(order.discount > 0 ? [`Discount: -${rupees.format(order.discount)}`] : []),
     `Shipping: ${order.shipping > 0 ? rupees.format(order.shipping) : "Free"}`,
     ...(order.tax > 0 ? [`Tax: ${rupees.format(order.tax)}`] : []),
-    `Total paid: ${total}`,
+    `${pay.totalLabel}: ${total}`,
+    ...(pay.todo ? ["", pay.todo] : []),
     "",
     "Ship to:",
     ...address.map((line) => `  ${line}`),
@@ -118,7 +147,7 @@ export function buildOrderPaidAlert(order: AdminOrderDetail): { subject: string;
   const html = [
     `<div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;color:#2b1f18;line-height:1.5">`,
     `<p style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#7a6a60;margin:0 0 4px">Shafaaf Perfumes</p>`,
-    `<h1 style="font-size:22px;font-weight:normal;margin:0 0 4px">New paid order ${escapeHtml(order.orderNumber)}</h1>`,
+    `<h1 style="font-size:22px;font-weight:normal;margin:0 0 4px">${escapeHtml(pay.headline)} ${escapeHtml(order.orderNumber)}</h1>`,
     `<p style="margin:0 0 20px;color:#7a6a60">Placed ${escapeHtml(placedAt)} · Paid via Razorpay</p>`,
     `<p style="margin:0 0 20px"><strong>${escapeHtml(customer)}</strong>${order.customerPhone ? ` · ${escapeHtml(order.customerPhone)}` : ""}</p>`,
     `<table style="width:100%;border-collapse:collapse;border-top:1px solid #e6ddd5;border-bottom:1px solid #e6ddd5;margin:0 0 12px">${rows}</table>`,
@@ -127,7 +156,7 @@ export function buildOrderPaidAlert(order: AdminOrderDetail): { subject: string;
     order.discount > 0 ? summaryRow("Discount", `-${rupees.format(order.discount)}`) : "",
     summaryRow("Shipping", order.shipping > 0 ? rupees.format(order.shipping) : "Free"),
     order.tax > 0 ? summaryRow("Tax", rupees.format(order.tax)) : "",
-    summaryRow("Total paid", total, true),
+    summaryRow(pay.totalLabel, total, true),
     `</table>`,
     `<p style="margin:0 0 4px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#7a6a60">Ship to</p>`,
     `<p style="margin:0 0 20px">${address.map(escapeHtml).join("<br>")}</p>`,
@@ -137,7 +166,17 @@ export function buildOrderPaidAlert(order: AdminOrderDetail): { subject: string;
     `</div>`,
   ].join("");
 
-  return { subject: `New paid order ${order.orderNumber} — ${total}`, text, html };
+  return { subject: `${pay.headline} ${order.orderNumber} — ${total}`, text, html };
+}
+
+/**
+ * Sends the owner's alert for a UPI or cash-on-delivery order the moment
+ * it is placed. Those two never reach a webhook, so without this the
+ * owner would only find them by opening the admin. Same swallow-everything
+ * contract as `notifyOrderPaid`: an alert must never sink an order.
+ */
+export async function notifyOrderPlaced(orderId: string): Promise<void> {
+  await notifyOrderPaid(orderId);
 }
 
 /**

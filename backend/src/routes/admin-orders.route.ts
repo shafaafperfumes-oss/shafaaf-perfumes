@@ -19,14 +19,17 @@ const listQuerySchema = pageQuerySchema.extend({
 });
 
 /**
- * The statuses an admin may set. `paid` is deliberately absent: it is
- * reserved for the Razorpay webhook, which is the one thing that can prove
- * money actually arrived. The note is shown to the customer (courier and
- * tracking number for a dispatch, a reason for a cancellation).
+ * The statuses an admin may set. `paid` is allowed only for the two
+ * methods with no gateway behind them — a UPI transfer the owner sees in
+ * his bank app, and cash collected at the door — and the repository
+ * refuses it for a card order, which stays the webhook's alone to confirm.
+ * The note is shown to the customer (courier and tracking number for a
+ * dispatch, the UPI reference for a confirmed transfer, a reason for a
+ * cancellation).
  */
 const updateOrderSchema = z
   .object({
-    status: z.enum(["cancelled", "shipped", "delivered"]),
+    status: z.enum(["cancelled", "paid", "shipped", "delivered"]),
     note: z.string().trim().max(300).optional(),
   })
   .strict();

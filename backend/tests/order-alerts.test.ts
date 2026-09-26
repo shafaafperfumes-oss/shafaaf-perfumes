@@ -58,6 +58,7 @@ describe("the new-paid-order alert", () => {
     id: "0f1b2c3d-0000-4000-8000-000000000001",
     orderNumber: "SHF-100042",
     status: "paid",
+    paymentMethod: "online",
     customerId: "user-1",
     customerName: "Ayesha <Khan>",
     customerPhone: "9876543210",
@@ -114,5 +115,26 @@ describe("the new-paid-order alert", () => {
     expect(buildOrderPaidAlert(order).text).not.toContain("Discount:");
     const discounted = { ...order, discount: 200, total: 2397 };
     expect(buildOrderPaidAlert(discounted).text).toContain("Discount: -₹200");
+  });
+
+  // The two methods with no gateway behind them are alerted the moment the
+  // order is placed, when no money has arrived yet. Saying "paid" there
+  // would tell the owner something untrue about his own takings.
+  it("does not claim a cash-on-delivery order has been paid", () => {
+    const cod = { ...order, status: "pending_payment", paymentMethod: "cod" as const };
+    const { subject, text } = buildOrderPaidAlert(cod);
+    expect(subject).toBe("New cash-on-delivery order SHF-100042 — ₹2,597");
+    expect(text).not.toContain("Total paid");
+    expect(text).toContain("Cash to collect on delivery: ₹2,597");
+    expect(text).toContain("Cash on delivery");
+  });
+
+  it("tells the owner to check his bank app for a UPI order", () => {
+    const upi = { ...order, status: "pending_payment", paymentMethod: "upi" as const };
+    const { subject, text } = buildOrderPaidAlert(upi);
+    expect(subject).toBe("New UPI order SHF-100042 — ₹2,597");
+    expect(text).not.toContain("Total paid");
+    expect(text).toContain("Total to collect: ₹2,597");
+    expect(text).toContain("Check your bank app");
   });
 });

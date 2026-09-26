@@ -239,12 +239,22 @@ async function nextOrderNumber(tx: Tx): Promise<string> {
   return `SHF-${value}`;
 }
 
+export type PaymentMethod = "online" | "upi" | "cod";
+
 export interface PlacedOrder extends CheckoutQuote {
   id: string;
   orderNumber: string;
   status: string;
+  paymentMethod: PaymentMethod;
   createdAt: Date;
 }
+
+/** The first line of an order's history, in the words that fit how it will be paid. */
+const PLACED_NOTE: Record<PaymentMethod, string> = {
+  online: "Order placed; awaiting payment.",
+  upi: "Order placed; awaiting a UPI transfer to the shop.",
+  cod: "Order placed; cash to be collected on delivery.",
+};
 
 /**
  * Validates the cart and address, then in one locked transaction: creates
@@ -253,7 +263,11 @@ export interface PlacedOrder extends CheckoutQuote {
  * Throws (and reserves nothing) if the address is not the caller's own,
  * the cart is empty, or any line can no longer be fulfilled.
  */
-export async function placeOrder(userId: string, addressId: string): Promise<PlacedOrder> {
+export async function placeOrder(
+  userId: string,
+  addressId: string,
+  paymentMethod: PaymentMethod = "online",
+): Promise<PlacedOrder> {
   const address = await getAddress(userId, addressId);
   if (!address) {
     throw new InvalidAddressError("No saved address matches that id.");
@@ -283,6 +297,7 @@ export async function placeOrder(userId: string, addressId: string): Promise<Pla
         taxPaise: Math.round(quote.tax * 100),
         totalPaise: Math.round(quote.total * 100),
         shippingAddress: addressSnapshot(address),
+        paymentMethod,
       })
       .returning();
 
@@ -304,7 +319,7 @@ export async function placeOrder(userId: string, addressId: string): Promise<Pla
     await tx.insert(orderStatusHistory).values({
       orderId: order.id,
       status: "pending_payment",
-      note: "Order placed; awaiting payment.",
+      note: PLACED_NOTE[paymentMethod],
     });
 
     for (const row of rows) {
@@ -323,7 +338,14 @@ export async function placeOrder(userId: string, addressId: string): Promise<Pla
 
     await tx.delete(cartItems).where(eq(cartItems.cartId, cart.id));
 
-    return { ...quote, id: order.id, orderNumber: order.orderNumber, status: order.status, createdAt: order.createdAt };
+    return {
+      ...quote,
+      id: order.id,
+      orderNumber: order.orderNumber,
+      status: order.status,
+      paymentMethod: order.paymentMethod,
+      createdAt: order.createdAt,
+    };
   });
 }
 
@@ -331,6 +353,7 @@ export interface OrderSummary {
   id: string;
   orderNumber: string;
   status: string;
+  paymentMethod: PaymentMethod;
   itemCount: number;
   total: number;
   createdAt: Date;
@@ -343,6 +366,7 @@ export async function listOrders(userId: string): Promise<OrderSummary[]> {
       id: orders.id,
       orderNumber: orders.orderNumber,
       status: orders.status,
+      paymentMethod: orders.paymentMethod,
       totalPaise: orders.totalPaise,
       createdAt: orders.createdAt,
     })
@@ -371,6 +395,7 @@ export async function listOrders(userId: string): Promise<OrderSummary[]> {
     id: row.id,
     orderNumber: row.orderNumber,
     status: row.status,
+    paymentMethod: row.paymentMethod,
     itemCount: countByOrder.get(row.id) ?? 0,
     total: row.totalPaise / 100,
     createdAt: row.createdAt,
@@ -433,6 +458,7 @@ export async function getOrderDetail(userId: string, orderId: string): Promise<O
     id: order.id,
     orderNumber: order.orderNumber,
     status: order.status,
+    paymentMethod: order.paymentMethod,
     itemCount: items.reduce((sum, item) => sum + item.quantity, 0),
     subtotal: order.subtotalPaise / 100,
     discount: order.discountPaise / 100,
