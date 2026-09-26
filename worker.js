@@ -211,10 +211,14 @@ function businessJsonLd(origin) {
     paymentAccepted: "UPI, Cash on Delivery, Card",
     address: {
       "@type": "PostalAddress",
+      streetAddress: "Shop No. 2, Masjid Complex, Masjid Abu Bakr, Magermal Bagh",
       addressLocality: "Srinagar",
       addressRegion: "Jammu and Kashmir",
+      postalCode: "190009",
       addressCountry: "IN",
     },
+    geo: { "@type": "GeoCoordinates", latitude: 34.0686699, longitude: 74.8012154 },
+    hasMap: "https://www.google.com/maps/place/SHAFAAF+PERFUMES/@34.0686699,74.8012154,17z",
     areaServed: { "@type": "Country", name: "India" },
     sameAs: ["https://www.instagram.com/shafaafperfumes"],
   }).replace(/</g, "\\u003c");

@@ -123,3 +123,8 @@ main { display: block; }
 
 .cluster { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
 .stack { display: flex; flex-direction: column; }
+
+/* The shop's address, in the footer of every page. Quieter than the
+   brand line above it — it is there to be found and to be read by
+   Google, not to compete with the words that sell anything. */
+.footer-address { font-size: var(--fs-sm); font-style: normal; opacity: 0.85; }

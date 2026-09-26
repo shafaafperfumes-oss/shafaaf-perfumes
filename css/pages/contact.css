@@ -1,0 +1,14 @@
+
+/* "Visit the shop" — the address on the contact page. A real street
+   address is a trust signal as much as a direction, so it is set to be
+   read rather than tucked away. */
+.contact-address__title {
+  margin: var(--sp-8) 0 var(--sp-2);
+  font-family: var(--font-display); font-size: var(--fs-lg); font-weight: var(--fw-regular);
+  color: var(--c-ink);
+}
+.contact-address {
+  font-style: normal; line-height: var(--lh-relaxed); color: var(--c-text-muted);
+  font-size: var(--fs-sm);
+}
+.contact-address a { color: var(--c-gold); text-decoration: underline; text-underline-offset: 3px; }
