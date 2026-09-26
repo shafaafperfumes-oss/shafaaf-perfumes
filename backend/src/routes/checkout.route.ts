@@ -4,6 +4,7 @@ import { env } from "../config/env.js";
 import { isDatabaseConfigured } from "../db/client.js";
 import { paymentOptionsFor } from "../lib/payment-methods.js";
 import { upiPaymentWithQrFor } from "../lib/upi.js";
+import { emailCustomer } from "../services/customer-emails.js";
 import { notifyOrderPlaced } from "../services/order-alerts.js";
 import { requireAuth } from "../middleware/auth.js";
 import {
@@ -113,6 +114,12 @@ checkoutRouter.post("/place", async (req, res, next) => {
     // These two have no webhook, so tell him now, while the order is new.
     // Deliberately not awaited: the alert must never delay or fail the reply.
     if (method !== "online") void notifyOrderPlaced(order.id);
+
+    // Cash on delivery is confirmed the moment it is placed — there is
+    // nothing to wait for and no money to verify, so the customer should
+    // not be left wondering. A UPI order stays quiet until the owner has
+    // actually seen the transfer and says so in the admin.
+    if (method === "cod") void emailCustomer(order.id, "confirmed");
 
     sendSuccess(
       res,

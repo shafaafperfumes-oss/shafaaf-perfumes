@@ -232,6 +232,45 @@
     ].filter(Boolean).map(function (line, i) { return i === 0 ? line : escapeHtml(line); }).join("<br>");
   }
 
+  /**
+   * A WhatsApp message to this customer, already written, for the owner to
+   * send from his own phone.
+   *
+   * The shop cannot send WhatsApp by itself — that needs Meta's business
+   * platform and a number given over to it — so this does the next best
+   * thing: it opens WhatsApp with the right customer and the right words,
+   * and the owner presses send. The email for each of these moments goes
+   * out automatically; this is for the customers who would rather hear on
+   * WhatsApp, which in this shop is most of them.
+   */
+  function customerWhatsApp() {
+    var phone = order.customerPhone || (order.shippingAddress && order.shippingAddress.phone) || "";
+    var digits = String(phone).replace(/[^0-9]/g, "");
+    if (digits.length === 10) digits = "91" + digits;          // a plain Indian mobile
+    if (digits.length < 11) return "";                          // nothing we can dial
+
+    var total = shafaafFormatPrice(order.total);
+    var name = (order.customerName || "").trim().split(" ")[0];
+    var hello = name ? "Hello " + name + "," : "Hello,";
+    var body;
+    if (order.status === "shipped" || order.status === "delivered") {
+      body = hello + " your Shafaaf Perfumes order " + order.orderNumber +
+        " has been dispatched and is on its way to you. Thank you for shopping with us.";
+    } else if (order.paymentMethod === "cod") {
+      body = hello + " thank you for your Shafaaf Perfumes order " + order.orderNumber +
+        ". It is confirmed. Please keep " + total + " ready in cash for the courier. We are packing it now.";
+    } else if (order.status === "pending_payment") {
+      body = hello + " we have not seen the payment for your Shafaaf Perfumes order " +
+        order.orderNumber + " (" + total + ") yet. Let us know if you need any help completing it.";
+    } else {
+      body = hello + " thank you for your Shafaaf Perfumes order " + order.orderNumber +
+        ". Your payment of " + total + " is received and the order is confirmed. We are packing it now.";
+    }
+
+    return '<a class="btn btn--outline btn--block admin-actions__whatsapp" target="_blank" rel="noopener" href="' +
+      "https://wa.me/" + digits + "?text=" + encodeURIComponent(body) + '">Message customer on WhatsApp</a>';
+  }
+
   /** The one thing the backend will accept for this order right now, if any. */
   function renderActions() {
     var body = "";
@@ -277,7 +316,7 @@
     } else {
       body = '<p class="admin-actions__hint">This order was cancelled and its stock released.</p>';
     }
-    return '<div class="admin-actions">' + noticeHtml() + body + '</div>';
+    return '<div class="admin-actions">' + noticeHtml() + body + customerWhatsApp() + '</div>';
   }
 
   function renderOrder() {

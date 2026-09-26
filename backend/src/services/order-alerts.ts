@@ -29,7 +29,7 @@ interface ShippingAddress {
   country?: string;
 }
 
-const rupees = new Intl.NumberFormat("en-IN", {
+export const rupees = new Intl.NumberFormat("en-IN", {
   style: "currency",
   currency: "INR",
   minimumFractionDigits: 0,
@@ -42,7 +42,7 @@ const whenInIndia = new Intl.DateTimeFormat("en-IN", {
   timeZone: "Asia/Kolkata",
 });
 
-function escapeHtml(value: string): string {
+export function escapeHtml(value: string): string {
   return value
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -50,7 +50,7 @@ function escapeHtml(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
-function addressLines(address: unknown): string[] {
+export function addressLines(address: unknown): string[] {
   if (!address || typeof address !== "object") return [];
   const a = address as ShippingAddress;
   return [

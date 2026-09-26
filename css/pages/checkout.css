@@ -194,3 +194,7 @@
   .order-upi [data-upi-copy] { order: 4; }
   .order-upi .link-underline { order: 5; }
 }
+
+/* The owner's one-tap message to a customer: useful, but never the loudest
+   thing on the panel — the status buttons above it are the real work. */
+.admin-actions__whatsapp { margin-top: var(--sp-3); }

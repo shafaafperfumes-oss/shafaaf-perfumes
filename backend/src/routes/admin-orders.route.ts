@@ -7,6 +7,7 @@ import {
   listAllOrders,
   updateOrderStatus,
 } from "../repositories/admin-order.repository.js";
+import { emailCustomer } from "../services/customer-emails.js";
 import { ApiError } from "../utils/api-error.js";
 import { sendSuccess } from "../utils/respond.js";
 import { assertAdminDatabaseReady, auditContext, pageQuerySchema } from "./admin-shared.js";
@@ -61,6 +62,17 @@ adminOrdersRouter.patch("/:id", async (req, res, next) => {
     assertAdminDatabaseReady();
     const input = updateOrderSchema.parse(req.body);
     const order = await updateOrderStatus(auditContext(req), req.params.id, input.status, input.note || null);
+
+    // The customer hears about exactly two moments, and each is sent from
+    // wherever it genuinely happens. Confirming reaches here only for a UPI
+    // transfer the owner has just verified: a card order is confirmed by the
+    // webhook and a cash order the moment it is placed, both elsewhere.
+    if (input.status === "paid" && order.paymentMethod === "upi") {
+      void emailCustomer(order.id, "confirmed");
+    } else if (input.status === "shipped") {
+      void emailCustomer(order.id, "shipped");
+    }
+
     sendSuccess(res, { order });
   } catch (error) {
     if (error instanceof OrderNotFoundError) {
