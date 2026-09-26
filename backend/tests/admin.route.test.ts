@@ -312,12 +312,17 @@ describeWithAuth("the admin API", () => {
     expect(res.status).toBe(409);
   });
 
-  it("will not let an admin mark an order paid", async () => {
+  // The whole point of the gateway path: money is proved by a signed
+  // webhook, never by someone clicking in the admin. A UPI transfer and a
+  // cash handover have no webhook and are the owner's to confirm, but a
+  // card order stays out of his hands — this order is an `online` one.
+  it("will not let an admin mark a gateway order paid", async () => {
     const res = await asAdmin(request(app).patch(`${API_PREFIX}/admin/orders/${order.id}`)).send({
       status: "paid",
     });
 
-    expect(res.status).toBe(422);
+    expect(res.status).toBe(409);
+    expect(res.body.error.message).toContain("paid online");
   });
 
   it("will not ship an order that has not been paid for", async () => {

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { isDatabaseConfigured } from "../db/client.js";
 import { requireAuth } from "../middleware/auth.js";
-import { upiPaymentFor } from "../lib/upi.js";
+import { upiPaymentWithQrFor } from "../lib/upi.js";
 import { getOrderDetail, listOrders } from "../repositories/order.repository.js";
 import {
   OrderNotFoundError,
@@ -48,7 +48,9 @@ ordersRouter.get("/:id", async (req, res, next) => {
     // id and a pay link every time it is opened, so the customer can come
     // back to it later — from a laptop, or after closing the tab.
     const upi =
-      order.paymentMethod === "upi" && order.status === "pending_payment" ? upiPaymentFor(order) : null;
+      order.paymentMethod === "upi" && order.status === "pending_payment"
+        ? await upiPaymentWithQrFor(order)
+        : null;
     sendSuccess(res, { order, upi });
   } catch (error) {
     next(error);

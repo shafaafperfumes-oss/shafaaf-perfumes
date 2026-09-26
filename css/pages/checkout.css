@@ -154,3 +154,10 @@
   .order-upi__details { grid-template-columns: 1fr; gap: 0; }
   .order-upi__details dd { margin-bottom: var(--sp-3); }
 }
+
+.order-upi__qr {
+  margin: var(--sp-4) auto 0; width: 240px; max-width: 100%;
+  padding: var(--sp-3); background: #fff;
+  border: 1px solid var(--c-line); border-radius: var(--r-md);
+}
+.order-upi__qr svg { display: block; width: 100%; height: auto; }

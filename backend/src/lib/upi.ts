@@ -1,3 +1,4 @@
+import QRCode from "qrcode";
 import { env } from "../config/env.js";
 
 /**
@@ -8,7 +9,8 @@ import { env } from "../config/env.js";
  * the `upi://pay` link every Indian payment app understands. Tapping it on
  * a phone opens PhonePe / Google Pay / Paytm with the amount and the order
  * number already filled in; on a laptop the same details are shown as text
- * to type by hand.
+ * to type by hand, next to a QR code any payment app can scan — which is
+ * how most people will actually pay, phone in hand at a laptop.
  *
  * Nothing here can tell whether money actually arrived — a link is only an
  * invitation to pay. The order stays `pending_payment` until the owner sees
@@ -28,6 +30,38 @@ export interface UpiPaymentDetails {
   note: string;
   /** `upi://pay?...` — a link on a phone, details to copy on a laptop. */
   link: string;
+}
+
+export interface UpiPaymentWithQr extends UpiPaymentDetails {
+  /** The same link as a scannable QR code: an inline SVG, no image request. */
+  qrSvg: string;
+}
+
+/**
+ * The UPI details plus a QR code of the pay link.
+ *
+ * The QR is built here rather than fetched from one of the free QR image
+ * services on the web: those would be sent the shop's UPI id and every
+ * order's amount, and a payment address is not something to hand to a
+ * third party for a picture. It is returned as inline SVG so the page
+ * draws it with no extra request and it stays sharp on any screen.
+ */
+export async function upiPaymentWithQrFor(order: {
+  orderNumber: string;
+  total: number;
+}): Promise<UpiPaymentWithQr | null> {
+  const details = upiPaymentFor(order);
+  if (!details) return null;
+
+  const qrSvg = await QRCode.toString(details.link, {
+    type: "svg",
+    margin: 1,
+    width: 240,
+    errorCorrectionLevel: "M",
+    color: { dark: "#3d2a1f", light: "#ffffff" },
+  });
+
+  return { ...details, qrSvg };
 }
 
 /** The UPI details for one order, or null when the shop has published no UPI id. */

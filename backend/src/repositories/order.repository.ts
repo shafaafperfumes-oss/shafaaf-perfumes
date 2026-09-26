@@ -1,5 +1,7 @@
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
+import { env } from "../config/env.js";
 import { getDb, type Database, type Tx } from "../db/client.js";
+import { paymentOptionsFor, type PaymentMethod } from "../lib/payment-methods.js";
 import {
   cartItems,
   carts,
@@ -239,8 +241,6 @@ async function nextOrderNumber(tx: Tx): Promise<string> {
   return `SHF-${value}`;
 }
 
-export type PaymentMethod = "online" | "upi" | "cod";
-
 export interface PlacedOrder extends CheckoutQuote {
   id: string;
   orderNumber: string;
@@ -248,6 +248,9 @@ export interface PlacedOrder extends CheckoutQuote {
   paymentMethod: PaymentMethod;
   createdAt: Date;
 }
+
+/** A way of paying this basket is not allowed — a cash order over the limit, say. */
+export class PaymentMethodNotAllowedError extends Error {}
 
 /** The first line of an order's history, in the words that fit how it will be paid. */
 const PLACED_NOTE: Record<PaymentMethod, string> = {
@@ -284,6 +287,18 @@ export async function placeOrder(
 
     assertFulfillable(rows);
     const quote = toQuote(rows);
+
+    // Checked here, against the total just priced from the database, so a
+    // basket that grew past the cash-on-delivery limit between the page
+    // loading and the button being pressed is caught rather than trusted.
+    if (!paymentOptionsFor(Math.round(quote.total * 100)).includes(paymentMethod)) {
+      throw new PaymentMethodNotAllowedError(
+        paymentMethod === "cod"
+          ? `Cash on delivery is only available on orders up to ₹${env.COD_MAX_PAISE / 100}.`
+          : "That way of paying is not available right now.",
+      );
+    }
+
     const orderNumber = await nextOrderNumber(tx);
 
     const [order] = await tx

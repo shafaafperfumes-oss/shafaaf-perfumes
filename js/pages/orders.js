@@ -200,8 +200,12 @@
       " by UPI for order " + order.orderNumber + ". Here is the screenshot.";
     return (
       '<div class="order-pay order-upi">' +
-        '<p class="cart-summary__note">Send <strong>' + escapeHtml(upi.amount) + '</strong> to the UPI id below from any payment app. ' +
-          'Your order is confirmed as soon as we see it.</p>' +
+        '<p class="cart-summary__note">Scan the code with any payment app, or send <strong>' +
+          escapeHtml(upi.amount) + '</strong> to the UPI id below. Your order is confirmed as soon as we see it.</p>' +
+        // The QR comes from our own backend as SVG, so there is no image
+        // request and nothing about this order leaves the site.
+        (upi.qrSvg ? '<div class="order-upi__qr" role="img" aria-label="UPI QR code for ' +
+          escapeHtml(upi.note) + '">' + upi.qrSvg + '</div>' : "") +
         '<dl class="order-upi__details">' +
           '<dt>UPI id</dt><dd><code data-upi-id>' + escapeHtml(upi.vpa) + '</code></dd>' +
           '<dt>Name</dt><dd>' + escapeHtml(upi.payeeName) + '</dd>' +

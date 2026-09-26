@@ -2,13 +2,15 @@ import { Router } from "express";
 import { z } from "zod";
 import { env } from "../config/env.js";
 import { isDatabaseConfigured } from "../db/client.js";
-import { upiPaymentFor } from "../lib/upi.js";
+import { paymentOptionsFor } from "../lib/payment-methods.js";
+import { upiPaymentWithQrFor } from "../lib/upi.js";
 import { notifyOrderPlaced } from "../services/order-alerts.js";
 import { requireAuth } from "../middleware/auth.js";
 import {
   EmptyCartError,
   InvalidAddressError,
   OutOfStockError,
+  PaymentMethodNotAllowedError,
   getCheckoutQuote,
   placeOrder,
 } from "../repositories/order.repository.js";
@@ -36,22 +38,6 @@ function assertDatabaseReady(): void {
   }
 }
 
-/**
- * Which ways of paying this basket may use, in the order the page shows
- * them. Decided here, once, so the checkout page and the place-order call
- * can never disagree about what is on offer.
- *
- * Cash on delivery is capped: above COD_MAX_PAISE a parcel is worth too
- * much to send out unpaid, so only the prepaid methods remain.
- */
-function paymentOptionsFor(totalPaise: number): Array<"online" | "upi" | "cod"> {
-  const options: Array<"online" | "upi" | "cod"> = [];
-  if (env.hasPayments) options.push("online");
-  if (env.upi) options.push("upi");
-  if (env.COD_ENABLED && totalPaise <= env.COD_MAX_PAISE) options.push("cod");
-  return options;
-}
-
 function handleCheckoutError(error: unknown, next: (error: unknown) => void): void {
   if (error instanceof EmptyCartError) {
     next(ApiError.badRequest(error.message));
@@ -63,6 +49,10 @@ function handleCheckoutError(error: unknown, next: (error: unknown) => void): vo
   }
   if (error instanceof InvalidAddressError) {
     next(ApiError.notFound(error.message));
+    return;
+  }
+  if (error instanceof PaymentMethodNotAllowedError) {
+    next(ApiError.badRequest(error.message));
     return;
   }
   next(error);
@@ -99,19 +89,9 @@ checkoutRouter.post("/place", async (req, res, next) => {
     assertDatabaseReady();
     const input = placeOrderSchema.parse(req.body);
     const method = input.paymentMethod ?? "online";
-
-    // Price the basket again before agreeing to the chosen method: the
-    // page offered it against a quote taken moments ago, and cash on
-    // delivery is only allowed up to a value.
-    const quote = await getCheckoutQuote(req.user!.id);
-    if (!paymentOptionsFor(Math.round(quote.total * 100)).includes(method)) {
-      throw ApiError.badRequest(
-        method === "cod"
-          ? `Cash on delivery is only available on orders up to ₹${env.COD_MAX_PAISE / 100}.`
-          : "That way of paying is not available right now.",
-      );
-    }
-
+    // placeOrder checks the method against the total it prices itself,
+    // after the address and the cart — so the errors still reach the
+    // shopper in the order they can act on.
     const order = await placeOrder(req.user!.id, input.addressId, method);
 
     // The order itself is already safely committed at this point (stock
@@ -134,7 +114,12 @@ checkoutRouter.post("/place", async (req, res, next) => {
     // Deliberately not awaited: the alert must never delay or fail the reply.
     if (method !== "online") void notifyOrderPlaced(order.id);
 
-    sendSuccess(res, { order, payment, upi: method === "upi" ? upiPaymentFor(order) : null }, undefined, 201);
+    sendSuccess(
+      res,
+      { order, payment, upi: method === "upi" ? await upiPaymentWithQrFor(order) : null },
+      undefined,
+      201,
+    );
   } catch (error) {
     handleCheckoutError(error, next);
   }
