@@ -198,14 +198,24 @@
     }
     var message = "Hello Shafaaf Perfumes, I have sent " + shafaafFormatPrice(order.total) +
       " by UPI for order " + order.orderNumber + ". Here is the screenshot.";
+    // The same panel serves two quite different people: someone on a phone,
+    // who wants one tap into their payment app, and someone at a laptop, for
+    // whom that tap does nothing at all because no app can answer upi://.
+    // Which one is reading is a question about the device, not the order, so
+    // CSS answers it (pointer: coarse) and both paths are always in the HTML
+    // — no sniffing, and nothing breaks if the guess would have been wrong.
     return (
       '<div class="order-pay order-upi">' +
-        '<p class="cart-summary__note">Scan the code with any payment app, or send <strong>' +
-          escapeHtml(upi.amount) + '</strong> to the UPI id below. Your order is confirmed as soon as we see it.</p>' +
+        '<p class="cart-summary__note order-upi__intro order-upi__intro--scan">Scan this code with any payment app. ' +
+          'Your order is confirmed as soon as we see the money.</p>' +
+        '<p class="cart-summary__note order-upi__intro order-upi__intro--tap">Tap below to pay ' +
+          '<strong>' + escapeHtml(shafaafFormatPrice(order.total)) + '</strong> in your payment app, or scan the code. ' +
+          'Your order is confirmed as soon as we see the money.</p>' +
         // The QR comes from our own backend as SVG, so there is no image
         // request and nothing about this order leaves the site.
         (upi.qrSvg ? '<div class="order-upi__qr" role="img" aria-label="UPI QR code for ' +
           escapeHtml(upi.note) + '">' + upi.qrSvg + '</div>' : "") +
+        '<a class="btn btn--primary btn--block order-upi__pay" href="' + escapeHtml(upi.link) + '">Open my payment app</a>' +
         '<dl class="order-upi__details">' +
           '<dt>UPI id</dt><dd><code data-upi-id>' + escapeHtml(upi.vpa) + '</code></dd>' +
           '<dt>Name</dt><dd>' + escapeHtml(upi.payeeName) + '</dd>' +
@@ -213,8 +223,8 @@
           '<dt>Reference</dt><dd>' + escapeHtml(upi.note) + '</dd>' +
         '</dl>' +
         '<button type="button" class="btn btn--outline btn--block" data-upi-copy>Copy UPI id</button>' +
-        '<a class="btn btn--primary btn--block order-upi__pay" href="' + escapeHtml(upi.link) + '">Open my payment app</a>' +
-        '<p class="cart-summary__note">On a laptop the button above will not open anything — type the id into your phone instead.</p>' +
+        '<p class="cart-summary__note order-upi__hint">No payment app on this computer? Scan the code above with your phone, ' +
+          'or copy the UPI id into your phone.</p>' +
         '<a class="link-underline" href="' + whatsappLink(message) + '" target="_blank" rel="noopener">' +
           'Send us the payment screenshot on WhatsApp</a>' +
       '</div>'

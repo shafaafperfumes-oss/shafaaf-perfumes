@@ -155,9 +155,42 @@
   .order-upi__details dd { margin-bottom: var(--sp-3); }
 }
 
+/* The QR is the way to pay on a laptop, where no app can answer an
+   upi:// link, so it leads there and the pay button steps back. On a
+   phone that button is the whole point, so the two swap round. Decided
+   by the pointer, not by sniffing the browser. */
 .order-upi__qr {
-  margin: var(--sp-4) auto 0; width: 240px; max-width: 100%;
+  margin: var(--sp-4) auto 0; width: 280px; max-width: 100%;
   padding: var(--sp-3); background: #fff;
   border: 1px solid var(--c-line); border-radius: var(--r-md);
 }
 .order-upi__qr svg { display: block; width: 100%; height: auto; }
+
+/* Laptop, the default: scan-first wording, a quiet pay button. */
+.order-upi__intro--tap { display: none; }
+.order-upi .order-upi__pay {
+  background: transparent; color: var(--c-ink); border-color: var(--c-line-strong);
+  box-shadow: none; font-size: var(--fs-sm);
+}
+.order-upi .order-upi__pay:hover { background: var(--c-ivory-2); color: var(--c-ink); box-shadow: none; }
+
+/* A touch device: there is a payment app here, so lead with it. */
+@media (pointer: coarse) {
+  .order-upi__intro--scan { display: none; }
+  .order-upi__intro--tap { display: block; }
+  .order-upi__qr { width: 180px; order: 2; }
+  .order-upi__hint { display: none; }
+  .order-upi .order-upi__pay {
+    background: var(--c-ink); color: var(--c-ivory); border-color: var(--c-ink);
+    font-size: var(--fs-md);
+  }
+  .order-upi .order-upi__pay:hover {
+    background: var(--c-gold); border-color: var(--c-gold); color: var(--c-ink);
+  }
+  .order-upi { display: flex; flex-direction: column; }
+  .order-upi__intro--tap { order: 0; }
+  .order-upi .order-upi__pay { order: 1; }
+  .order-upi__details { order: 3; }
+  .order-upi [data-upi-copy] { order: 4; }
+  .order-upi .link-underline { order: 5; }
+}
