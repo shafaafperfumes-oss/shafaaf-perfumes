@@ -43,8 +43,21 @@ healthRouter.get("/ready", async (_req, res) => {
   // Same idea for email: is RESEND_API_KEY + ORDER_ALERT_EMAIL set?
   checks.orderAlerts = env.hasOrderAlerts ? "ok" : "not-configured";
   checks.uploads = env.hasStorage ? "ok" : "not-configured";
+  // The two ways of being paid with no gateway behind them.
+  checks.upi = env.upi ? "ok" : "not-configured";
+  checks.cashOnDelivery = env.COD_ENABLED ? "ok" : "not-configured";
 
   const ready = Object.values(checks).every((status) => status !== "unavailable");
 
-  sendSuccess(res, { ready, checks }, undefined, ready ? 200 : 503);
+  // Readable detail next to the flags, for the one question the flags
+  // cannot answer: *which* UPI id did the variable actually land as? It is
+  // not a secret — every paying customer sees it — and showing it is the
+  // only way to catch a typo before it sends someone's money to a stranger.
+  const settings = {
+    upiId: env.upi ? env.upi.vpa : null,
+    upiPayeeName: env.upi ? env.upi.payeeName : null,
+    codMaxRupees: env.COD_ENABLED ? env.COD_MAX_PAISE / 100 : null,
+  };
+
+  sendSuccess(res, { ready, checks, settings }, undefined, ready ? 200 : 503);
 });
