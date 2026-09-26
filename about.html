@@ -53,7 +53,10 @@
     <section class="section">
       <div class="container">
         <div class="story-split">
-          <div class="story-split__media" id="about-media"></div>
+          <div class="story-split__media">
+            <img src="images/shop-attar-wall.webp" width="688" height="1474" loading="eager" decoding="async"
+                 alt="The attar wall inside Shafaaf Perfumes in Srinagar — rows of gold-capped bottles under the shop's name.">
+          </div>
           <div class="story-split__text">
             <span class="eyebrow">Why We Started</span>
             <h2 class="section-title">A fragrance house built on transparency</h2>
@@ -62,6 +65,33 @@
             <p>We are based in Srinagar, Kashmir, and we pack and send every order ourselves — free delivery anywhere in India, with cash on delivery if you would rather pay at your door.</p>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head" style="justify-content:center;text-align:center;flex-direction:column;align-items:center">
+          <span class="eyebrow">Come and See</span>
+          <h2 class="section-title">Our shop in Srinagar</h2>
+          <p class="section-sub">Shop No. 2, Masjid Complex, Masjid Abu Bakr, Magermal Bagh — open to anyone who would rather smell a fragrance before buying it.</p>
+        </div>
+        <div class="shop-gallery">
+          <figure class="shop-gallery__item">
+            <img src="images/shop-front.webp" width="669" height="968" loading="lazy" decoding="async"
+                 alt="The shopfront of Shafaaf Perfumes at Magermal Bagh, Srinagar.">
+          </figure>
+          <figure class="shop-gallery__item">
+            <img src="images/shop-interior.webp" width="695" height="1068" loading="lazy" decoding="async"
+                 alt="Inside the shop: gift sets, bakhoor burners and perfume bottles beneath The Fragrance of Kashmir sign.">
+          </figure>
+          <figure class="shop-gallery__item">
+            <img src="images/shop-counter.webp" width="697" height="1139" loading="lazy" decoding="async"
+                 alt="The counter at Shafaaf Perfumes, with attar bottles lining both walls.">
+          </figure>
+        </div>
+        <p class="shop-gallery__link">
+          <a class="link-underline" href="https://www.google.com/maps/place/SHAFAAF+PERFUMES/@34.0686699,74.8012154,17z" target="_blank" rel="noopener">Find us on Google Maps</a>
+        </p>
       </div>
     </section>
 
@@ -266,8 +296,8 @@
   <script src="js/main.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      var el = document.getElementById("about-media");
-      if (el) el.innerHTML = shafaafProductMedia(shafaafGetProductById("ameer-al-oud-gold"), { eager: true });
+      // The story picture is now a photograph of the shop itself, written
+      // straight into the page — nothing to fill in here any more.
     });
   </script>
 </body>

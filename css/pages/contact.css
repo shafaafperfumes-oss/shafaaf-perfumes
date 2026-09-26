@@ -12,3 +12,9 @@
   font-size: var(--fs-sm);
 }
 .contact-address a { color: var(--c-gold); text-decoration: underline; text-underline-offset: 3px; }
+
+.contact-address__photo {
+  display: block; width: 100%; max-width: 320px; margin: 0 0 var(--sp-4);
+  aspect-ratio: 4 / 3; object-fit: cover;
+  border-radius: var(--r-lg); border: 1px solid var(--c-line);
+}

@@ -73,3 +73,21 @@
 @media (max-width: 760px) {
   .policy-row { grid-template-columns: 1fr; gap: var(--sp-2); padding-block: var(--sp-5); }
 }
+
+/* The shop's own photographs on the About page. Three portrait frames that
+   become one column on a phone — cropped to a common shape so the row reads
+   as a set rather than three snapshots of different sizes. */
+.shop-gallery {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-4);
+  margin-top: var(--sp-8);
+}
+.shop-gallery__item { margin: 0; }
+.shop-gallery__item img {
+  display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover;
+  border-radius: var(--r-lg); background: var(--c-ivory-2);
+}
+.shop-gallery__link { margin-top: var(--sp-5); text-align: center; font-size: var(--fs-sm); }
+@media (max-width: 720px) {
+  .shop-gallery { grid-template-columns: 1fr; gap: var(--sp-5); }
+  .shop-gallery__item img { aspect-ratio: 4 / 3; }
+}
