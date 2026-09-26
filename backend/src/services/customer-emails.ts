@@ -26,7 +26,20 @@ import { addressLines, escapeHtml, rupees } from "./order-alerts.js";
  * order this is and nobody else.
  */
 
-export type CustomerEmailMoment = "confirmed" | "shipped";
+export type CustomerEmailMoment = "confirmed" | "shipped" | "delivered";
+
+/**
+ * The shop's Google listing. Asking for a review is the one thing that
+ * actually moves a shop up the local results — the shop shares 4.9 stars
+ * with the perfumer up the road who has ten times the reviews, and that
+ * count is most of the difference between them.
+ *
+ * The CID form addresses the listing directly and opens the Maps app on a
+ * phone, where leaving a review is one tap. If the owner ever fetches the
+ * short g.page/r/…/review link from his Business Profile, swap it in here
+ * — it lands straight on the review box and saves that tap.
+ */
+const GOOGLE_REVIEW_URL = "https://www.google.com/maps?cid=14106381703851512644";
 
 /** The customer's own email address, or null when we have none for them. */
 async function emailFor(userId: string): Promise<string | null> {
@@ -66,14 +79,19 @@ export function buildCustomerEmail(
   const name = (order.customerName || "there").trim().split(" ")[0] || "there";
   const link = orderLink(order.id);
   const confirmed = moment === "confirmed";
+  const delivered = moment === "delivered";
 
   const heading = confirmed
     ? `Order ${order.orderNumber} is confirmed`
-    : `Order ${order.orderNumber} is on its way`;
+    : delivered
+      ? `How is your fragrance?`
+      : `Order ${order.orderNumber} is on its way`;
 
   const opening = confirmed
     ? `${paidLine(order)} We are packing your order now, and will write again the moment it leaves us.`
-    : `Your parcel has left us and is on its way to you.${courierNote ? ` ${courierNote}` : ""}`;
+    : delivered
+      ? `Your order reached you, and we hope it was worth the wait. If you have a minute, a few words on Google would mean a great deal to a small shop in Srinagar — it is how other people find us.`
+      : `Your parcel has left us and is on its way to you.${courierNote ? ` ${courierNote}` : ""}`;
 
   const text = [
     `Hello ${name},`,
@@ -82,17 +100,25 @@ export function buildCustomerEmail(
     "",
     opening,
     "",
-    "Your order:",
-    ...order.items.map(
-      (item) => `  - ${item.quantity} x ${item.productName} (${item.variantLabel}) — ${rupees.format(item.lineTotal)}`,
-    ),
-    "",
-    `Total: ${rupees.format(order.total)}`,
-    "",
-    "Delivering to:",
-    ...addressLines(order.shippingAddress).map((line) => `  ${line}`),
-    "",
-    ...(link ? [`See your order: ${link}`, ""] : []),
+    ...(delivered
+      ? []
+      : [
+          "Your order:",
+          ...order.items.map(
+            (item) => `  - ${item.quantity} x ${item.productName} (${item.variantLabel}) — ${rupees.format(item.lineTotal)}`,
+          ),
+          "",
+          `Total: ${rupees.format(order.total)}`,
+          "",
+          "Delivering to:",
+          ...addressLines(order.shippingAddress).map((line) => `  ${line}`),
+          "",
+        ]),
+    ...(delivered
+      ? [`Leave a review: ${GOOGLE_REVIEW_URL}`, ""]
+      : link
+        ? [`See your order: ${link}`, ""]
+        : []),
     "Any question at all, reply to this email or message us on WhatsApp: +91 97969 06804.",
     "",
     "Shafaaf Perfumes — The Fragrance of Kashmir",
@@ -103,21 +129,27 @@ export function buildCustomerEmail(
     `<p style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#7a6a60;margin:0 0 4px">Shafaaf Perfumes</p>`,
     `<h1 style="font-size:22px;font-weight:normal;margin:0 0 12px">${escapeHtml(heading)}</h1>`,
     `<p style="margin:0 0 16px;line-height:1.6">Hello ${escapeHtml(name)}, ${escapeHtml(opening)}</p>`,
-    `<table style="width:100%;border-collapse:collapse;font-size:14px;margin:0 0 4px">`,
-    ...order.items.map(
-      (item) =>
-        `<tr><td style="padding:6px 0">${escapeHtml(`${item.quantity} x ${item.productName}`)}` +
-        `<br><span style="color:#7a6a60;font-size:12px">${escapeHtml(item.variantLabel)}</span></td>` +
-        `<td style="padding:6px 0;text-align:right;white-space:nowrap">${escapeHtml(rupees.format(item.lineTotal))}</td></tr>`,
-    ),
-    `<tr><td style="padding:8px 0 0;border-top:1px solid #e6ddcf;font-weight:600">Total</td>`,
-    `<td style="padding:8px 0 0;border-top:1px solid #e6ddcf;text-align:right;font-weight:600">${escapeHtml(rupees.format(order.total))}</td></tr>`,
-    `</table>`,
-    `<p style="margin:16px 0 4px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#7a6a60">Delivering to</p>`,
-    `<p style="margin:0 0 16px;line-height:1.6;font-size:14px">${addressLines(order.shippingAddress).map(escapeHtml).join("<br>")}</p>`,
-    link
-      ? `<p style="margin:0 0 16px"><a href="${escapeHtml(link)}" style="display:inline-block;background:#3d2a1f;color:#fff;text-decoration:none;padding:10px 18px;border-radius:4px">See your order</a></p>`
-      : "",
+    ...(delivered
+      ? []
+      : [
+          `<table style="width:100%;border-collapse:collapse;font-size:14px;margin:0 0 4px">`,
+          ...order.items.map(
+            (item) =>
+              `<tr><td style="padding:6px 0">${escapeHtml(`${item.quantity} x ${item.productName}`)}` +
+              `<br><span style="color:#7a6a60;font-size:12px">${escapeHtml(item.variantLabel)}</span></td>` +
+              `<td style="padding:6px 0;text-align:right;white-space:nowrap">${escapeHtml(rupees.format(item.lineTotal))}</td></tr>`,
+          ),
+          `<tr><td style="padding:8px 0 0;border-top:1px solid #e6ddcf;font-weight:600">Total</td>`,
+          `<td style="padding:8px 0 0;border-top:1px solid #e6ddcf;text-align:right;font-weight:600">${escapeHtml(rupees.format(order.total))}</td></tr>`,
+          `</table>`,
+          `<p style="margin:16px 0 4px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#7a6a60">Delivering to</p>`,
+          `<p style="margin:0 0 16px;line-height:1.6;font-size:14px">${addressLines(order.shippingAddress).map(escapeHtml).join("<br>")}</p>`,
+        ]),
+    delivered
+      ? `<p style="margin:0 0 16px"><a href="${escapeHtml(GOOGLE_REVIEW_URL)}" style="display:inline-block;background:#3d2a1f;color:#fff;text-decoration:none;padding:10px 18px;border-radius:4px">Write a review on Google</a></p>`
+      : link
+        ? `<p style="margin:0 0 16px"><a href="${escapeHtml(link)}" style="display:inline-block;background:#3d2a1f;color:#fff;text-decoration:none;padding:10px 18px;border-radius:4px">See your order</a></p>`
+        : "",
     `<p style="margin:0;font-size:13px;color:#7a6a60;line-height:1.6">Any question at all, reply to this email or message us on WhatsApp <a href="https://wa.me/919796906804" style="color:#ad8a54">+91 97969 06804</a>.</p>`,
     `</div>`,
   ].join("");

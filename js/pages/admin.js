@@ -33,6 +33,8 @@
     cancelled: { label: "Cancelled", tone: "cancelled" }
   };
   var STATUS_ORDER = ["pending_payment", "paid", "shipped", "delivered", "cancelled"];
+  /** The shop's Google listing — opens the Maps app on a phone. */
+  var GOOGLE_REVIEW_URL = "https://www.google.com/maps?cid=14106381703851512644";
   /** Worth flagging at a glance; a gateway order is the ordinary case and needs no label. */
   var METHOD = { upi: "UPI", cod: "COD" };
   var PER_PAGE = 20;
@@ -253,7 +255,13 @@
     var name = (order.customerName || "").trim().split(" ")[0];
     var hello = name ? "Hello " + name + "," : "Hello,";
     var body;
-    if (order.status === "shipped" || order.status === "delivered") {
+    if (order.status === "delivered") {
+      // The shop shares its 4.9 stars with a perfumer up the road who has
+      // ten times the reviews, and that count is most of what decides who
+      // Google shows first. This is the one moment worth asking.
+      body = hello + " thank you for shopping with Shafaaf Perfumes. If you liked your fragrance, " +
+        "a few words on Google would help us a lot: " + GOOGLE_REVIEW_URL;
+    } else if (order.status === "shipped") {
       body = hello + " your Shafaaf Perfumes order " + order.orderNumber +
         " has been dispatched and is on its way to you. Thank you for shopping with us.";
     } else if (order.paymentMethod === "cod") {

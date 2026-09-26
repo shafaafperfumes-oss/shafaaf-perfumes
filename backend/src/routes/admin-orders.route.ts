@@ -71,6 +71,10 @@ adminOrdersRouter.patch("/:id", async (req, res, next) => {
       void emailCustomer(order.id, "confirmed");
     } else if (input.status === "shipped") {
       void emailCustomer(order.id, "shipped");
+    } else if (input.status === "delivered") {
+      // The one moment worth asking for a review: they have the bottle in
+      // their hand. Asked once, never repeated.
+      void emailCustomer(order.id, "delivered");
     }
 
     sendSuccess(res, { order });
